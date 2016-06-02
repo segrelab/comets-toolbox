@@ -16,16 +16,16 @@ classdef CometsLayout
         xdim = 1;
         ydim = 1;
         mets = {}; %cell array of strings
-        media_amt = []%[NaN] %vector 1/met, default 0
+        media_amt = [0]%[NaN] %vector 1/met, default 0
         params = CometsParams();
             %use sparse matrices. Empty elements use default values
-        diffusion_const = []; %[NaN] %vector 1/met, default in params
+        diffusion_const = [0]; %[NaN] %vector 1/met, default in params
         global_media_refresh = [];%[0] %vector 1/met, default 0
-        media_refresh = [];%[0] %met by x by y, fill with 0
+        media_refresh = [0];%[0] %met by x by y, fill with 0
         global_static_media = [];%[NaN] %met by 2. (met,1) is logical denoting if the corresponding media is held static, (met,2) is the held concentration
-        static_media = [];%[NaN] %met by x by y by 2, with the fourth dimension as in global_static_media
+        static_media = [0];%[NaN] %met by x by y by 2, with the fourth dimension as in global_static_media
         barrier = [0]; %x by y, logical
-        initial_pop = [];%[0] %models by x by y, default 0
+        initial_pop = [0];%[0] %models by x by y, default 0
         %TODO: initial_pop modes (rectangle, random...)
     end
     
@@ -34,7 +34,7 @@ classdef CometsLayout
         end
         
         function self=addModel(self,model)
-            self.models = {self.models model};
+            self.models = [self.models model];
             
             %if the model contains any external metabolites, add them to this mets list
             %get exchange reactions
@@ -58,7 +58,8 @@ classdef CometsLayout
             self.global_static_media = [self.global_static_media; zeros(diff,2)];
             
             diff = length(self.mets) - size(self.static_media,1);
-            self.static_media = [self.static_media; zeros(diff,self.xdim,self.ydim,2)];
+            %self.static_media = [self.static_media; zeros(diff,self.xdim,self.ydim,2)];
+            self.static_media(diff,:,:,:)=0;
         end
         
         %function self=removeModel(self,model)
@@ -90,10 +91,13 @@ classdef CometsLayout
                 self.barrier = self.barrier(1:x,:); %x by y, logical
                 self.initial_pop = self.initial_pop(:,1:x,:); %models by x by y
             elseif diff > 0
-                self.media_refresh = [self.media_refresh zeros(diff,self.ydim)]; %met by x by y, default 0
-                self.static_media = [self.static_media zeros(length(self.mets),diff,self.ydim,2)]; %met by x by y by 2, with the fourth dimension as in global_static_media
-                self.barrier = [self.barrier zeros(diff,self.ydim)]; %x by y, logical
-                self.initial_pop = [self.initial_pop nan(length(self.models),diff,self.ydim)]; %models by x by y
+                %self.media_refresh = [self.media_refresh; zeros(diff,self.ydim)]; %met by x by y, default 0
+                self.media_refresh(:,x,:) = 0;
+                %self.static_media = [self.static_media; zeros(length(self.mets),diff,self.ydim,2)]; %met by x by y by 2, with the fourth dimension as in global_static_media
+                self.static_media(:,x,:,:) = 0;
+                self.barrier = [self.barrier; zeros(diff,self.ydim)]; %x by y, logical
+                %self.initial_pop = [self.initial_pop; nan(length(self.models),diff,self.ydim)]; %models by x by y
+                self.initial_pop(:,x,:) = 0;
             end
             self.xdim = x;
         end
@@ -106,14 +110,22 @@ classdef CometsLayout
                 self.barrier = self.barrier(:,1:y); %x by y, logical
                 self.initial_pop = self.initial_pop(:,:,1:y); %models by x by y
             elseif diff > 0
-                self.media_refresh = [self.media_refresh zeros(self.xdim,diff)]; %met by x by y, default 0
-                self.static_media = [self.static_media zeros(length(self.mets),self.xdim,diff,2)]; %met by x by y by 2, with the fourth dimension as in global_static_media
+                %self.media_refresh = [self.media_refresh; zeros(self.xdim,diff)]; %met by x by y, default 0
+                self.media_refresh(:,:,y) = 0;
+                %self.static_media = [self.static_media; zeros(length(self.mets),self.xdim,diff,2)]; %met by x by y by 2, with the fourth dimension as in global_static_media
+                self.static_media(:,:,y,:) = 0;
                 self.barrier = [self.barrier zeros(self.xdim,diff)]; %x by y, logical
-                self.initial_pop = [self.initial_pop nan(length(self.models),self.xdim,diff)]; %models by x by y
+                %self.initial_pop = [self.initial_pop; nan(length(self.models),self.xdim,diff)]; %models by x by y
+                self.initial_pop(:,:,y,:) = 0;
             end
             self.ydim = y;
         end
+        
+        function self = setDims(self,x,y)
+            self = self.setXdim(x);
+            self = self.setYdim(y);
+        end
     end
-    
+        
 end
 

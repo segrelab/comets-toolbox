@@ -36,7 +36,9 @@ exchange_rxnsIndex=strcmp('EX_',model.rxns);
 
 S=full(model.S);
 
-fileID=fopen(filename,'w');
+[p, f, e] = fileparts(filename);
+mkdir(p); %initialize the folder
+fileID = fopen(filename,'w');
 
 %Print the S matrix 
 fprintf(fileID,'SMATRIX  %d  %d\n',length(model.S(:,1)),length(model.S(1,:))+1);

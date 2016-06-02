@@ -2,8 +2,8 @@ function writeCometsLayout( input, filedir, filename )
 %WRITECOMETSLAYOUT Summary of this function goes here
 %   Detailed explanation goes here
 if nargin == 2
-    filename = filedir;
-    filedir = '';
+    filename = 'layout.txt';
+    %filedir = 'layout';
 end
 
 if isa(input,'string')
@@ -319,7 +319,9 @@ fprintf(fileID,'//\n');
 
 
     function mname = getModelFileName(model)
-       mname = fullfile(filedir,[model.description '.txt']); 
+        [pathstr,name,ext] = fileparts(model.description);
+       mname = fullfile(filedir,[name '.txt']); 
+       %mname = [filedir '/' name '.txt'];
     end
 
 end
