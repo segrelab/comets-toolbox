@@ -22,7 +22,7 @@ layout.media_refresh = []; %x by y by met, fill with 0
 
 %parse args to add models and Params
 for arg= input_args
-    if ISA(arg,'CometsParams')
+    if strcmp(class(arg),'CometsParams')
         layout = setCometsParams(layout,arg);
     elseif length(arg) > 1
         for model=arg
