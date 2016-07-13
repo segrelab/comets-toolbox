@@ -1,0 +1,17 @@
+numDiffPerStep = 10
+numRunThreads = 1
+growthDiffRate = 0
+flowDiffRate = 3e-9
+exchangestyle = Monod Style
+defaultKm = 0.01
+defaultHill = 1
+timeStep = 0.01
+deathRate = 0.0 
+spaceWidth = 0.01
+maxSpaceBiomass = 2.2E-4
+minSpaceBiomass = 0.25e-10 
+allowCellOverlap = true
+toroidalWorld = false 
+showCycleTime = true 
+showCycleCount = true
+defaultVmax = 10
