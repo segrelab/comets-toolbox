@@ -32,7 +32,8 @@ end
 clear exchange_rxnsIndex;
 %exchange_rxnsIndex(1)=1; %not sure what case this is preventing... 
                           %reenable after debugging
-exchange_rxnsIndex=strcmp('EX_',model.rxns);
+exc_logical=findExcRxns(model);%COBRA function returning a logical vector.
+exchange_rxnsIndex=find(exc_logical);
 
 S=full(model.S);
 
@@ -87,7 +88,8 @@ fprintf(fileID,'//\n');
 %Print exchange reactions
 fprintf(fileID,'EXCHANGE_REACTIONS\n');
 for i=1:length(exchange_rxnsIndex)
-    fprintf(fileID,' %d',exchange_rxnsIndex(i)); 
+    idx = exchange_rxnsIndex(i);
+    fprintf(fileID,' %d',idx); 
 end
 fprintf(fileID,'\n//\n');
 
