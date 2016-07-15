@@ -21,9 +21,9 @@ classdef CometsLayout
             %use sparse matrices. Empty elements use default values
         diffusion_const = [0]; %[NaN] %vector 1/met, default in params
         global_media_refresh = [];%[0] %vector 1/met, default 0
-        media_refresh = [0];%[0] %met by x by y, fill with 0
+        media_refresh = [0];%[0] %met by x by y, fill with 0 ****
         global_static_media = [];%[NaN] %met by 2. (met,1) is logical denoting if the corresponding media is held static, (met,2) is the held concentration
-        static_media = [0];%[NaN] %met by x by y by 2, with the fourth dimension as in global_static_media
+        static_media = [0];%[NaN] %met by x by y by 2, with the fourth dimension as in global_static_media ****
         barrier = [0]; %x by y, logical
         initial_pop = [0];%[0] %models by x by y, default 0
         %TODO: initial_pop modes (rectangle, random...)

@@ -158,11 +158,14 @@ fprintf(fileID,'\t//\n');
 %   row_M  col_M  amt_1  amt_2  amt_3  ...  amt_N
 fprintf(fileID,'\tmedia_refresh %d', layout.global_media_refresh);
 s = size(layout.media_refresh);
-for x = 1:s(2)
-    for y = 1:s(3)
-        row = layout.media_refresh(:,x,y);
-        if any(row)
-            fprintf(fileID,'\t\t%d %d %g\n',x,y,row);
+
+if layout.media_refresh~=0
+    for x = 1:s(2)
+        for y = 1:s(3)
+            row = layout.media_refresh(:,x,y);
+            if any(row)
+                fprintf(fileID,'\t\t%d %d %g\n',x,y,row);
+            end
         end
     end
 end
@@ -205,6 +208,11 @@ end
 fprintf('\n');
 
 s = size(layout.static_media);
+
+if length(s)<3
+    s(3)=1;
+end
+
 for x = 1:s(2)
     for y = 1:s(3)
         v = layout.static_media(:,x,y);
@@ -278,6 +286,11 @@ fprintf(fileID,'\t//\n//\n');
 % species i.
 fprintf(fileID,'initial_pop\n');
 s = size(layout.initial_pop);
+
+if length(s)<3
+    s(3)=1;
+end
+
 for x = 1:s(2)
     for y = 1:s(3)
         v = layout.initial_pop(:,x,y);

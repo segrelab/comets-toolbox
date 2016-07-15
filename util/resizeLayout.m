@@ -5,10 +5,15 @@ if newX<1 || newY<1
 else
     layout.xdim=newX;
     layout.ydim=newY;
+    % the problem is that the default model has vectors without any actual
+    % items, so even though the vector should be 3-dimensional, MatLab sees
+    % it as [] by default because of createLayout(). Also createLayout()
+    % does not allow access to static_media and init_pop because those
+    % variables are in the CometsLayout class but not in the function
     
-    %size of layout
-    helpResize(layout,2,newX);
-    helpResize(layout,3,newY);
+    % size of layout
+    % helpResize(layout,2,newX);
+    % helpResize(layout,3,newY);
     
     %media_refresh
     helpResize(layout.media_refresh,2,newX);
@@ -19,8 +24,8 @@ else
     helpResize(layout.static_media,3,newY);
     
     %init_pop
-    helpResize(layout.init_pop,2,newX);
-    helpResize(layout.init_pop,3,newY);
+    helpResize(layout.initial_pop,2,newX);
+    helpResize(layout.initial_pop,3,newY);
     
     newLayout=layout;
 end
@@ -39,7 +44,7 @@ if dim<1 || newDim<1
     errordlg('Please input positive, nonzero values','Error');
 else
     len=size(matrix);
-    x=len(dim);
+    x=length(dim);
     if newDim<x % reducing size of matrix
         if dim==1 % for changing first dimensi   on
             if x==1
@@ -77,11 +82,11 @@ else
         if dim==1 % resizing from 0 dimensions
             tempMatrix(newDim)=0;
         elseif dim==2 %resizing from 1 dimension
-            tempMatrix(:,newDim)=0;
+            tempMatrix(len(1),newDim)=0;
         elseif dim==3 %resizing from 2 dimensions
-            tempMatrix(:,:,newDim)=0;
+            tempMatrix(len(1),len(2),newDim)=0;
         elseif dim==4 %resizing from 3 dimensions
-            tempMatrix(:,:,:,newDim)=0;
+            tempMatrix(len(1),len(2),len(3),newDim)=0;
         end
         newMatrix=tempMatrix;
     end
