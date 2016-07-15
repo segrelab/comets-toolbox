@@ -1,6 +1,6 @@
 function writeCometsLayout( input, filedir, filename )
-%WRITECOMETSLAYOUT Summary of this function goes here
-%   Detailed explanation goes here
+%WRITECOMETSLAYOUT Create a layout file along with the corresponding model
+%files
 if nargin == 2
     filename = 'layout.txt';
     %filedir = 'layout';

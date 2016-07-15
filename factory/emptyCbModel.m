@@ -1,3 +1,4 @@
+%DEPRECATED: user Cobra's createModel()
 function m = emptyCbModel()
 %EMPTYCBMODEL Creates a struct with the same fields as a COBRA model and
 %empty values
