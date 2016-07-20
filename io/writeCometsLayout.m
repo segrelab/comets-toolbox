@@ -158,6 +158,9 @@ fprintf(fileID,'\t//\n');
 %   row_M  col_M  amt_1  amt_2  amt_3  ...  amt_N
 fprintf(fileID,'\tmedia_refresh %d', layout.global_media_refresh);
 s = size(layout.media_refresh);
+if length(s) < 3 %don't break the loop if media_refresh is empty or 1x1
+    s(3) = 0;
+end
 for x = 1:s(2)
     for y = 1:s(3)
         row = layout.media_refresh(:,x,y);
@@ -205,6 +208,9 @@ end
 fprintf('\n');
 
 s = size(layout.static_media);
+if length(s) < 3 %don't break the loop if static_media is empty or 1x1
+    s(3) = 0;
+end
 for x = 1:s(2)
     for y = 1:s(3)
         v = layout.static_media(:,x,y);
@@ -278,6 +284,9 @@ fprintf(fileID,'\t//\n//\n');
 % species i.
 fprintf(fileID,'initial_pop\n');
 s = size(layout.initial_pop);
+if length(s) < 3 %don't break the loop if initial_pop is empty or 1x1
+    s(3) = 0;
+end
 for x = 1:s(2)
     for y = 1:s(3)
         v = layout.initial_pop(:,x,y);
