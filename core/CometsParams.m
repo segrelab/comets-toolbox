@@ -53,6 +53,12 @@ classdef CometsParams
         showCycleTime = true
         showCycleCount = true
         defaultVmax = 10
+        logFormat = 'COMETS' %['COMETS', 'Matlab']
+        biomassMotionStyle = 'Convection 2D' %['Diffusion (Crank-Nicolson)', 'Diffusion
+        %(Eight Point)', 'Diffusion 3D', 'Convection 2D', 'Convection 3D']
+        exchangeStyle = 'Standard FBA' %['Standard FBA', 'Monod Style', 'Pseudo-Monod
+        %Style']
+        
         
         %TODO: Find appropriate values
         defaultReactionLower = 0.0
