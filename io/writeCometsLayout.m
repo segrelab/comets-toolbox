@@ -156,7 +156,9 @@ fprintf(fileID,'\t//\n');
 %   row_1  col_1  amt_1  amt_2  amt_3  ...  amt_N row_2  col_2  amt_1 amt_2
 %   amt_3  ...  amt_N row_3  col_3  amt_1  amt_2  amt_3  ...  amt_N . . .
 %   row_M  col_M  amt_1  amt_2  amt_3  ...  amt_N
-fprintf(fileID,'\tmedia_refresh %d', layout.global_media_refresh);
+fprintf(fileID,'\tmedia_refresh');
+fprintf(fileID,' %d',layout.global_media_refresh);
+fprintf(fileID,'\n');
 s = size(layout.media_refresh);
 if length(s) < 3 %don't break the loop if media_refresh is empty or 1x1
     s(3) = 0;
