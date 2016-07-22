@@ -1,5 +1,7 @@
 % models={e_coli_core,iAB_RBC_283,iAF1260,iAF1260b,iAF692,iAF987,ic_1306,iIT341,iJN746,iECB_1328,iEC55989_1330,iEC042_1314}
 % mets={'CO2','O2','Nitrate','Phosphate','Orotate','Nitric oxide','Ca2_c0','H2O_e0','fe3_e0','Sucrose_e0','Maltose_e0','Na_c0'}
+% models={K1,K1A,K2,K3,K4,K5,K6,K7,K8,K9,K9A,K10,K11,K12,K13,K14,K15,K16,K17,K18,K19,K20,K21,K22}
+
 function genomes=genomeGenerator(models, mets)
     genomes=[Genome() Genome() Genome() Genome() Genome() Genome()];
     mets1=(mets(1:3));

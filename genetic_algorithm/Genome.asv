@@ -3,16 +3,16 @@ classdef Genome
         score=0;
         sequence={};
         endOfMets=0;
-        excRxn='EX Nitrite e0';
+        %excRxn='';
     end
     
     methods
         function self=getScore(self)
 %             self.score=randi([1,10]); % TODO
             fluxScore=0;
-            for i=self.endOfMets+1:length(self.sequence);
+            for i=self.endOfMets+1:length
                 model=self.sequence{i};
-                fluxScore=fluxScore+lookForFlux(model,self.excRxn); 
+                fluxScore=fluxScore+lookForFlux(model,'EX Nitrate e0'); 
             end
             self.score=fluxScore;
         end

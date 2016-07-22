@@ -1,6 +1,6 @@
 classdef Main
     properties
-        generationNum=1;
+        generationNum=0;
         generation=[];
         models=[];
         mets=[];
@@ -36,18 +36,19 @@ classdef Main
        
         function self=nextGeneration(self, numStaySame, newMets, numCross)
             currLength=length(self.generation);
-            oldGenome=self.generation{currLength};
-            % oldGenome=oldGenome{self.generationNum};
+            oldGenome=self.generation(currLength);
+            oldGenome=oldGenome{1};
             tempGenome=breed(oldGenome,numStaySame,newMets, numCross);
             self.generation{currLength+1}=tempGenome;
             self.generationNum=self.generationNum+1;
         end
         
-        function self=run(self,maxCycles,numStaySame,newMets,numCross)
-            for i=1:maxCycles-1
-               self=self.nextGeneration(numStaySame,newMets,numCross); 
+        function self=runThruCobra(self, maxGenerations)
+            for i=1:maxGenerations
+                
             end
         end
+        
     end
     
     

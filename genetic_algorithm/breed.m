@@ -1,6 +1,6 @@
 % Sample input: (genomes, 3, newMets)
 % newMets={'ATP', 'Citrate', 'Ethanol','L-Maltatem','D-Lactate'}
-function modGenomes=breed(genomesArray, numStaySame, newMets)
+function modGenomes=breed(genomesArray, numStaySame, newMets, numCross)
     genomeSize=length(genomesArray);
     copyGen=genomesArray;  
 
@@ -10,7 +10,7 @@ function modGenomes=breed(genomesArray, numStaySame, newMets)
         maxScore=0;
         index=1;
         for k=1:genomeSize
-            if copyGen(k).score>maxScore
+            if abs(copyGen(k).score)>maxScore
                 temp=copyGen(k);
                 index=k;
                 maxScore=copyGen(k).score;
@@ -21,7 +21,6 @@ function modGenomes=breed(genomesArray, numStaySame, newMets)
         maxIndicies(i)=index;
     end
     
-    %TODO: Paramterize # of cross breeding/mutating
     diff=genomeSize-numStaySame;
     if mod(diff,2)~=0
         diff=diff+1;
@@ -29,7 +28,7 @@ function modGenomes=breed(genomesArray, numStaySame, newMets)
     for i=numStaySame+1:genomeSize
         % Cross-Breeding
         counter=1;
-        for j=1:diff/2  
+        for j=1:numCross  
             max1=maxIndicies(j);
             if mod(counter,2)~=0 % Allows for both recombinations
                 max2=maxIndicies(j+1);
