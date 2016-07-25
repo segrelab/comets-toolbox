@@ -38,7 +38,9 @@ exchange_rxnsIndex=find(exc_logical);
 S=full(model.S);
 
 [p, f, e] = fileparts(filename);
-mkdir(p); %initialize the folder
+if ~exist(p)
+    mkdir(p); %initialize the folder
+end
 fileID = fopen(filename,'w');
 
 %Print the S matrix 
