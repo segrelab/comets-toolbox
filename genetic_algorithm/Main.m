@@ -1,3 +1,4 @@
+
 classdef Main
     properties
         generationNum=1;
@@ -16,7 +17,7 @@ classdef Main
         end
         
         % DONE: Make mets/models different #s 
-        function self=initGenomes(self, numGenomes,numOfMets, numOfModels)
+        function self=initGenomes(self, numGenomes, numOfMets, numOfModels)
             for i=1:numGenomes
                 firstMet=randi([1,length(self.mets)-numOfMets]);
                 lastMet=firstMet+numOfMets-1;
@@ -28,6 +29,9 @@ classdef Main
                 
                 tempGenome=Genome();
                 tempGenome=tempGenome.addMetsAndModels(metabolites,modelNames);
+                
+                tempGenome=changeMetLevels(self.mets,tempGenome);
+                
                 tempGenome=tempGenome.getScore();
                 tempList(i)=tempGenome;
             end
