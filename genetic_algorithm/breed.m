@@ -1,6 +1,6 @@
 % Sample input: (genomes, 3, newMets)
 % newMets={'EX Ca2 e0','EX Cbl e0','EX Cd2 e0','EX Cl- e0','EX Co2 e0'}
-function modGenomes=breed(genomesArray, numStaySame, newMets, numCross)
+function modGenomes=breed(genomesArray, numStaySame, newMets, numCross, mets)
     genomeSize=length(genomesArray);
     copyGen=genomesArray;  
 
@@ -59,11 +59,15 @@ function modGenomes=breed(genomesArray, numStaySame, newMets, numCross)
             gen.sequence(posOfMutation)=newMets(randMet);
             modGenomes(k)=gen;
             mut=mut+1;
-        end
-        
-        % Scores for new mutants
-        for i=numStaySame+1:genomeSize
-            modGenomes(i)=modGenomes(i).getScore();
-        end
+        end   
+    end
+    
+    for y=1:length(modGenomes)
+       modGenomes(i)=changeMetLevels(mets,modGenomes(i)); 
+    end
+    
+    % Scores for new mutants
+    for i=numStaySame+1:genomeSize
+       modGenomes(i)=modGenomes(i).getScore();
     end
 end

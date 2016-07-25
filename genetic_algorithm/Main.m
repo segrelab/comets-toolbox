@@ -42,7 +42,7 @@ classdef Main
             currLength=length(self.generation);
             oldGenome=self.generation{currLength};
             % oldGenome=oldGenome{self.generationNum};
-            tempGenome=breed(oldGenome,numStaySame,newMets, numCross);
+            tempGenome=breed(oldGenome,numStaySame,newMets,numCross,self.mets);
             self.generation{currLength+1}=tempGenome;
             self.generationNum=self.generationNum+1;
         end

@@ -1,14 +1,19 @@
+
 classdef Main
     properties
-        generationNum=0;
+        generationNum=1;
         generation=[];
         models=[];
         mets=[];
+        modelID=[];
     end
     
     methods
         function self=initModels(self,models)
             self.models=models;
+            for i=1:length(models)
+                
+            end
         end
         
         function self=initMets(self,mets)
@@ -16,7 +21,7 @@ classdef Main
         end
         
         % DONE: Make mets/models different #s 
-        function self=initGenomes(self, numGenomes,numOfMets, numOfModels)
+        function self=initGenomes(self, numGenomes, numOfMets, numOfModels)
             for i=1:numGenomes
                 firstMet=randi([1,length(self.mets)-numOfMets]);
                 lastMet=firstMet+numOfMets-1;
@@ -28,6 +33,9 @@ classdef Main
                 
                 tempGenome=Genome();
                 tempGenome=tempGenome.addMetsAndModels(metabolites,modelNames);
+                
+                tempGenome=changeMetLevels(self.mets,tempGenome);
+                
                 tempGenome=tempGenome.getScore();
                 tempList(i)=tempGenome;
             end
@@ -36,19 +44,18 @@ classdef Main
        
         function self=nextGeneration(self, numStaySame, newMets, numCross)
             currLength=length(self.generation);
-            oldGenome=self.generation(currLength);
-            oldGenome=oldGenome{1};
-            tempGenome=breed(oldGenome,numStaySame,newMets, numCross);
+            oldGenome=self.generation{currLength};
+            % oldGenome=oldGenome{self.generationNum};
+            tempGenome=breed(oldGenome,numStaySame,newMets,numCross,self.mets);
             self.generation{currLength+1}=tempGenome;
             self.generationNum=self.generationNum+1;
         end
         
-        function self=runThruCobra(self, maxGenerations)
-            for i=1:maxGenerations
-                
+        function self=run(self,maxCycles,numStaySame,newMets,numCross)
+            for i=1:maxCycles-1
+               self=self.nextGeneration(numStaySame,newMets,numCross); 
             end
         end
-        
     end
     
     
