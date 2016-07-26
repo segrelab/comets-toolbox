@@ -40,8 +40,12 @@ classdef CometsLayout
             %get exchange reactions
             excl = findExcRxns(model); %logical: does this rxn have 1 metabolite?
             exc = model.S(:,excl); %S matrix slice of just exchange reactions
-            mis = sum(abs(exc)); %collapse to vector of exchange metabolites
-            names = model.mets(mis~=0); %get logical index of cells
+            [row,col] = find(exc);
+            names = model.mets(row);
+            
+            %mis = sum(abs(exc)); %collapse to vector of exchange metabolites
+            %names = model.mets(mis~=0); %get logical index of cells
+                        
             newnames = setdiff(names, self.mets);
             self.mets = [self.mets; newnames]; %must maintain order, don't use Union
             

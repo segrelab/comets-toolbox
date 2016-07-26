@@ -156,20 +156,24 @@ fprintf(fileID,'\t//\n');
 %   row_1  col_1  amt_1  amt_2  amt_3  ...  amt_N row_2  col_2  amt_1 amt_2
 %   amt_3  ...  amt_N row_3  col_3  amt_1  amt_2  amt_3  ...  amt_N . . .
 %   row_M  col_M  amt_1  amt_2  amt_3  ...  amt_N
-fprintf(fileID,'\tmedia_refresh %d', layout.global_media_refresh);
+fprintf(fileID,'\tmedia_refresh');
+fprintf(fileID,' %d',layout.global_media_refresh);
+fprintf(fileID,'\n');
 s = size(layout.media_refresh);
 
-if layout.media_refresh~=0
-    for x = 1:s(2)
-        for y = 1:s(3)
-            row = layout.media_refresh(:,x,y);
-            if any(row)
-                fprintf(fileID,'\t\t%d %d %g\n',x,y,row);
-            end
+if length(s) < 3 %don't break the loop if media_refresh is empty or 1x1
+    s(3) = 1;
+end
+for x = 1:s(2)
+    for y = 1:s(3)
+        row = layout.media_refresh(:,x,y);
+        if any(row)
+            fprintf(fileID,'\t\t%d %d %g\n',x,y,row);
         end
     end
 end
 fprintf(fileID,'\t//\n');
+
 % // 2e. Static Media
 % 
 % Like the media refresh block, this describes how the media in each space
@@ -200,28 +204,33 @@ fprintf(fileID,'\t//\n');
 %   use_1  amt_1  use_2  amt_2  ...  use_N  amt_N row_3  col_3 use_1  amt_1
 %   use_2  amt_2  ...  use_N  amt_N . . . row_M  col_M  use_1 amt_1  use_2
 %   amt_2  ...  use_N  amt_N
-fprintf(fileID,'\tstatic_media ');
+fprintf(fileID,'\tstatic_media');
 gs = size(layout.global_static_media);
 for row = 1:gs(1)
     fprintf(fileID,' %g',layout.global_static_media(row,:));
 end
-fprintf('\n');
+fprintf(fileID,'\n');
 
 s = size(layout.static_media);
 
-if length(s)<3
-    s(3)=1;
+if length(s) < 3 %don't break the loop if static_media is empty or 1x1
+    s(3) = 1;
 end
 
 for x = 1:s(2)
     for y = 1:s(3)
-        v = layout.static_media(:,x,y);
-        if any(v)
+        v = layout.static_media(:,x,y);%values
+        i = find(v); %indexes
+        if any(i)
+            b = zeros(gs(1));
+            b(i) = 1; %is this medium static?
+            sm = [b;full(v)];
+            row = sm(1:(2*gs(1)));%pairs of logical/value for each media
             fprintf(fileID,'\t\t%d %d',x,y);
-            for row = 1:gs(1)
-                fprintf(fileID,' %g',layout.static_media(row,:));
+            for j = 1:length(row)
+                fprintf(fileID,' %d',row(j));
             end
-            fprintf('\n');
+            fprintf(fileID,'\n');
         end
     end
 end
@@ -287,15 +296,15 @@ fprintf(fileID,'\t//\n//\n');
 fprintf(fileID,'initial_pop\n');
 s = size(layout.initial_pop);
 
-if length(s)<3
-    s(3)=1;
+if length(s) < 3 %don't break the loop if initial_pop is empty or 1x1
+    s(3) = 1;
 end
 
 for x = 1:s(2)
     for y = 1:s(3)
         v = layout.initial_pop(:,x,y);
         if any(v)
-            fprintf(layoutID,'\t%d %d %g',x,y,v);
+            fprintf(fileID,'\t%d %d %g',x,y,v);
         end
     end
 end
