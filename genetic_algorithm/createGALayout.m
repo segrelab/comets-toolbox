@@ -9,8 +9,8 @@ function y=createGALayout(genome)
     
     for j=1:genome.endOfMets
         index=strmatch(genome.sequence(j),modelForIndex.metNames);
-        %idName=modelForIndex.mets(index);
-        %mediaNum=strmatch(idName,layout.mets);
+        idName=modelForIndex.mets(index);
+        mediaNum=strmatch(idName,layout.mets);
         layout.media_amt(index)=1000;
     end
     
