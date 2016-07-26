@@ -3,7 +3,17 @@
 % models={K1,K1A,K2,K3,K4,K5,K6,K7,K8,K9,K9A,K10,K11,K12,K13,K14,K15,K16,K17,K18,K19,K20,K21,K22}
 % mets={'EX D-Glucose e0','EX Sucrose e0','EX Maltose e0', 'EX Glycerol
 % e0', 'EX D-Fructose e0', 'EX D-Mannose e0'}
-% metsCOMETS={'Amylotriose_e0','D-Fructose_e0','D-Glucose_e0','D-Mannose_e0','D-Ribose_e0','Dulcose_e0','L-Arabinose_e0','Maltohexaose_e0','Maltose_e0','Sucrose_e0','Thyminose_e0'}
+% metsCOMETS='Amylotriose_e0'
+    'D-Fructose_e0'
+    'D-Glucose_e0'
+    'D-Mannose_e0'
+    'D-Ribose_e0'
+    'Dulcose_e0'
+    'L-Arabinose_e0'
+    'Maltohexaose_e0'
+    'Maltose_e0'
+    'Sucrose_e0'
+    'Thyminose_e0'
 function genomes=genomeGenerator(models, mets)
     genomes=[Genome() Genome() Genome() Genome() Genome() Genome()];
     mets1=(mets(1:3));
