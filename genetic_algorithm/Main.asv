@@ -1,4 +1,3 @@
-% Uday Tripathi 7/2016
 % Main class: Runs the entire algorithm iteratively
 classdef Main
     properties
@@ -64,13 +63,7 @@ classdef Main
        
         % Generates the next generation of genomes by calling breed and
         % making the appropriate changes in the generation field
-        % Input
-        % numStaySame = the number of genomes that are to stay intact when
-        % selecting highest scoring genomes to reproduce directly
-        % newMets = the list of possible metabolites that can replace
-        % metabolites in a genome via mutation
-        % numCross = the number of cross-bred genomes to be present in each
-        % generation
+        % Inpui
         function self=nextGeneration(self, numStaySame, newMets, numCross)
             currLength=length(self.generation);
             oldGenome=self.generation{currLength};
@@ -79,15 +72,6 @@ classdef Main
             self.generationNum=self.generationNum+1;
         end
         
-        % Runs the algorithm iteratively, automatically recording and
-        % returning results
-        % Input:
-        % maxCycles = the number of generations the algorithm is intended
-        % to run for
-        % newMets = the set of new metabolites that could replace others in
-        % the genome via mutation
-        % numCross = the number of cross-bred genomes to be present in each
-        % generation
         function self=run(self,maxCycles,numStaySame,newMets,numCross)
             for i=1:maxCycles-1
                self=self.nextGeneration(numStaySame,newMets,numCross); 

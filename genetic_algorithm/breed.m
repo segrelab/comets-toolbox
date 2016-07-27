@@ -4,7 +4,7 @@ function modGenomes=breed(genomesArray, numStaySame, newMets, numCross, mets)
     genomeSize=length(genomesArray);
     copyGen=genomesArray;  
 
-    % First three genomes are populated by the three fittest genomes from
+    % First "numStaySame" genomes are populated by the x fittest genomes from
     % prior generation
     for i=1:numStaySame
         maxScore=0;

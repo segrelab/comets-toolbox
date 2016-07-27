@@ -1,3 +1,4 @@
+% Uday Tripathi 7/2016
 % Sample excRxn: 'EX Nitrate e0'
 % Workflow: a=load(model) a=a.model lookForFlux(model,exchangeReaction)
 
