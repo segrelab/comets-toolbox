@@ -6,7 +6,7 @@ function modModel=changeMetLevels(model,mets,metsToKeep)
 % s=strfind(K1.rxnNames,'e0')
 % y=find(~cellfun(@isempty,s))
 % intersect(x,y)
-    metsToKeep=metsToKeep(~cellfun('isempty',metsToKeep));  
+    metsToKeep=metsToKeep(~cellfun('isempty',metsToKee));  
 
     tempModel=model;
     idList={};

@@ -26,7 +26,7 @@ classdef Main
         % numOfMets = the number of metabolites that are in each genome
         % numOfModels = the number of models that are in each genome
         function self=initGenomes(self, numGenomes, numOfMets, numOfModels)
-            modelsInUse=zeros(numGenomes)
+            modelsInUse=zeros(numGenomes);
             for i=1:numGenomes
                 % Generates random sequence of metabolites from the
                 % possible list
@@ -44,24 +44,31 @@ classdef Main
                 % Generates random sequence of models from the possible
                 % list
                 lastModel=firstModel+numOfModels-1;
-                modelNames=self.models(firstModel:lastModel);
+                %modelNames=self.models(firstModel:lastModel);
+                modelRef=(firstModel:lastModel);
                 modelsInUse(i)=firstModel;
                 
                 % Creates each genome for each slot in a generation
                 tempGenome=Genome();
-                tempGenome=tempGenome.addMetsAndModels(metabolites,modelNames);
+                tempGenome=tempGenome.addMetsAndModels(metabolites,modelRef);
                 
-                % Sets the inital bounds for Cobra as intended 
+                % Sets the inital bounds for Cobra as intended
                 % The used metabolites are set bounds to -1000/1000 while
                 % the metabolites not used in model are set to bounds 0
-                tempGenome=changeMetLevels(self.mets,tempGenome);
-                
-                tempGenome=tempGenome.getScore();
                 tempList(i)=tempGenome;
             end
             self.generation{1}=tempList;
         end
-       
+        
+        % type = 'Cobra' or 'Comets'
+        function self=runGeneration(self, type, excRxn)
+            if strcmp(type,'Cobra')==1
+                self=runCobra(self, excRxn);
+            elseif strcmp(type,'Comets')
+            else
+            end
+        end
+        
         % Generates the next generation of genomes by calling breed and
         % making the appropriate changes in the generation field
         % Input
@@ -71,10 +78,10 @@ classdef Main
         % metabolites in a genome via mutation
         % numCross = the number of cross-bred genomes to be present in each
         % generation
-        function self=nextGeneration(self, numStaySame, newMets, numCross)
+        function self=nextGeneration(self, numStaySame, newMets, newModels, numCross)
             currLength=length(self.generation);
-            oldGenome=self.generation{currLength};
-            tempGenome=breed(oldGenome,numStaySame,newMets,numCross,self.mets);
+            oldGenomes=self.generation{currLength};
+            tempGenome=breed(oldGenomes,numStaySame,newMets,newModels,numCross);
             self.generation{currLength+1}=tempGenome;
             self.generationNum=self.generationNum+1;
         end
@@ -88,12 +95,48 @@ classdef Main
         % the genome via mutation
         % numCross = the number of cross-bred genomes to be present in each
         % generation
-        function self=run(self,maxCycles,numStaySame,newMets,numCross)
+        function self=run(self,maxCycles,numStaySame,newMets,newModels,numCross,type,excRxn)
+            self=self.runGeneration(type, excRxn);
             for i=1:maxCycles-1
-               self=self.nextGeneration(numStaySame,newMets,numCross); 
+                self=self.nextGeneration(numStaySame,newMets,newModels,numCross);
+                self=self.runGeneration(type,excRxn);
+            end
+        end
+        
+        function self=runCobra(self,excRxn)
+            genomeSet=self.generation{self.generationNum};
+            for i=1:length(genomeSet)
+                genome=self.generation{self.generationNum}(i);
+                metsToKeep=genome.sequence(1:genome.endOfMets);
+                fluxScore=0;
+                for j=genome.endOfMets+1:length(genome.sequence);
+                    modelIndex=genome.sequence{j};
+                    model=self.models{modelIndex};
+                    fluxScore=fluxScore+cobraFlux(self,model,excRxn,metsToKeep);
+
+                end
+                genome.score=fluxScore;
+                self.generation{self.generationNum}(i)=genome;
+            end
+        end
+        
+        function score=cobraFlux(self,model,exchangeReaction,metsToKeep)
+            model=changeMetLevels(model,self.mets,metsToKeep);
+            score=0;
+            indexOfRxn=strmatch(exchangeReaction,model.rxnNames);
+            if (isempty(indexOfRxn)==0)
+                temp=model.S(:,indexOfRxn);
+                tempArr=nonzeros(temp);
+                opt=optimizeCbModel(model,'max',0,true);
+                flux=opt.x(indexOfRxn);
+                for i=1:length(tempArr)
+                    score=score+tempArr(i);
+                end
+                score=score*flux;
+            else
+                score=0;
             end
         end
     end
-    
-    
 end
+

@@ -1,6 +1,6 @@
 % Sample input: (genomes, 3, newMets)
 % newMets={'EX Ca2 e0','EX Cbl e0','EX Cd2 e0','EX Cl- e0','EX Co2 e0'}
-function modGenomes=breed(genomesArray, numStaySame, newMets, numCross, mets)
+function modGenomes=breed(genomesArray, numStaySame, newMets, newModels, numCross)
     genomeSize=length(genomesArray);
     copyGen=genomesArray;  
 
@@ -16,15 +16,12 @@ function modGenomes=breed(genomesArray, numStaySame, newMets, numCross, mets)
                 maxScore=copyGen(k).score;
             end
         end
+        temp.score=0;
         modGenomes(i)=temp;
         copyGen(index).score=0;
         maxIndicies(i)=index;
     end
     
-    diff=genomeSize-numStaySame;
-    if mod(diff,2)~=0
-        diff=diff+1;
-    end
     for i=numStaySame+1:genomeSize
         % Cross-Breeding
         counter=1;
@@ -39,35 +36,40 @@ function modGenomes=breed(genomesArray, numStaySame, newMets, numCross, mets)
                 g2=genomesArray(max2);
                 sq1=g1.sequence;
                 models1=sq1(g1.endOfMets+1:length(sq1));
+                models1=cell2mat(models1);
                 sq2=g2.sequence;
                 mets2=sq2(1:g2.endOfMets);
                 tempG=Genome();
-                tempG=tempG.addMetsAndModels(mets2,models1);
+                tempG=tempG.addMetsAndModels(mets2,models1(1:length(models1)));
                 modGenomes(numStaySame+counter)=tempG;
                 counter=counter+1;
         end
         
         % Mutations
         mut=1;
-        metPos=genomesArray(i).endOfMets;
-        posOfMutation=randi(1,metPos);
         for k=genomeSize-numStaySame+(counter):genomeSize
-            genIndex=maxIndicies(mut);
+            %genIndex=maxIndicies(mut);
+            genIndex=randi([1,numStaySame]);
             gen=genomesArray(genIndex);
             
-            randMet=randi([1,length(newMets)]);
-            gen.sequence(posOfMutation)=newMets(randMet);
+            coinflip=randi([1,20]);
+            if coinflip<9 % Mets
+                metPos=genomesArray(i).endOfMets;
+                posOfMutation=randi([1,metPos]);
+                randMet=randi([1,length(newMets)]);
+                gen.sequence(posOfMutation)=newMets(randMet);
+            elseif coinflip<18 % Models
+                modelPos=genomesArray(i).endOfMets+1;
+                posOfMutation=randi([modelPos,length(gen.sequence)]);
+                randModel=randi([1,length(newModels)]);
+                gen.sequence{posOfMutation}=newModels{randModel};
+            else % Knockout
+                pos=randi([1,genomesArray(i).endOfMets]);
+                gen.sequence{pos}=[];
+            end
+            gen.score=0;
             modGenomes(k)=gen;
             mut=mut+1;
         end   
-    end
-    
-    for y=1:length(modGenomes)
-       modGenomes(i)=changeMetLevels(mets,modGenomes(i)); 
-    end
-    
-    % Scores for new mutants
-    for i=numStaySame+1:genomeSize
-       modGenomes(i)=modGenomes(i).getScore();
     end
 end

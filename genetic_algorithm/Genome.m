@@ -6,20 +6,9 @@ classdef Genome
         score=0; % the fitness score of specified genome
         sequence={}; % the sequence of metabolites and models in the genome
         endOfMets=0; % the position of the last metabolite in the sequence
-        excRxn='EX Nitrite e0'; % The exchange reaction of interest when running in Cobra
     end
     
     methods
-        % Scores the genome based on Cobra
-        function self=getScore(self)
-            fluxScore=0;
-            for i=self.endOfMets+1:length(self.sequence);
-                model=self.sequence{i};
-                fluxScore=fluxScore+lookForFlux(model,self.excRxn); 
-            end
-            self.score=fluxScore;
-        end
-
         % Adds metabolites and models to the genome's sequence
         % Input:
         % metInput = the metabolites to be entered into the sequence
@@ -32,7 +21,7 @@ classdef Genome
             
             counter=1;
             for j=length(metInput)+1:length(models)+length(metInput)
-                self.sequence{j}=models{counter};
+                self.sequence{j}=models(counter);
                 counter=counter+1;
             end
         end

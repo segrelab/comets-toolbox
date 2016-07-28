@@ -1,10 +1,11 @@
 % Uday Tripathi 7/2016
-% Sample excRxn: 'EX Nitrate e0'
+% Sample excRxn: 'EX Nitrite e0'
 % Workflow: a=load(model) a=a.model lookForFlux(model,exchangeReaction)
 
-function score=lookForFlux(model,exchangeReaction)
+function score=lookForFlux(model,exchangeReaction,mets)
+    model=changeMetLevels(model,mets);
+
     score=0;
-%     initCobraToolbox();
     
     indexOfRxn=strmatch(exchangeReaction,model.rxnNames);
     if (isempty(indexOfRxn)==0)
