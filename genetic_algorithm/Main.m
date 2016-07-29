@@ -6,6 +6,7 @@ classdef Main
         generation=[]; % The sets of genomes per generation
         models=[]; % The models that the genomes draw from
         mets=[]; % The metabolites that the genomes draw from
+        hashMap;
     end
     
     methods
@@ -26,6 +27,8 @@ classdef Main
         % numOfMets = the number of metabolites that are in each genome
         % numOfModels = the number of models that are in each genome
         function self=initGenomes(self, numGenomes, numOfMets, numOfModels)
+            self.hashMap=containers.Map;
+            
             modelsInUse=zeros(numGenomes);
             for i=1:numGenomes
                 % Generates random sequence of metabolites from the
@@ -107,15 +110,21 @@ classdef Main
             genomeSet=self.generation{self.generationNum};
             for i=1:length(genomeSet)
                 genome=self.generation{self.generationNum}(i);
-                metsToKeep=genome.sequence(1:genome.endOfMets);
-                fluxScore=0;
-                for j=genome.endOfMets+1:length(genome.sequence);
-                    modelIndex=genome.sequence{j};
-                    model=self.models{modelIndex};
-                    fluxScore=fluxScore+cobraFlux(self,model,excRxn,metsToKeep);
-
+                
+                hashCode=hash(genome,self.mets);
+                if isKey(self.hashMap,hashCode)==1
+                    genome.score=self.hashMap(hashCode);
+                else
+                    metsToKeep=genome.sequence(1:genome.endOfMets);
+                    fluxScore=0;
+                    for j=genome.endOfMets+1:length(genome.sequence);
+                        modelIndex=genome.sequence{j};
+                        model=self.models{modelIndex};
+                        fluxScore=fluxScore+cobraFlux(self,model,excRxn,metsToKeep); 
+                    end
+                    genome.score=abs(fluxScore);
+                    self.hashMap(hashCode)=fluxScore;
                 end
-                genome.score=fluxScore;
                 self.generation{self.generationNum}(i)=genome;
             end
         end
@@ -133,9 +142,15 @@ classdef Main
                     score=score+tempArr(i);
                 end
                 score=score*flux;
+                score=abs(score); %
             else
                 score=0;
             end
+        end
+        
+        function table=getResults(self, fileName)
+           table=hashTab(self.hashMap.keys,self.hashMap.values);
+           writetable(table,fileName);
         end
     end
 end
