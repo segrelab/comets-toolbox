@@ -6,7 +6,7 @@ classdef Main
         generation=[]; % The sets of genomes per generation
         models=[]; % The models that the genomes draw from
         mets=[]; % The metabolites that the genomes draw from
-        hashMap=containers.Map;
+        hashMap;
     end
     
     methods
@@ -27,6 +27,8 @@ classdef Main
         % numOfMets = the number of metabolites that are in each genome
         % numOfModels = the number of models that are in each genome
         function self=initGenomes(self, numGenomes, numOfMets, numOfModels)
+            self.hashMap=containers.Map;
+            
             modelsInUse=zeros(numGenomes);
             for i=1:numGenomes
                 % Generates random sequence of metabolites from the
@@ -35,19 +37,20 @@ classdef Main
                 lastMet=firstMet+numOfMets-1;
                 metabolites=self.mets(firstMet:lastMet);
                 
+%                 firstModel=randi([1,length(self.models)-numOfMets]);
+%                 % Ensures that same set of models is not in multiple
+%                 % genomes to begin
+%                 while intersect((firstModel:firstModel+numOfModels),modelsInUse)~=0
+%                     firstModel=randi([1,length(self.models)-numOfMets]);
+%                 end
+%                 
+%                 % Generates random sequence of models from the possible
+%                 % list
+%                 lastModel=firstModel+numOfModels-1;
+%                 %modelNames=self.models(firstModel:lastModel);
+%                 modelRef=(firstModel:lastModel);
+%                 modelsInUse(i)=firstModel;
                 firstModel=randi([1,length(self.models)-numOfMets]);
-                % Ensures that same set of models is not in multiple
-                % genomes to begin
-                while intersect((firstModel:firstModel+numOfModels),modelsInUse)~=0
-                    firstModel=randi([1,length(self.models)-numOfMets]);
-                end
-                
-                % Generates random sequence of models from the possible
-                % list
-                lastModel=firstModel+numOfModels-1;
-                %modelNames=self.models(firstModel:lastModel);
-                modelRef=(firstModel:lastModel);
-                modelsInUse(i)=firstModel;
                 
                 % Creates each genome for each slot in a generation
                 tempGenome=Genome();
@@ -62,9 +65,9 @@ classdef Main
         end
         
         % type = 'Cobra' or 'Comets'
-        function self=runGeneration(self, type, excRxn)
+        function self=runGeneration(self, type, excRxn,newMets)
             if strcmp(type,'Cobra')==1
-                self=runCobra(self, excRxn);
+                self=runCobra(self, excRxn,newMets);
             elseif strcmp(type,'Comets')
             else
             end
@@ -97,30 +100,32 @@ classdef Main
         % numCross = the number of cross-bred genomes to be present in each
         % generation
         function self=run(self,maxCycles,numStaySame,newMets,newModels,numCross,type,excRxn)
-            self=self.runGeneration(type, excRxn);
+            self=self.runGeneration(type, excRxn, newMets);
             for i=1:maxCycles-1
                 self=self.nextGeneration(numStaySame,newMets,newModels,numCross);
-                self=self.runGeneration(type,excRxn);
+                self=self.runGeneration(type,excRxn,newMets);
             end
         end
         
-        function self=runCobra(self,excRxn)
+        function self=runCobra(self,excRxn,newMets)
             genomeSet=self.generation{self.generationNum};
             for i=1:length(genomeSet)
-                genome=self.generation{self.generationNum}(i);              
-                hashCode=hash(genome,self.mets);
+                genome=self.generation{self.generationNum}(i);
+                
+                hashCode=hash(genome,self.mets, newMets);
                 if isKey(self.hashMap,hashCode)==1
-                    genome.score=map(hashCode);
+                    genome.score=self.hashMap(hashCode);
                 else
                     metsToKeep=genome.sequence(1:genome.endOfMets);
                     fluxScore=0;
                     for j=genome.endOfMets+1:length(genome.sequence);
                         modelIndex=genome.sequence{j};
+                        %disp(modelIndex);
                         model=self.models{modelIndex};
-                        fluxScore=fluxScore+cobraFlux(self,model,excRxn,metsToKeep);
-  
+                        fluxScore=fluxScore+cobraFlux(self,model,excRxn,metsToKeep); 
                     end
-                    genome.score=fluxScore;
+                    genome.score=abs(fluxScore);
+                    self.hashMap(hashCode)=fluxScore;
                 end
                 self.generation{self.generationNum}(i)=genome;
             end
@@ -139,9 +144,15 @@ classdef Main
                     score=score+tempArr(i);
                 end
                 score=score*flux;
+                score=abs(score); %
             else
                 score=0;
             end
+        end
+        
+        function table=getResults(self, fileName)
+           table=hashTab(self.hashMap.keys,self.hashMap.values);
+           writetable(table,fileName);
         end
     end
 end

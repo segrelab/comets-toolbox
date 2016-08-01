@@ -37,20 +37,28 @@ classdef Main
                 lastMet=firstMet+numOfMets-1;
                 metabolites=self.mets(firstMet:lastMet);
                 
-                firstModel=randi([1,length(self.models)-numOfMets]);
-                % Ensures that same set of models is not in multiple
-                % genomes to begin
-                while intersect((firstModel:firstModel+numOfModels),modelsInUse)~=0
-                    firstModel=randi([1,length(self.models)-numOfMets]);
+%                 firstModel=randi([1,length(self.models)-numOfMets]);
+%                 % Ensures that same set of models is not in multiple
+%                 % genomes to begin
+%                 while intersect((firstModel:firstModel+numOfModels),modelsInUse)~=0
+%                     firstModel=randi([1,length(self.models)-numOfMets]);
+%                 end
+%                 
+%                 % Generates random sequence of models from the possible
+%                 % list
+%                 lastModel=firstModel+numOfModels-1;
+%                 %modelNames=self.models(firstModel:lastModel);
+%                 modelRef=(firstModel:lastModel);
+%                 modelsInUse(i)=firstModel;
+                modelsInUse=zeros(numOfModels);
+                for j=1:numOfModels
+                    tempModel=randi([1,length(self.models)-numOfMets]);
+                    while(sum(find(tempModel==modelsInUse))~=0)
+                        tempModel=randi([1,length(self.models)-numOfMets]);
+                    end
+                    modelsInUse(j)=tempModel;
+                    modelRef(j)=tempModel;
                 end
-                
-                % Generates random sequence of models from the possible
-                % list
-                lastModel=firstModel+numOfModels-1;
-                %modelNames=self.models(firstModel:lastModel);
-                modelRef=(firstModel:lastModel);
-                modelsInUse(i)=firstModel;
-                
                 % Creates each genome for each slot in a generation
                 tempGenome=Genome();
                 tempGenome=tempGenome.addMetsAndModels(metabolites,modelRef);
@@ -64,9 +72,9 @@ classdef Main
         end
         
         % type = 'Cobra' or 'Comets'
-        function self=runGeneration(self, type, excRxn)
+        function self=runGeneration(self, type, excRxn,newMets)
             if strcmp(type,'Cobra')==1
-                self=runCobra(self, excRxn);
+                self=runCobra(self, excRxn,newMets);
             elseif strcmp(type,'Comets')
             else
             end
@@ -99,19 +107,19 @@ classdef Main
         % numCross = the number of cross-bred genomes to be present in each
         % generation
         function self=run(self,maxCycles,numStaySame,newMets,newModels,numCross,type,excRxn)
-            self=self.runGeneration(type, excRxn);
+            self=self.runGeneration(type, excRxn, newMets);
             for i=1:maxCycles-1
                 self=self.nextGeneration(numStaySame,newMets,newModels,numCross);
-                self=self.runGeneration(type,excRxn);
+                self=self.runGeneration(type,excRxn,newMets);
             end
         end
         
-        function self=runCobra(self,excRxn)
+        function self=runCobra(self,excRxn,newMets)
             genomeSet=self.generation{self.generationNum};
             for i=1:length(genomeSet)
                 genome=self.generation{self.generationNum}(i);
                 
-                hashCode=hash(genome,self.mets);
+                hashCode=hash(genome,self.mets, newMets);
                 if isKey(self.hashMap,hashCode)==1
                     genome.score=self.hashMap(hashCode);
                 else
@@ -119,6 +127,7 @@ classdef Main
                     fluxScore=0;
                     for j=genome.endOfMets+1:length(genome.sequence);
                         modelIndex=genome.sequence{j};
+                        %disp(modelIndex);
                         model=self.models{modelIndex};
                         fluxScore=fluxScore+cobraFlux(self,model,excRxn,metsToKeep); 
                     end

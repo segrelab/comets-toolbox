@@ -1,15 +1,19 @@
-function code=hash(genome, mets)
+function code=hash(genome, mets, newMets)
 str='';
 for j=1:genome.endOfMets
     g=genome.sequence{j};
     if isempty(g)==1
         temp='00';
     else
-        index=strmatch(g,mets);
-        temp=num2str(index);
-        if index<10
-            temp=strcat('0',temp);
+        if (strmatch(g,newMets)~=0)
+            index=strmatch(g,newMets)+20;
+        else
+            index=strmatch(g,mets);
         end
+            temp=num2str(index);
+            if index<10
+                temp=strcat('0',temp);
+            end
     end
     str=strcat(str,temp);
 end
