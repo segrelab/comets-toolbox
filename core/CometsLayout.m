@@ -65,7 +65,6 @@ classdef CometsLayout
             end
             
             diff = length(self.mets) - size(self.global_static_media,1);
-            self.global_static_media = [self.global_static_media; zeros(diff,2)];
             if diff > 0
                 self.global_static_media = [self.global_static_media; zeros(diff,2)];
             end
