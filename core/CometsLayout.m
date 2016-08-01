@@ -1,16 +1,16 @@
-classdef CometsLayout 
+classdef CometsLayout
     %CometsLayout Defines the COMETS world and contains COBRA models.
-% 
-%     Constructor: CometsLayout()
-%     
-%     Standard workflow should be as follows: 1) Create an empty layout
-%         world = CometsLayout()
-%     2) Set global and model-level defaults in the contained CometsParams
-%         world.params.DefaultVmax = 10
-%     3) Add COBRA models
-%         
-%     See also CometsParams
-%     
+    %
+    %     Constructor: CometsLayout()
+    %
+    %     Standard workflow should be as follows: 1) Create an empty layout
+    %         world = CometsLayout()
+    %     2) Set global and model-level defaults in the contained CometsParams
+    %         world.params.DefaultVmax = 10
+    %     3) Add COBRA models
+    %
+    %     See also CometsParams
+    %
     properties
         models = {};
         xdim = 1;
@@ -18,7 +18,7 @@ classdef CometsLayout
         mets = {}; %cell array of strings
         media_amt = [0]%[NaN] %vector 1/met, default 0
         params = CometsParams();
-            %use sparse matrices. Empty elements use default values
+        %use sparse matrices. Empty elements use default values
         diffusion_const = [0]; %[NaN] %vector 1/met, default in params
         global_media_refresh = [];%[0] %vector 1/met, default 0
         media_refresh = [0];%[0] %met by x by y, fill with 0
@@ -45,25 +45,36 @@ classdef CometsLayout
             
             %mis = sum(abs(exc)); %collapse to vector of exchange metabolites
             %names = model.mets(mis~=0); %get logical index of cells
-                        
+            
             newnames = setdiff(names, self.mets);
             self.mets = [self.mets; newnames]; %must maintain order, don't use Union
             
             diff = length(self.mets) - length(self.media_amt);
-            self.media_amt = [self.media_amt; zeros(diff,1)];
+            if diff > 0
+                self.media_amt = [self.media_amt; zeros(diff,1)];
+            end
             
             diff = length(self.mets) - length(self.diffusion_const);
-            self.diffusion_const = [self.diffusion_const; zeros(diff,1)];
+            if diff > 0
+                self.diffusion_const = [self.diffusion_const; zeros(diff,1)];
+            end
             
             diff = length(self.mets) - length(self.global_media_refresh);
-            self.global_media_refresh = [self.global_media_refresh; zeros(diff,1)];
+            if diff > 0
+                self.global_media_refresh = [self.global_media_refresh; zeros(diff,1)];
+            end
             
             diff = length(self.mets) - size(self.global_static_media,1);
             self.global_static_media = [self.global_static_media; zeros(diff,2)];
+            if diff > 0
+                self.global_static_media = [self.global_static_media; zeros(diff,2)];
+            end
             
             diff = length(self.mets) - size(self.static_media,1);
-            %self.static_media = [self.static_media; zeros(diff,self.xdim,self.ydim,2)];
-            self.static_media(diff,:,:,:)=0;
+            if diff > 0
+                %self.static_media = [self.static_media; zeros(diff,self.xdim,self.ydim,2)];
+                self.static_media(diff,:,:,:)=0;
+            end
         end
         
         %function self=removeModel(self,model)
@@ -82,7 +93,7 @@ classdef CometsLayout
             idx = [];
             if ~isempty(self.mets)
                 %idx = find(cellfun('length',regexp(self.mets,name))==1);
-                idx = find(strcmp(name,self.mets),1,'first'); 
+                idx = find(strcmp(name,self.mets),1,'first');
                 %should be a single integer
             end
         end
@@ -130,6 +141,6 @@ classdef CometsLayout
             self = self.setYdim(y);
         end
     end
-        
+    
 end
 
