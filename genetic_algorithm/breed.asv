@@ -23,9 +23,10 @@ end
 for i=numStaySame+1:genomeSize
     % Cross-Breeding
     counter=1;
-    for j=1:numCross-1 %
+    for j=1:numCross
         max1=maxIndicies(j);
         if mod(counter,2)~=0 % Allows for both recombinations
+            
             max2=maxIndicies(j+1);
         else
             max2=maxIndicies(j-1);

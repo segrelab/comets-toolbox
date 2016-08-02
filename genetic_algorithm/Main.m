@@ -105,7 +105,7 @@ classdef Main
         % newMets = the set of new metabolites that could replace others in
         % the genome via mutation
         % numCross = the number of cross-bred genomes to be present in each
-        % generation
+        % generation + 1
         function self=run(self,maxCycles,numStaySame,newMets,newModels,numCross,type,excRxn)
             self=self.runGeneration(type, excRxn, newMets);
             for i=1:maxCycles-1

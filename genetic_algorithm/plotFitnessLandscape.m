@@ -1,10 +1,10 @@
-function scores=plotFitnessLandscape(main, numGens)
-    for i=1:numGens
+function scores=plotFitnessLandscape(main, color)
+    for i=1:main.generationNum;
         genomes=main.generation{i};
         maxScore=findMaxScore(genomes);
         scores(i)=maxScore;
     end
-    plot(scores);
+    plot(scores,color);
 end
 
 function score=findMaxScore(genomeGen)
