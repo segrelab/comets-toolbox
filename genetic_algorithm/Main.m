@@ -118,7 +118,7 @@ classdef Main
             genomeSet=self.generation{self.generationNum};
             for i=1:length(genomeSet)
                 genome=self.generation{self.generationNum}(i);
-                
+
                 hashCode=hash(genome,self.mets, newMets);
                 if isKey(self.hashMap,hashCode)==1
                     genome.score=self.hashMap(hashCode);

@@ -50,6 +50,8 @@ for i=numStaySame+1:genomeSize
         genIndex=randi([1,numStaySame]);
         gen=genomesArray(genIndex);
         
+        genomesArray(i).endOfMets=3; %%
+        
         coinflip=randi([1,20]);
         if coinflip<6 % Mets
             metPos=genomesArray(i).endOfMets;

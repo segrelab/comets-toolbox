@@ -1,9 +1,9 @@
-for i=1:100
+for i=1:10
 main=Main();
 main=main.initModels(models);
 main=main.initMets(mets);
-main=main.initGenomes(50,3,3); 
+main=main.initGenomes(12,3,9); 
 main.hashMap=masterHash;
-main=main.run(20,25,newMets,newModels,10,'Cobra','EX Nitrite e0');
+main=main.run(15,6,newMets,newModels,3,'Cobra','EX Nitrite e0');
 masterHash=main.hashMap;
 end
