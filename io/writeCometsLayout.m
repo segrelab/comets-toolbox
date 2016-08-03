@@ -337,21 +337,24 @@ end
 fprintf(fileID,'\tparameters\n');
 
 pfields = fieldnames(layout.params);
+dontPrint = {'defaultReactionLower','defaultReactionUpper','defaultDiffusionConstant'};
 for i = 1:length(pfields)
     p = pfields{i};
-    c = char(p);
-    val = getfield(layout.params,c);
-    if islogical(val)
-        if val
-            val = 'true';
-        else
-            val = 'false';
+    if ~ismember(p,dontPrint)
+        c = char(p);
+        val = getfield(layout.params,c);
+        if islogical(val)
+            if val
+                val = 'true';
+            else
+                val = 'false';
+            end
         end
+        %     if ~ischar(val)
+        %         val = char(val);
+        %     end
+        fprintf(fileID,'\t%s = %s\n',char(p),num2str(val));
     end
-    %     if ~ischar(val)
-    %         val = char(val);
-    %     end
-    fprintf(fileID,'\t%s = %s\n',char(p),num2str(val));
 end
 fprintf(fileID,'//\n');
 
