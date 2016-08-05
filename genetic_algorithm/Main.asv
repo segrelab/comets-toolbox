@@ -127,26 +127,28 @@ classdef Main
                     fluxScore=0;
                     for j=genome.endOfMets+1:length(genome.sequence);
                         modelIndex=genome.sequence{j};
+                        disp(genome.sequence);
+                        disp(modelIndex);
                         while (ischar(modelIndex)==1)
                            j=j+1;
-                           modelIndex=genome.sequence{j};
+                           modelIndex=genome.sequenc
                         end
                         if isempty(modelIndex)==1
                             fluxScore=fluxScore+0;
                         else
                             model=self.models{modelIndex};
-                            fluxScore=fluxScore+cobraFlux(self,model,excRxn,metsToKeep,numModels); 
+                            fluxScore=fluxScore+cobraFlux(self,model,excRxn,metsToKeep); 
                         end
                     end
-                    genome.score=(abs(fluxScore)/numModels);
-                    self.hashMap(hashCode)=abs((fluxScore)/numModels);
+                    genome.score=(abs(fluxScore));
+                    self.hashMap(hashCode)=abs((fluxScore));
                 end
                 self.generation{self.generationNum}(i)=genome;
             end
         end
         
-        function score=cobraFlux(self,model,exchangeReaction,metsToKeep,numModels)
-            model=changeMetLevels(model,self.mets,metsToKeep,numModels);
+        function score=cobraFlux(self,model,exchangeReaction,metsToKeep)
+            model=changeMetLevels(model,self.mets,metsToKeep);
             score=0;
             indexOfRxn=strmatch(exchangeReaction,model.rxnNames);
             if (isempty(indexOfRxn)==0)

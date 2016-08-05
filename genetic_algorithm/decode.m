@@ -7,8 +7,13 @@ function sequence=decode(hash, mets, models)
        if num>20
            num=num-20;
        end
-       met=mets(counter);
-       sequence(counter)=met;
+       
+       if num==0
+           sequence(counter)={0};
+       else
+           met=mets(num);
+           sequence(counter)=met;
+       end
        counter=counter+1;
     end
     

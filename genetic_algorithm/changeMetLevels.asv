@@ -1,5 +1,5 @@
 % Uday Tripathi 7/2016
-function modModel=changeMetLevels(model,mets,metsToKeep,numModels)
+function modModel=changeMetLevels(model,mets,metsToKeep)
 
 % strfind(K1.rxnNames,'glu')
 % x=find(~cellfun(@isempty,ans))
@@ -7,7 +7,7 @@ function modModel=changeMetLevels(model,mets,metsToKeep,numModels)
 % y=find(~cellfun(@isempty,s))
 % intersect(x,y)
     metsToKeep=metsToKeep(~cellfun('isempty',metsToKeep));  
-    bounds=10/numModels;
+    bounds=10/nModels;
     tempModel=model;
     idList={};
     for j=1:length(mets)
