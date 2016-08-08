@@ -152,8 +152,11 @@ classdef Main
             if (isempty(indexOfRxn)==0)
                 temp=model.S(:,indexOfRxn);
                 tempArr=nonzeros(temp);
-                opt=optimizeCbModel(model,'max',0,true);
-                flux=opt.x(indexOfRxn);
+%                 opt=optimizeCbModel(model,'max',0,true);
+                rxnTrueName = model.rxns(indexOfRxn);
+                [fmin, fmax, vmin, vmax] = fluxVariability(model,100,'max',{rxnTrueName});
+%                 flux=opt.x(indexOfRxn);
+                flux=fmin;
                 for i=1:length(tempArr)
                     score=score+tempArr(i);
                 end
