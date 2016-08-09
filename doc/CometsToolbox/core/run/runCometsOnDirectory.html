@@ -1,0 +1,103 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+                "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+<head>
+  <title>Description of runCometsOnDirectory</title>
+  <meta name="keywords" content="runCometsOnDirectory">
+  <meta name="description" content="run_COMETS Run COMETS without a GUI from MATLAB">
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <meta name="generator" content="m2html &copy; 2005 Guillaume Flandin">
+  <meta name="robots" content="index, follow">
+  <link type="text/css" rel="stylesheet" href="../../../m2html.css">
+  <script type="text/javascript">
+    if (top.frames.length == 0) { top.location = "../../../index.html"; };
+  </script>
+</head>
+<body>
+<a name="_top"></a>
+<!-- # CometsToolbox --><!-- ../menu.html core --><!-- menu.html run -->
+<h1>runCometsOnDirectory
+</h1>
+
+<h2><a name="_name"></a>PURPOSE <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+<div class="box"><strong>run_COMETS Run COMETS without a GUI from MATLAB</strong></div>
+
+<h2><a name="_synopsis"></a>SYNOPSIS <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+<div class="box"><strong>function comets_output = runCometsOnDirectory(run_COMETS_folder) </strong></div>
+
+<h2><a name="_description"></a>DESCRIPTION <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+<div class="fragment"><pre class="comment">run_COMETS Run COMETS without a GUI from MATLAB
+
+comets_output = run_COMETS(run_COMETS_folder)
+
+REQUIRED INPUTS
+ run_COMETS_folder: Path to folder that contains:
+     global_params.txt
+    package_params.txt
+    comets_script.txt
+    COMETS layout (e.g. Ecoli_colony_layout.txt)
+    COMETS models (e.g. EC_ijo1366_model.txt)
+
+OUTPUT
+ comets_output: COMETS output to screen
+
+ Meghan Thommes 02/29/2016</pre></div>
+
+<!-- crossreference -->
+<h2><a name="_cross"></a>CROSS-REFERENCE INFORMATION <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+This function calls:
+<ul style="list-style-image:url(../../../matlabicon.gif)">
+</ul>
+This function is called by:
+<ul style="list-style-image:url(../../../matlabicon.gif)">
+<li><a href="runComets.html" class="code" title="function runComets( layout, directory )">runComets</a>	RUNCOMETS create the files necessary for a COMETS run, and execute it from</li></ul>
+<!-- crossreference -->
+
+
+
+<h2><a name="_source"></a>SOURCE CODE <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+<div class="fragment"><pre>0001 <a name="_sub0" href="#_subfunctions" class="code">function comets_output = runCometsOnDirectory(run_COMETS_folder)</a>
+0002 <span class="comment">%run_COMETS Run COMETS without a GUI from MATLAB</span>
+0003 <span class="comment">%</span>
+0004 <span class="comment">%comets_output = run_COMETS(run_COMETS_folder)</span>
+0005 <span class="comment">%</span>
+0006 <span class="comment">%REQUIRED INPUTS</span>
+0007 <span class="comment">% run_COMETS_folder: Path to folder that contains:</span>
+0008 <span class="comment">%     global_params.txt</span>
+0009 <span class="comment">%    package_params.txt</span>
+0010 <span class="comment">%    comets_script.txt</span>
+0011 <span class="comment">%    COMETS layout (e.g. Ecoli_colony_layout.txt)</span>
+0012 <span class="comment">%    COMETS models (e.g. EC_ijo1366_model.txt)</span>
+0013 <span class="comment">%</span>
+0014 <span class="comment">%OUTPUT</span>
+0015 <span class="comment">% comets_output: COMETS output to screen</span>
+0016 <span class="comment">%</span>
+0017 <span class="comment">% Meghan Thommes 02/29/2016</span>
+0018 
+0019 <span class="comment">%% Add COMETS Java Classpath to MATLAB</span>
+0020 [path_status,comets_path] = system(<span class="string">'echo %COMETS_HOME%'</span>); <span class="comment">% determine COMETS path</span>
+0021 comets_path = strtrim(comets_path); <span class="comment">% remove leading and trailing white space</span>
+0022 <span class="keyword">if</span> path_status ~= 0 || ~isdir(comets_path) <span class="comment">% command 'echo %COMETS_HOME%' unsuccessful</span>
+0023     error(<span class="string">'COMETS_HOME environmental variable not set'</span>)
+0024 <span class="keyword">end</span>
+0025 javaclasspath(comets_path); <span class="comment">% add COMETS classpath to MATLAB</span>
+0026 
+0027 <span class="comment">%% Set up Working Directory with COMETS Files</span>
+0028 scr_status = copyfile([comets_path <span class="string">'\comets_w64_scr.bat'</span>],[run_COMETS_folder <span class="string">'\comets_w64_scr.bat'</span>]);
+0029 <span class="keyword">if</span> scr_status == 0
+0030     <span class="keyword">if</span> ~isdir(run_COMETS_folder) <span class="comment">% working directory does not exist</span>
+0031         error(<span class="string">'working directory does not exist'</span>)
+0032     <span class="keyword">elseif</span> exist([comets_path <span class="string">'\comets_w64_scr.bat'</span>],<span class="string">'file'</span>) ~= 2 <span class="comment">% script bat file not found</span>
+0033         error(<span class="string">'comets_w64_scr.bat not found in COMETS path'</span>)
+0034     <span class="keyword">end</span>
+0035 <span class="keyword">end</span>
+0036 cd(run_COMETS_folder) <span class="comment">% change to working directory</span>
+0037 
+0038 <span class="comment">%% Run COMETS Script</span>
+0039 [status,comets_output] = system(<span class="string">'comets_w64_scr.bat'</span>); <span class="comment">% run COMETS script</span>
+0040 delete([run_COMETS_folder <span class="string">'\comets_w64_scr.bat'</span>]); <span class="comment">% remove script bat file from folder</span>
+0041 
+0042 <span class="keyword">end</span></pre></div>
+<hr><address>Generated on Tue 09-Aug-2016 14:24:19 by <strong><a href="http://www.artefact.tk/software/matlab/m2html/" target="_parent">m2html</a></strong> &copy; 2005</address>
+</body>
+</html>

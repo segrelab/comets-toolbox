@@ -16,7 +16,7 @@ classdef CometsLayout
         xdim = 1;
         ydim = 1;
         mets = {}; %cell array of strings
-        media_amt = [0]%[NaN] %vector 1/met, default 0
+        media_amt = [0];%[NaN] %vector 1/met, default 0
         params = CometsParams();
         %use sparse matrices. Empty elements use default values
         diffusion_const = [0]; %[NaN] %vector 1/met, default in params

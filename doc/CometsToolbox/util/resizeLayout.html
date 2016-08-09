@@ -1,0 +1,137 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+                "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+<head>
+  <title>Description of resizeLayout</title>
+  <meta name="keywords" content="resizeLayout">
+  <meta name="description" content="">
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <meta name="generator" content="m2html &copy; 2005 Guillaume Flandin">
+  <meta name="robots" content="index, follow">
+  <link type="text/css" rel="stylesheet" href="../../m2html.css">
+  <script type="text/javascript">
+    if (top.frames.length == 0) { top.location = "../../index.html"; };
+  </script>
+</head>
+<body>
+<a name="_top"></a>
+<!-- # CometsToolbox --><!-- menu.html util -->
+<h1>resizeLayout
+</h1>
+
+<h2><a name="_name"></a>PURPOSE <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="box"><strong></strong></div>
+
+<h2><a name="_synopsis"></a>SYNOPSIS <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="box"><strong>function newLayout=resizeLayout(layout, newX, newY) </strong></div>
+
+<h2><a name="_description"></a>DESCRIPTION <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="fragment"><pre class="comment"></pre></div>
+
+<!-- crossreference -->
+<h2><a name="_cross"></a>CROSS-REFERENCE INFORMATION <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+This function calls:
+<ul style="list-style-image:url(../../matlabicon.gif)">
+</ul>
+This function is called by:
+<ul style="list-style-image:url(../../matlabicon.gif)">
+</ul>
+<!-- crossreference -->
+
+<h2><a name="_subfunctions"></a>SUBFUNCTIONS <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<ul style="list-style-image:url(../../matlabicon.gif)">
+<li><a href="#_sub1" class="code">function newMatrix=helpResize(matrix, dim, newDim)</a></li></ul>
+
+<h2><a name="_source"></a>SOURCE CODE <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="fragment"><pre>0001 <a name="_sub0" href="#_subfunctions" class="code">function newLayout=resizeLayout(layout, newX, newY)</a>
+0002 
+0003 <span class="keyword">if</span> newX&lt;1 || newY&lt;1
+0004     errordlg(<span class="string">'Please input positive, nonzero values'</span>,<span class="string">'Error'</span>);
+0005 <span class="keyword">else</span>
+0006     layout.xdim=newX;
+0007     layout.ydim=newY;
+0008     
+0009     <span class="comment">%size of layout</span>
+0010     <a href="#_sub1" class="code" title="subfunction newMatrix=helpResize(matrix, dim, newDim)">helpResize</a>(layout,2,newX);
+0011     <a href="#_sub1" class="code" title="subfunction newMatrix=helpResize(matrix, dim, newDim)">helpResize</a>(layout,3,newY);
+0012     
+0013     <span class="comment">%media_refresh</span>
+0014     <a href="#_sub1" class="code" title="subfunction newMatrix=helpResize(matrix, dim, newDim)">helpResize</a>(layout.media_refresh,2,newX);
+0015     <a href="#_sub1" class="code" title="subfunction newMatrix=helpResize(matrix, dim, newDim)">helpResize</a>(layout.media_refresh,3,newY);
+0016     
+0017     <span class="comment">%static_media</span>
+0018     <a href="#_sub1" class="code" title="subfunction newMatrix=helpResize(matrix, dim, newDim)">helpResize</a>(layout.static_media,2,newX);
+0019     <a href="#_sub1" class="code" title="subfunction newMatrix=helpResize(matrix, dim, newDim)">helpResize</a>(layout.static_media,3,newY);
+0020     
+0021     <span class="comment">%init_pop</span>
+0022     <a href="#_sub1" class="code" title="subfunction newMatrix=helpResize(matrix, dim, newDim)">helpResize</a>(layout.init_pop,2,newX);
+0023     <a href="#_sub1" class="code" title="subfunction newMatrix=helpResize(matrix, dim, newDim)">helpResize</a>(layout.init_pop,3,newY);
+0024     
+0025     newLayout=layout;
+0026 <span class="keyword">end</span>
+0027 <span class="keyword">end</span>
+0028 
+0029 <span class="comment">% function that given a matrix, the number of a dimension, and a number for</span>
+0030 <span class="comment">% new dimension length, return a matrix that reduces the named dimension</span>
+0031 <span class="comment">% according to the given number.</span>
+0032 <span class="comment">% matrix: the input matrix that is to be resized</span>
+0033 <span class="comment">% dim: dimension that is to be resized</span>
+0034 <span class="comment">% newDim: the new size of the dimension that is being resized</span>
+0035 <a name="_sub1" href="#_subfunctions" class="code">function newMatrix=helpResize(matrix, dim, newDim)</a>
+0036 
+0037 check=size(matrix);
+0038 <span class="keyword">if</span> dim&lt;1 || newDim&lt;1
+0039     errordlg(<span class="string">'Please input positive, nonzero values'</span>,<span class="string">'Error'</span>);
+0040 <span class="keyword">else</span>
+0041     len=size(matrix);
+0042     x=len(dim);
+0043     <span class="keyword">if</span> newDim&lt;x <span class="comment">% reducing size of matrix</span>
+0044         <span class="keyword">if</span> dim==1 <span class="comment">% for changing first dimensi   on</span>
+0045             <span class="keyword">if</span> x==1
+0046                 newMatrix=matrix(1:newDim);
+0047             <span class="keyword">elseif</span> x==2
+0048                 newMatrix=matrix(1:newDim,:);
+0049             <span class="keyword">elseif</span> x==3
+0050                 newMatrix=matrix(1:newDim,:,:);
+0051             <span class="keyword">elseif</span> x==4
+0052                 newMatrix=matrix(1:newDim,:,:,:);
+0053             <span class="keyword">end</span>
+0054         <span class="keyword">elseif</span> dim==2 <span class="comment">% for changing second dimension</span>
+0055             <span class="keyword">if</span> x==2
+0056                 newMatrix=matrix(:,1:newDim);
+0057             <span class="keyword">elseif</span> x==3
+0058                 newMatrix=matrix(:,1:newDim,:);
+0059             <span class="keyword">elseif</span> x==4
+0060                 newMatrix=matrix(:,1:newDim,:,:);
+0061             <span class="keyword">end</span>
+0062         <span class="keyword">elseif</span> dim==3 <span class="comment">% for changing third dimension</span>
+0063             <span class="keyword">if</span> x==3
+0064                 newMatrix=matrix(:,:,1:newDim);
+0065             <span class="keyword">elseif</span> x==4
+0066                 newMatrix=matrix(:,:,1:newDim,:);
+0067             <span class="keyword">end</span>
+0068         <span class="keyword">elseif</span> dim==4 <span class="comment">% for changing fourth dimension</span>
+0069             <span class="keyword">if</span> x==4
+0070                 newMatrix=matrix(:,:,:,1:newDim);
+0071             <span class="keyword">end</span>
+0072             
+0073         <span class="keyword">end</span>
+0074         
+0075     <span class="keyword">elseif</span> newDim&gt;x <span class="comment">% increasing size of matrix</span>
+0076         tempMatrix=matrix;
+0077         <span class="keyword">if</span> dim==1 <span class="comment">% resizing from 0 dimensions</span>
+0078             tempMatrix(newDim)=0;
+0079         <span class="keyword">elseif</span> dim==2 <span class="comment">%resizing from 1 dimension</span>
+0080             tempMatrix(:,newDim)=0;
+0081         <span class="keyword">elseif</span> dim==3 <span class="comment">%resizing from 2 dimensions</span>
+0082             tempMatrix(:,:,newDim)=0;
+0083         <span class="keyword">elseif</span> dim==4 <span class="comment">%resizing from 3 dimensions</span>
+0084             tempMatrix(:,:,:,newDim)=0;
+0085         <span class="keyword">end</span>
+0086         newMatrix=tempMatrix;
+0087     <span class="keyword">end</span>
+0088 <span class="keyword">end</span>
+0089 <span class="keyword">end</span></pre></div>
+<hr><address>Generated on Tue 09-Aug-2016 14:24:19 by <strong><a href="http://www.artefact.tk/software/matlab/m2html/" target="_parent">m2html</a></strong> &copy; 2005</address>
+</body>
+</html>

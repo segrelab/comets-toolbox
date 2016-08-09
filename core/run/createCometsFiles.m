@@ -8,7 +8,8 @@ createScriptFile(directory, 'comets_layout.txt');
 createCometsParamsFile(directory, 'global_params.txt', layout.params);
 createPackageParamsFile(directory, 'package_params.txt', layout.params);
 
-writeCometsLayout(layout, directory, 'comets_layout.txt');
+writeCometsLayout(layout, directory, 'comets_layout.txt'); 
+    %writeCometsLayout also creates model files
 
 end
 

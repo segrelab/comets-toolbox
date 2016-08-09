@@ -1,0 +1,130 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+                "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+<head>
+  <title>Description of createCometsParamsFile</title>
+  <meta name="keywords" content="createCometsParamsFile">
+  <meta name="description" content="CREATECOMETSPARAMSFILE Create the Comets params file for a COMETS run.">
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <meta name="generator" content="m2html &copy; 2005 Guillaume Flandin">
+  <meta name="robots" content="index, follow">
+  <link type="text/css" rel="stylesheet" href="../../../m2html.css">
+  <script type="text/javascript">
+    if (top.frames.length == 0) { top.location = "../../../index.html"; };
+  </script>
+</head>
+<body>
+<a name="_top"></a>
+<!-- # CometsToolbox --><!-- ../menu.html core --><!-- menu.html run -->
+<h1>createCometsParamsFile
+</h1>
+
+<h2><a name="_name"></a>PURPOSE <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+<div class="box"><strong>CREATECOMETSPARAMSFILE Create the Comets params file for a COMETS run.</strong></div>
+
+<h2><a name="_synopsis"></a>SYNOPSIS <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+<div class="box"><strong>function createCometsParamsFile( directory, filename, params ) </strong></div>
+
+<h2><a name="_description"></a>DESCRIPTION <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+<div class="fragment"><pre class="comment">CREATECOMETSPARAMSFILE Create the Comets params file for a COMETS run.
+Input:
+   directory: location of the output file
+   filename: name of the params file
+   params: a CometsParams object</pre></div>
+
+<!-- crossreference -->
+<h2><a name="_cross"></a>CROSS-REFERENCE INFORMATION <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+This function calls:
+<ul style="list-style-image:url(../../../matlabicon.gif)">
+</ul>
+This function is called by:
+<ul style="list-style-image:url(../../../matlabicon.gif)">
+<li><a href="createCometsFiles.html" class="code" title="function [ output_args ] = createCometsFiles(layout, directory)">createCometsFiles</a>	CREATECOMETSFILES %write the CometsScript, CometsParams, and PackageParams files necessary</li></ul>
+<!-- crossreference -->
+
+<h2><a name="_subfunctions"></a>SUBFUNCTIONS <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+<ul style="list-style-image:url(../../../matlabicon.gif)">
+<li><a href="#_sub1" class="code">function printparam(name)</a></li></ul>
+
+<h2><a name="_source"></a>SOURCE CODE <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+<div class="fragment"><pre>0001 <a name="_sub0" href="#_subfunctions" class="code">function createCometsParamsFile( directory, filename, params )</a>
+0002 <span class="comment">%CREATECOMETSPARAMSFILE Create the Comets params file for a COMETS run.</span>
+0003 <span class="comment">%Input:</span>
+0004 <span class="comment">%   directory: location of the output file</span>
+0005 <span class="comment">%   filename: name of the params file</span>
+0006 <span class="comment">%   params: a CometsParams object</span>
+0007 
+0008 <span class="comment">%field names and values should be case insensitive.</span>
+0009 
+0010 <span class="comment">%names of possible fields</span>
+0011 allparams = {<span class="string">'timeStep'</span>,<span class="keyword">...</span>
+0012     <span class="string">'deathRate'</span>,<span class="keyword">...</span>
+0013     <span class="string">'activeRate'</span>,<span class="keyword">...</span>
+0014     <span class="string">'maxSpaceBiomass'</span>,<span class="keyword">...</span>
+0015     <span class="string">'minSpaceBiomass'</span>,<span class="keyword">...</span>
+0016     <span class="string">'spaceWidth'</span>,<span class="keyword">...</span>
+0017     <span class="string">'slideshowColorValue'</span>,<span class="keyword">...</span>
+0018     <span class="string">'spaceVolume'</span>,<span class="keyword">...</span>
+0019     <span class="string">'isCommandLine'</span>,<span class="keyword">...</span>
+0020     <span class="string">'showGraphics'</span>,<span class="keyword">...</span>
+0021     <span class="string">'allowCellOverlap'</span>,<span class="keyword">...</span>
+0022     <span class="string">'toroidalWorld'</span>,<span class="keyword">...</span>
+0023     <span class="string">'showCycleTime'</span>,<span class="keyword">...</span>
+0024     <span class="string">'showCycleCount'</span>,<span class="keyword">...</span>
+0025     <span class="string">'pause'</span>,<span class="keyword">...</span>
+0026     <span class="string">'pauseOnStep'</span>,<span class="keyword">...</span>
+0027     <span class="string">'saveSlideShow'</span>,<span class="keyword">...</span>
+0028     <span class="string">'showText'</span>,<span class="keyword">...</span>
+0029     <span class="string">'colorRelative'</span>,<span class="keyword">...</span>
+0030     <span class="string">'slideshowColorRelative'</span>,<span class="keyword">...</span>
+0031     <span class="string">'simulateActivation'</span>,<span class="keyword">...</span>
+0032     <span class="string">'displayLayer'</span>,<span class="keyword">...</span>
+0033     <span class="string">'pixelScale'</span>,<span class="keyword">...</span>
+0034     <span class="string">'gridRows'</span>,<span class="keyword">...</span>
+0035     <span class="string">'gridCols'</span>,<span class="keyword">...</span>
+0036     <span class="string">'gridLayers'</span>,<span class="keyword">...</span>
+0037     <span class="string">'maxCycles'</span>,<span class="keyword">...</span>
+0038     <span class="string">'diffusionsPerStep'</span>,<span class="keyword">...</span>
+0039     <span class="string">'mediaRespawnRate'</span>,<span class="keyword">...</span>
+0040     <span class="string">'slidshowRate'</span>,<span class="keyword">...</span>
+0041     <span class="string">'slideshowLayer'</span>,<span class="keyword">...</span>
+0042     <span class="string">'slideshowName'</span>,<span class="keyword">...</span>
+0043     <span class="string">'lastDirectory'</span>,<span class="keyword">...</span>
+0044     };
+0045 
+0046 <span class="comment">%ensure these are written as 'true' or 'false'</span>
+0047 booleanparams = {<span class="string">'isCommandLine'</span>,<span class="string">'showGraphics'</span>,<span class="string">'allowCellOverlap'</span>,<span class="keyword">...</span>
+0048     <span class="string">'toroidalWorld'</span>,<span class="string">'showCycleTime'</span>,<span class="string">'showCycleCount'</span>,<span class="string">'pause'</span>,<span class="keyword">...</span>
+0049     <span class="string">'pauseOnStep'</span>,<span class="string">'saveSlideshow'</span>,<span class="string">'showText'</span>,<span class="string">'colorRelative'</span>,<span class="keyword">...</span>
+0050     <span class="string">'slideshowColorRelative'</span>,<span class="string">'simulateActivation'</span>};
+0051 
+0052 f = fopen(fullfile(directory,filename),<span class="string">'w'</span>);
+0053 
+0054 pfields = fields(params);
+0055 usedIdx = ismember(upper(pfields),upper(allparams));
+0056 used = pfields(usedIdx); <span class="comment">%the names of fields which occur in the given CometsParams</span>
+0057 
+0058     <a name="_sub1" href="#_subfunctions" class="code">function printparam(name)</a>
+0059         val = params.(name);
+0060         <span class="keyword">if</span> ismember(upper(name),upper(booleanparams))
+0061             <span class="keyword">if</span> val
+0062                 fprintf(f,<span class="string">'%s = true \n'</span>,name);
+0063             <span class="keyword">else</span>
+0064                 fprintf(f,<span class="string">'%s = false \n'</span>,name);
+0065             <span class="keyword">end</span>
+0066         <span class="keyword">elseif</span> isnumeric(val)
+0067             fprintf(f,<span class="string">'%s = %d \n'</span>,name,val);
+0068         <span class="keyword">else</span>
+0069             fprintf(f,<span class="string">'%s = %s \n'</span>,name,val);
+0070         <span class="keyword">end</span>
+0071     <span class="keyword">end</span>
+0072 
+0073 cellfun(@<a href="#_sub1" class="code" title="subfunction printparam(name)">printparam</a>,used);<span class="comment">%do the writing</span>
+0074 
+0075 fclose(f);
+0076 
+0077 <span class="keyword">end</span>
+0078</pre></div>
+<hr><address>Generated on Tue 09-Aug-2016 14:24:19 by <strong><a href="http://www.artefact.tk/software/matlab/m2html/" target="_parent">m2html</a></strong> &copy; 2005</address>
+</body>
+</html>
