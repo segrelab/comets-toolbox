@@ -1,0 +1,71 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+                "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+<head>
+  <title>Description of demo62</title>
+  <meta name="keywords" content="demo62">
+  <meta name="description" content="Import from SBML">
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <meta name="generator" content="m2html &copy; 2005 Guillaume Flandin">
+  <meta name="robots" content="index, follow">
+  <link type="text/css" rel="stylesheet" href="../../m2html.css">
+  <script type="text/javascript">
+    if (top.frames.length == 0) { top.location = "../../index.html"; };
+  </script>
+</head>
+<body>
+<a name="_top"></a>
+<!-- # CometsToolbox --><!-- menu.html sample -->
+<h1>demo62
+</h1>
+
+<h2><a name="_name"></a>PURPOSE <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="box"><strong>Import from SBML</strong></div>
+
+<h2><a name="_synopsis"></a>SYNOPSIS <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="box"><strong>This is a script file. </strong></div>
+
+<h2><a name="_description"></a>DESCRIPTION <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="fragment"><pre class="comment">Import from SBML</pre></div>
+
+<!-- crossreference -->
+<h2><a name="_cross"></a>CROSS-REFERENCE INFORMATION <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+This function calls:
+<ul style="list-style-image:url(../../matlabicon.gif)">
+<li><a href="../../CometsToolbox/core/CometsLayout.html" class="code" title="">CometsLayout</a>	</li><li><a href="../../CometsToolbox/io/writeCometsLayout.html" class="code" title="function writeCometsLayout( input, filedir, filename )">writeCometsLayout</a>	WRITECOMETSLAYOUT Create a layout file along with the corresponding model</li></ul>
+This function is called by:
+<ul style="list-style-image:url(../../matlabicon.gif)">
+</ul>
+<!-- crossreference -->
+
+
+
+<h2><a name="_source"></a>SOURCE CODE <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="fragment"><pre>0001 <span class="comment">%Import from SBML</span>
+0002 ecoli = readCbModel(<span class="string">'sample/e_coli_core.xml'</span>)
+0003 <span class="comment">%Import from .MAT</span>
+0004 reader = load(<span class="string">'sample/pseudomonas.mat'</span>);
+0005 pseudomonas = reader.model1
+0006 <span class="comment">%also from comets file format...</span>
+0007 
+0008 <span class="comment">%Build &amp; populate a layout</span>
+0009 world = <a href="../../CometsToolbox/core/CometsLayout.html" class="code" title="">CometsLayout</a>()
+0010 world = world.addModel(pseudomonas)
+0011 world = world.addModel(ecoli)
+0012 
+0013 <span class="comment">%Manipulate the layout</span>
+0014 x = 5;
+0015 y = 5;
+0016 world = world.setDims(x,y);
+0017 barrier = world.barrier; <span class="comment">%just to see this is a 5x5 logical matrix</span>
+0018 newbar = eye(5); <span class="comment">%5x5 identity matrix</span>
+0019 world.barrier = newbar; <span class="comment">%simply replace the world.barrier</span>
+0020 
+0021 <span class="comment">%Generate Comets files</span>
+0022 <a href="../../CometsToolbox/io/writeCometsLayout.html" class="code" title="function writeCometsLayout( input, filedir, filename )">writeCometsLayout</a>(world,<span class="string">'sample/demoWorld1/'</span>)
+0023 
+0024 <span class="comment">%Run comets</span>
+0025 run_comets(<span class="string">'sample/demoWorld1'</span>)</pre></div>
+<hr><address>Generated on Tue 09-Aug-2016 14:24:19 by <strong><a href="http://www.artefact.tk/software/matlab/m2html/" target="_parent">m2html</a></strong> &copy; 2005</address>
+</body>
+</html>

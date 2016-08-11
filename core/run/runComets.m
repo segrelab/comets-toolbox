@@ -11,8 +11,7 @@ if ~exist(directory)
 end
 cd(directory);
 
-writeCometsLayout(layout,pwd);%create layout & model files
-createCometsFiles(layout,pwd);%create script & param files
+createCometsFiles(layout,pwd);%create layout,model,script & param files
 
 runCometsOnDirectory(pwd);%run
 

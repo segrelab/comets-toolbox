@@ -1,0 +1,125 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+                "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+<head>
+  <title>Description of CometsParams</title>
+  <meta name="keywords" content="CometsParams">
+  <meta name="description" content="">
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <meta name="generator" content="m2html &copy; 2005 Guillaume Flandin">
+  <meta name="robots" content="index, follow">
+  <link type="text/css" rel="stylesheet" href="../../m2html.css">
+  <script type="text/javascript">
+    if (top.frames.length == 0) { top.location = "../../index.html"; };
+  </script>
+</head>
+<body>
+<a name="_top"></a>
+<!-- # CometsToolbox --><!-- menu.html core -->
+<h1>CometsParams
+</h1>
+
+<h2><a name="_name"></a>PURPOSE <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="box"><strong></strong></div>
+
+<h2><a name="_synopsis"></a>SYNOPSIS <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="box"><strong>This is a script file. </strong></div>
+
+<h2><a name="_description"></a>DESCRIPTION <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="fragment"><pre class="comment"></pre></div>
+
+<!-- crossreference -->
+<h2><a name="_cross"></a>CROSS-REFERENCE INFORMATION <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+This function calls:
+<ul style="list-style-image:url(../../matlabicon.gif)">
+<li><a href="CometsParams.html" class="code" title="">CometsParams</a>	</li></ul>
+This function is called by:
+<ul style="list-style-image:url(../../matlabicon.gif)">
+<li><a href="CometsLayout.html" class="code" title="">CometsLayout</a>	</li><li><a href="CometsParams.html" class="code" title="">CometsParams</a>	</li></ul>
+<!-- crossreference -->
+
+<h2><a name="_subfunctions"></a>SUBFUNCTIONS <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<ul style="list-style-image:url(../../matlabicon.gif)">
+<li><a href="#_sub1" class="code">function self = CometsParams()</a></li></ul>
+
+<h2><a name="_source"></a>SOURCE CODE <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="fragment"><pre>0001 classdef <a href="CometsParams.html" class="code" title="">CometsParams</a>
+0002     <span class="comment">%CometsParams A wrapper for  global and model-level parameters used in</span>
+0003     <span class="comment">%COMETS FBA</span>
+0004     <span class="comment">%</span>
+0005     <span class="comment">%Constructor CometsParams()</span>
+0006     
+0007     properties
+0008         <span class="comment">% Session/SSH parameters</span>
+0009         <span class="comment">%local = false; %run on the local machine?</span>
+0010         <span class="comment">%server;</span>
+0011         <span class="comment">%username;</span>
+0012         <span class="comment">%password; %TODO: how to secure this?</span>
+0013         <span class="comment">% Don't store it- prompt at runtime</span>
+0014         
+0015         <span class="comment">% COMETS global params with defaults:</span>
+0016         maxCycles = 200
+0017         pixelScale = 5
+0018         saveslideshow = false
+0019         slideshowExt = <span class="string">'png'</span>
+0020         slideshowColorRelative = true
+0021         slideshowRate = 1
+0022         slideshowLayer = 324
+0023         writeFluxLog = false
+0024         FluxLogName = <span class="string">'./flux.txt'</span>
+0025         FluxLogRate = 1
+0026         writeMediaLog = false
+0027         MediaLogName = <span class="string">'./media.txt'</span>
+0028         MediaLogRate = 1
+0029         writeBiomassLog = false
+0030         BiomassLogName = <span class="string">'./biomass.txt'</span>
+0031         BiomassLogRate = 1
+0032         writeTotalBiomassLog = false
+0033         totalBiomassLogRate = 1
+0034         TotalbiomassLogName = <span class="string">'./total_biomass'</span>
+0035         useLogNameTimeStamp = false
+0036         slideshowName = <span class="string">'./res.png'</span>
+0037         
+0038         <span class="comment">%COMETS package params with defaults:</span>
+0039         numDiffPerStep = 10
+0040         numRunThreads = 1
+0041         growthDiffRate = 0
+0042         flowDiffRate = 3e-9
+0043         exchangestyle = <span class="string">'Monod Style'</span>
+0044         defaultKm = 0.01
+0045         defaultHill = 1
+0046         timeStep = 0.01
+0047         deathRate = 0.0
+0048         spaceWidth = 0.01 <span class="comment">%COMETS calculates spaceVolume with this, dont include Vol</span>
+0049         maxSpaceBiomass = 2.2E-4
+0050         minSpaceBiomass = 0.25e-10
+0051         allowCellOverlap = true
+0052         toroidalWorld = false
+0053         showCycleTime = true
+0054         showCycleCount = true
+0055         defaultVmax = 10
+0056         <span class="comment">%logFormat = 'COMETS' %['COMETS', 'Matlab']</span>
+0057         biomassMotionStyle = <span class="string">'Convection 2D'</span> <span class="comment">%['Diffusion (Crank-Nicolson)', 'Diffusion</span>
+0058         <span class="comment">%(Eight Point)', 'Diffusion 3D', 'Convection 2D', 'Convection 3D']</span>
+0059         exchangeStyle = <span class="string">'Standard FBA'</span> <span class="comment">%['Standard FBA', 'Monod Style', 'Pseudo-Monod</span>
+0060         <span class="comment">%Style']</span>
+0061         
+0062         
+0063         <span class="comment">%TODO: Find appropriate values</span>
+0064         defaultReactionLower = 0.0
+0065         defaultReactionUpper = 100
+0066         defaultDiffusionConstant = 1e-6
+0067         
+0068     <span class="keyword">end</span>
+0069     
+0070     methods
+0071         <span class="comment">%constructor</span>
+0072         <a name="_sub0" href="#_subfunctions" class="code">function self = CometsParams()</a>
+0073         <span class="keyword">end</span>
+0074     <span class="keyword">end</span>
+0075     
+0076 <span class="keyword">end</span>
+0077</pre></div>
+<hr><address>Generated on Tue 09-Aug-2016 14:24:19 by <strong><a href="http://www.artefact.tk/software/matlab/m2html/" target="_parent">m2html</a></strong> &copy; 2005</address>
+</body>
+</html>
