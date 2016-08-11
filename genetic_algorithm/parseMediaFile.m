@@ -1,4 +1,7 @@
-%sample input for mediaLine: 'media_1{170}'
+% Uday Tripathi 7/2016
+
+% Was not used for GA, but may be useful to parse media files from COMETS
+% in the future as well as COMETS toolbox
 
 function score=parseMediaFile(fileName, mediaName)
 

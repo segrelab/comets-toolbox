@@ -2,6 +2,8 @@
 % Sample excRxn: 'EX Nitrite e0'
 % Workflow: a=load(model) a=a.model lookForFlux(model,exchangeReaction)
 
+% Same as cobraFlux within Main class
+
 function score=lookForFlux(model,exchangeReaction,mets)
     model=changeMetLevels(model,mets);
 
@@ -15,7 +17,7 @@ function score=lookForFlux(model,exchangeReaction,mets)
         flux=opt.x(indexOfRxn);
         
         for i=1:length(tempArr)
-            score=score+tempArr(i);
+            score=score+tempArr(i); % adds up scores from Cobra optimized model
         end
         
         score=score*flux;

@@ -1,3 +1,6 @@
+% Uday Tripathi 7/2016
+
+% Used for testing purposes, not used in algorithm
 %excRxn='EX Nitrite e0'
 function tempGenome=runTest(genome, models, mets, excRxn)
     for i=genome.endOfMets+1:length(genome.sequence)

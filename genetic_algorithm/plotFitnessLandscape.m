@@ -1,3 +1,7 @@
+% Uday Tripathi 7/2016
+
+% Used to generate results, takes highest scorers from each generation and
+% plots their scores to generate fitness landscapes
 function scores=plotFitnessLandscape(main, color, gens)
     for i=1:gens;
         genomes=main.generation{i};

@@ -1,5 +1,14 @@
 % Uday Tripathi 7/2016
 % Main class: Runs the entire algorithm iteratively
+
+% Standard Protocol to set up GA
+% main=Main()
+% main=main.initModels(models)
+% main=main.initMets(mets)
+% main=main.initGenomes(numGenomes,numMets,numModels)
+% main=main.run(self,maxCycles,numStaySame,newMets,newModels,numCross,type,excRxn)
+% type: 'Cobra' or 'Comets'
+% excRxn: 'EX Nitrite e0'
 classdef Main
     properties
         generationNum=1; % The current generation number; 1 by default
@@ -37,23 +46,11 @@ classdef Main
                 lastMet=firstMet+numOfMets-1;
                 metabolites=self.mets(firstMet:lastMet);
                 
-%                 firstModel=randi([1,length(self.models)-numOfMets]);
-%                 % Ensures that same set of models is not in multiple
-%                 % genomes to begin
-%                 while intersect((firstModel:firstModel+numOfModels),modelsInUse)~=0
-%                     firstModel=randi([1,length(self.models)-numOfMets]);
-%                 end
-%                 
-%                 % Generates random sequence of models from the possible
-%                 % list
-%                 lastModel=firstModel+numOfModels-1;
-%                 %modelNames=self.models(firstModel:lastModel);
-%                 modelRef=(firstModel:lastModel);
-%                 modelsInUse(i)=firstModel;
                 modelsInUse=zeros(numOfModels);
                 for j=1:numOfModels
                     tempModel=randi([1,length(self.models)-numOfMets]);
-                    while(sum(find(tempModel==modelsInUse))~=0)
+                    while(sum(find(tempModel==modelsInUse))~=0) % Ensures 
+                        % that each model is only used once in a sequence
                         tempModel=randi([1,length(self.models)-numOfMets]);
                     end
                     modelsInUse(j)=tempModel;
@@ -63,9 +60,6 @@ classdef Main
                 tempGenome=Genome();
                 tempGenome=tempGenome.addMetsAndModels(metabolites,modelRef);
                 
-                % Sets the inital bounds for Cobra as intended
-                % The used metabolites are set bounds to -1000/1000 while
-                % the metabolites not used in model are set to bounds 0
                 tempList(i)=tempGenome;
             end
             self.generation{1}=tempList;
@@ -76,6 +70,7 @@ classdef Main
             if strcmp(type,'Cobra')==1
                 self=runCobra(self, excRxn,newMets);
             elseif strcmp(type,'Comets')
+                % TODO: COMETS implementation
             else
             end
         end
@@ -114,24 +109,25 @@ classdef Main
             end
         end
         
+        % Runs each model through COBRA optimization and adds up scores
         function self=runCobra(self,excRxn,newMets)
             genomeSet=self.generation{self.generationNum};
             for i=1:length(genomeSet)
                 genome=self.generation{self.generationNum}(i);
                 numModels=length(genome.sequence)-genome.endOfMets;
                 hashCode=hash(genome,self.mets, newMets);
-                if isKey(self.hashMap,hashCode)==1
+                if isKey(self.hashMap,hashCode)==1 % Checks if genome is already in hashmap
                     genome.score=self.hashMap(hashCode);
                 else
                     metsToKeep=genome.sequence(1:genome.endOfMets);
                     fluxScore=0;
                     for j=genome.endOfMets+1:length(genome.sequence);
                         modelIndex=genome.sequence{j};
-                        while (ischar(modelIndex)==1)
+                        while (ischar(modelIndex)==1) % if knockout occured, move to next index
                            j=j+1;
                            modelIndex=genome.sequence{j};
                         end
-                        if isempty(modelIndex)==1
+                        if isempty(modelIndex)==1 % if knockout occurred at that position
                             fluxScore=fluxScore+0;
                         else
                             model=self.models{modelIndex};
@@ -145,6 +141,7 @@ classdef Main
             end
         end
         
+        % Same as lookForFlux
         function score=cobraFlux(self,model,exchangeReaction,metsToKeep,numModels)
             model=changeMetLevels(model,self.mets,metsToKeep,numModels);
             score=0;
@@ -161,12 +158,14 @@ classdef Main
                     score=score+tempArr(i);
                 end
                 score=score*flux;
-                score=abs(score); %
+                score=abs(score); 
             else
                 score=0;
             end
         end
         
+        % Generates tables with hashes and scores from the entire genome
+        % set
         function table=getResults(self, fileName)
            table=hashTab(self.hashMap.keys,self.hashMap.values);
            writetable(table,fileName);

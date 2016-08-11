@@ -1,3 +1,5 @@
+% Uday Tripathi 7/2016
+
 K1=load('C:\Users\udayt.AD\Desktop\Kolenbrander_MATLAB\K1_HOMD_GF3613_Streptococcus_sanguinis.mat');
 K1=K1.model;
 K1A=load('C:\Users\udayt.AD\Desktop\Kolenbrander_MATLAB\K1_HOMD_GF23368_Streptococcus_oralis.mat');

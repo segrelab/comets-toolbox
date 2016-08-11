@@ -1,3 +1,6 @@
+% Uday Tripathi 7/2016
+
+% Used to generate large number of data points in algorithm
 masterHash=containers.Map;
 for i=1:50
 main=Main();

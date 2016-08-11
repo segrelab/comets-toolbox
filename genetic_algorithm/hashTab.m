@@ -1,3 +1,7 @@
+% Uday Tripathi 7/2016
+
+% Creates table from hashmap with genome hashcodes in left columns and
+% scores in the right column
 function hashSetup=hashTab(keys,values)
 
 x=keys;

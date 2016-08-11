@@ -1,13 +1,17 @@
-savedMain=Main();
-savedMain=savedMain.initModels(models);
-savedMain=savedMain.initMets(mets);
-savedMain=savedMain.initGenomes(30,3,3);
+% Uday Tripathi 7/2016
 
-colors=['y' 'm' 'c' 'r' 'g' 'b'];
+% Can be used to generate multiple fitness landscapes, parameters can be
+% modified, Used for generating results from GA
 
-for i=10:20
-    main=savedMain;
-    main=main.run(10,3,newMets,newModels,i,'Cobra','EX Nitrite e0');
-    plotFitnessLandscape(main,colors(i));
-    hold on;
+colors={'y','b','c','r','g'};
+
+for i=1:5
+   main=Main();
+   main=main.initModels(models);
+   main=main.initMets(mets);
+   main=main.initGenomes(20,3,3);
+   main=main.run(20,10,newMets,newModels,8,'Cobra','EX Nitrite e0');
+   color=colors{i};
+   plotFitnessLandscape(main,color,20);
+   hold all;
 end

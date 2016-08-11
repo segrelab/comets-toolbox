@@ -1,3 +1,5 @@
+% Uday Tripathi 7/2016
+
 function score=scoreCobra(genome,excRxn)
         score=0;
         seq=genome.sequence;

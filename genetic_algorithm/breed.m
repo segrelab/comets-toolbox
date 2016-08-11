@@ -1,3 +1,5 @@
+% Uday Tripathi 7/2016
+
 % Sample input: (genomes, 3, newMets)
 % newMets={'EX Ca2 e0','EX Cbl e0','EX Cd2 e0','EX Cl- e0','EX Co2 e0'}
 function modGenomes=breed(genomesArray, numStaySame, newMets, newModels, numCross)

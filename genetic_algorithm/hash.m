@@ -1,3 +1,12 @@
+% Uday Tripathi 7/2016
+
+% Generates a hash code for genome
+% Built for 6 metabolites (what we used initially), Needs to be modularized
+% so that more mets can be entered
+
+% Sample output: '010203111314'
+% 01 = Met 1, 02 = Met 2...11 = Model 11
+
 function code=hash(genome, mets, newMets)
 str='';
 for j=1:genome.endOfMets
@@ -12,7 +21,7 @@ for j=1:genome.endOfMets
         end
             temp=num2str(index);
             if index<10
-                temp=strcat('0',temp);
+                temp=strcat('0',temp); % Extra 0 because reading in pairs of 2 digits
             end
     end
     str=strcat(str,temp);

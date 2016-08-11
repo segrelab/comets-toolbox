@@ -1,8 +1,13 @@
+% Uday Tripathi 7/2016
+
+% Decodes the strings in the hashmaps to reveal the mets and models within
+% a genome sequence
+
 function sequence=decode(hash, mets, models)
     sequence={};
     counter=1;
     empty={'Empty'};
-    for i=1:2:6
+    for i=1:2:6 % Assumption: Genomes sequence has 6 elements
        temp=hash(i:i+1); 
        num=str2num(temp);
        if num>20
