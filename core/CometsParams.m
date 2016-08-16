@@ -55,8 +55,8 @@ classdef CometsParams
         defaultVmax = 10
         %logFormat = 'COMETS' %['COMETS', 'Matlab']
         biomassMotionStyle = 'Diffusion (Crank-Nicolson)' %['Diffusion (Crank-Nicolson)', 'Diffusion
-        %(Eight Point)']
-        %Not yet implemented: ['Diffusion 3D', 'Convection 2D', 'Convection 3D']
+        %(Eight Point)', 'Diffusion 3D']
+        %Not yet implemented: ['Convection 2D', 'Convection 3D']
         exchangeStyle = 'Standard FBA' %['Standard FBA', 'Monod Style', 'Pseudo-Monod
         %Style']
         
