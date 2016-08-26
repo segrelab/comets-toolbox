@@ -1,0 +1,5 @@
+Autoeval project specification
+
+automated pipeline for pairwise/solo evaluation given a model + medium composition
+
+input environment & organisms, generate COMETS, store results in an easy to quickly analyze way. Should be able to rapidly add a modified model &generate single &pairwise results quickly.

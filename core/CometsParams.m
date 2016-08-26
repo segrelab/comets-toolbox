@@ -1,8 +1,11 @@
 classdef CometsParams
     %CometsParams A wrapper for  global and model-level parameters used in
     %COMETS FBA
-    %
+    
     %Constructor CometsParams()
+    %
+    % $Author: mquintin $	$Date: 2016/08/16 17:05:10 $	$Revision: 0.1 $
+    % Copyright: Daniel Segrè, Boston University Bioinformatics Program 2016
     
     properties
         % Session/SSH parameters

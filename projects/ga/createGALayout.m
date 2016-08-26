@@ -1,7 +1,7 @@
 % Uday Tripathi 7/2016
 % Function to eventually link to COMETS: Needs to be fixed
 
-function y=createGALayout(genome)
+function layout=createGALayout(genome)
     layout=CometsLayout();
     for i=genome.endOfMets+1:length(genome.sequence)
         model=genome.sequence{i};
@@ -16,6 +16,4 @@ function y=createGALayout(genome)
         mediaNum=strmatch(idName,layout.mets);
         layout.media_amt(index)=1000;
     end
-    
-    y=layout;
 end

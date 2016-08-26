@@ -1,28 +1,38 @@
+function modGenomes=breed(genomesArray, survivors, newMets, newModels, numCross)
+%BREED Produce a new array of genomes derived from the given genomesArray
+%     arguments:
+%         genomesArray cell array of Genome objects
+%         survivors number of top-scoring Genomes to retain between generations
+%         newMets cell array of string names of metabolites which can be added by mutation 
+%         newModels cell array of Cobra models which can be added by
+%         mutation
+%         numCross number of genomes to be created by crossing the
+%         metabolites of one parent with the models of the other parent
+
 % Uday Tripathi 7/2016
 
 % Sample input: (genomes, 3, newMets)
 % newMets={'EX Ca2 e0','EX Cbl e0','EX Cd2 e0','EX Cl- e0','EX Co2 e0'}
-function modGenomes=breed(genomesArray, numStaySame, newMets, newModels, numCross)
 genomeSize=length(genomesArray);
 copyGen=genomesArray;
 
-% First "numStaySame" genomes are populated by the x fittest genomes from
+% First "survivors" genomes are populated by the x fittest genomes from
 % prior generation
-for i=1:numStaySame
+for i=1:survivors
     for j=1:length(copyGen)
         scores(j)=abs(copyGen(j).score);
     end
     [a,b]=sort(scores(:),'descend');
-    maxIndicies=b(1:numStaySame);
+    maxIndicies=b(1:survivors);
 end
 
-for k=1:numStaySame
+for k=1:survivors
     index=b(k);
     copyGen(index).score=0;
     modGenomes(k)=copyGen(index);
 end
 
-for i=numStaySame+1:genomeSize
+for i=survivors+1:genomeSize
     % Cross-Breeding
     counter=1;
     for j=1:numCross-1 %
@@ -41,15 +51,15 @@ for i=numStaySame+1:genomeSize
         mets2=sq2(1:g2.endOfMets);
         tempG=Genome();
         tempG=tempG.addMetsAndModels(mets2,models1(1:length(models1)));
-        modGenomes(numStaySame+counter)=tempG;
+        modGenomes(survivors+counter)=tempG;
         counter=counter+1;
     end
     
     % Mutations
     mut=1;
-    for k=genomeSize-numStaySame+(counter):genomeSize
+    for k=genomeSize-survivors+(counter):genomeSize
         %genIndex=maxIndicies(mut);
-        genIndex=randi([1,numStaySame]);
+        genIndex=randi([1,survivors]);
         gen=genomesArray(genIndex);
         
         genomesArray(i).endOfMets=3; %%

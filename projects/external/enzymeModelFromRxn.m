@@ -1,19 +1,21 @@
-function [ pseudo ] = enzymeModelFromRxn( model, reaction, enzyme )
-% Given a model, a reaction, and the name of an enzyme metabolite, create a model for a pseudoorganism that
-% carries out the same reaction
+function pseudo = enzymeModelFromRxn(varargin)
+% ENZYMEMODELFROMRXN Given a model, a reaction, and the name of an enzyme
+% metabolite, create a model for a pseudoorganism that carries out the same
+% reaction 
+% usage: enzymeModelFromRxn( model, reaction, enzyme )
+%     model: a COBRA model reaction: the String name of the base reaction,
+%     as in model.rxns enzyme: the String name of the enzyme metabolite, as
+%     in model.mets
 
-%TODO: fix this line & the input
-input_args = {model, reaction, enzyme};
-
-if length(input_args) < 3
+if nargin < 3
     error(['Inputs for enzymeModelFromRxn should be a COBRA model,'...
         ' the name or index of a reaction, and the name of an enzyme metabolite.']);
 end
 
-model = input_args{1};
+model = varargin{1};
 
-if ischar(input_args{2})
-    rxnName = char(input_args{2});
+if ischar(varargin{2})
+    rxnName = char(varargin{2});
     rxnIdx = find(ismember(model.rxns,rxnName));
     %make sure we get exactly 1 match
     if length(rxnIdx) < 1
@@ -23,19 +25,19 @@ if ischar(input_args{2})
     if length(rxnIdx) > 1
         error(['Found multiple matches for the reaction name ' rxnName]);
     end
-elseif isnumeric(input_args{2})
-    rxnIdx = input_args{2};
+elseif isnumeric(varargin{2})
+    rxnIdx = varargin{2};
     rxnName = char(model.rxns(rxnIdx));
 else
     error(['The second arugment for enzymeModelFromRxn should be the'...
         ' name or index of a reaction in the given model']);
 end
 
-enzmet = input_args{3};
+enzmet = varargin{3};
 
 %create the model
 pseudo = createModel();
-pseudo.description = ['Enzyme psuedoorganism ' rxnName];
+pseudo.description = ['Enzyme psuedoorganism ' enzmet ' (' rxnName ')'];
 
 %copy the relevent reaction details
 s = model.S(:,rxnIdx); %stoichiometry as a sparse column 
@@ -73,4 +75,10 @@ pseudo = addExchangeRxn(pseudo,mets);
 pseudo = addExchangeRxn(pseudo,enzmet);
 %TODO: if there aren't any rxns already to compare max/min bounds, will
 %this still work?
-pseudo = addDemandReaction(pseudo,enzmet);
+%pseudo = addDemandReaction(pseudo,enzmet);
+
+%biomass reaction
+pseudo = addReaction(pseudo,'biomass',enzmet,-1,0);
+
+%optimize the reaction as well as the biomass
+pseudo = changeObjective(pseudo,{rxnName,'biomass'});
