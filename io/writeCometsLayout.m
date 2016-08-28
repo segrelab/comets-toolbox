@@ -312,7 +312,7 @@ if sum(sum(any(layout.initial_pop))) > 0 %some initial pop is set
             if any(v)
                 presentIdx = find(v);
                 for i=1:length(presentIdx)
-                    val = v(i);
+                    val = v(presentIdx(i));
                     fprintf(fileID,'\t%d %d %d %d\n',x-1,y-1,i-1,val);
                 end
             end

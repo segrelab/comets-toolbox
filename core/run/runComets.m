@@ -13,6 +13,7 @@ cd(directory);
 
 createCometsFiles(layout,pwd);%create layout,model,script & param files
 
+disp(['Executing COMETS in the directory ' pwd]);
 runCometsOnDirectory(pwd);%run
 
 end

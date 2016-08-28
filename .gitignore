@@ -2,3 +2,4 @@ run_comets.m
 scratch
 scratch/*
 dist/*
+test/out/*

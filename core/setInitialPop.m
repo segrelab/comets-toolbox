@@ -52,7 +52,7 @@ end
 
 %build depending on the format
 %remember Layout.initiapop has dimensions: nmodels by x by y
-newpop = sparse([]);
+newpop = [];
 switch lower(format)
     case '1x1' %all organisms in a single grid cell
         if nmodels > 1
@@ -95,6 +95,6 @@ switch lower(format)
         error(['The format in the second argument of setInitialPop '...
             'should be one of: ' formatstrs]);
 end
-layout.initialpop = newpop;
+layout.initial_pop = newpop;
 
 end
