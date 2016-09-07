@@ -6,12 +6,9 @@
   <meta name="keywords" content="runComets">
   <meta name="description" content="RUNCOMETS create the files necessary for a COMETS run, and execute it from">
   <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
-  <meta name="generator" content="m2html &copy; 2005 Guillaume Flandin">
+  <meta name="generator" content="m2html &copy; 2003 Guillaume Flandin">
   <meta name="robots" content="index, follow">
   <link type="text/css" rel="stylesheet" href="../../../m2html.css">
-  <script type="text/javascript">
-    if (top.frames.length == 0) { top.location = "../../../index.html"; };
-  </script>
 </head>
 <body>
 <a name="_top"></a>
@@ -41,13 +38,12 @@ This function is called by:
 <!-- crossreference -->
 
 
-
 <h2><a name="_source"></a>SOURCE CODE <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
 <div class="fragment"><pre>0001 <a name="_sub0" href="#_subfunctions" class="code">function runComets( layout, directory )</a>
 0002 <span class="comment">%RUNCOMETS create the files necessary for a COMETS run, and execute it from</span>
 0003 <span class="comment">%the command line. If a directory name is provided it will be created,</span>
 0004 <span class="comment">%otherwise files will be placed in the current directory</span>
-0005 
+0005 currentdir = pwd;
 0006 <span class="keyword">if</span> nargin &lt; 2
 0007     directory = pwd;
 0008 <span class="keyword">end</span>
@@ -58,10 +54,14 @@ This function is called by:
 0013 
 0014 <a href="createCometsFiles.html" class="code" title="function [ output_args ] = createCometsFiles(layout, directory)">createCometsFiles</a>(layout,pwd);<span class="comment">%create layout,model,script &amp; param files</span>
 0015 
-0016 <a href="runCometsOnDirectory.html" class="code" title="function comets_output = runCometsOnDirectory(run_COMETS_folder)">runCometsOnDirectory</a>(pwd);<span class="comment">%run</span>
-0017 
-0018 <span class="keyword">end</span>
-0019</pre></div>
-<hr><address>Generated on Tue 09-Aug-2016 14:24:19 by <strong><a href="http://www.artefact.tk/software/matlab/m2html/" target="_parent">m2html</a></strong> &copy; 2005</address>
+0016 disp([<span class="string">'Executing COMETS in the directory '</span> pwd]);
+0017 <a href="runCometsOnDirectory.html" class="code" title="function comets_output = runCometsOnDirectory(run_COMETS_folder)">runCometsOnDirectory</a>(pwd);<span class="comment">%run</span>
+0018 
+0019 <span class="comment">%return to initial directory</span>
+0020 cd(currentdir);
+0021 
+0022 <span class="keyword">end</span>
+0023</pre></div>
+<hr><address>Generated on Wed 07-Sep-2016 12:29:11 by <strong><a href="http://www.artefact.tk/software/matlab/m2html/" target="_parent">m2html</a></strong> &copy; 2003</address>
 </body>
 </html>

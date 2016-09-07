@@ -6,12 +6,9 @@
   <meta name="keywords" content="CometsLayout">
   <meta name="description" content="">
   <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
-  <meta name="generator" content="m2html &copy; 2005 Guillaume Flandin">
+  <meta name="generator" content="m2html &copy; 2003 Guillaume Flandin">
   <meta name="robots" content="index, follow">
   <link type="text/css" rel="stylesheet" href="../../m2html.css">
-  <script type="text/javascript">
-    if (top.frames.length == 0) { top.location = "../../index.html"; };
-  </script>
 </head>
 <body>
 <a name="_top"></a>
@@ -35,13 +32,12 @@ This function calls:
 <li><a href="CometsLayout.html" class="code" title="">CometsLayout</a>	</li><li><a href="CometsParams.html" class="code" title="">CometsParams</a>	</li></ul>
 This function is called by:
 <ul style="list-style-image:url(../../matlabicon.gif)">
-<li><a href="CometsLayout.html" class="code" title="">CometsLayout</a>	</li><li><a href="../../CometsToolbox/factory/createLayout.html" class="code" title="function layout = createLayout(input_args)">createLayout</a>	CREATELAYOUT intialize a new blank Layout or one using the given models</li><li><a href="../../CometsToolbox/sample/demo62.html" class="code" title="">demo62</a>	Import from SBML</li><li><a href="../../CometsToolbox/scratch/scratchpad.html" class="code" title="">scratchpad</a>	A script to hold experiments while designing COMETS utility functions</li><li><a href="../../CometsToolbox/scratch/write_run.html" class="code" title="">write_run</a>	test writing the files for a COMETS run, then execute COMETS from the</li></ul>
+<li><a href="CometsLayout.html" class="code" title="">CometsLayout</a>	</li><li><a href="../../CometsToolbox/factory/createLayout.html" class="code" title="function layout = createLayout(varargin)">createLayout</a>	CREATELAYOUT intialize a new blank Layout or one using the given models</li><li><a href="../../CometsToolbox/projects/ga/createGALayout.html" class="code" title="function layout=createGALayout(genome)">createGALayout</a>	Uday Tripathi 7/2016</li><li><a href="../../CometsToolbox/sample/demo62.html" class="code" title="">demo62</a>	Import from SBML</li><li><a href="../../CometsToolbox/scratch/scratchpad.html" class="code" title="">scratchpad</a>	A script to hold experiments while designing COMETS utility functions</li><li><a href="../../CometsToolbox/scratch/write_run.html" class="code" title="">write_run</a>	test writing the files for a COMETS run, then execute COMETS from the</li><li><a href="../../CometsToolbox/test/testSetInitialPop.html" class="code" title="">testSetInitialPop</a>	TESTSETINITIALPOP Confirm that the setInitialPop function works as</li></ul>
 <!-- crossreference -->
 
 <h2><a name="_subfunctions"></a>SUBFUNCTIONS <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
 <ul style="list-style-image:url(../../matlabicon.gif)">
 <li><a href="#_sub1" class="code">function obj=CometsLayout()</a></li><li><a href="#_sub2" class="code">function self=addModel(self,model)</a></li><li><a href="#_sub3" class="code">function self=setParams(self,params)</a></li><li><a href="#_sub4" class="code">function idx=metIdx(self,name)</a></li><li><a href="#_sub5" class="code">function self = setXdim(self,x)</a></li><li><a href="#_sub6" class="code">function self = setYdim(self,y)</a></li><li><a href="#_sub7" class="code">function self = setDims(self,x,y)</a></li></ul>
-
 <h2><a name="_source"></a>SOURCE CODE <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
 <div class="fragment"><pre>0001 classdef <a href="CometsLayout.html" class="code" title="">CometsLayout</a>
 0002     <span class="comment">%CometsLayout Defines the COMETS world and contains COBRA models.</span>
@@ -66,19 +62,19 @@ This function is called by:
 0021         <span class="comment">%use sparse matrices. Empty elements use default values</span>
 0022         diffusion_const = [0]; <span class="comment">%[NaN] %vector 1/met, default in params</span>
 0023         global_media_refresh = [];<span class="comment">%[0] %vector 1/met, default 0</span>
-0024         media_refresh = [0];<span class="comment">%[0] %met by x by y, fill with 0</span>
+0024         media_refresh = [0];<span class="comment">%[0] %met by x by y, fill with 0 ****</span>
 0025         global_static_media = [];<span class="comment">%[NaN] %met by 2. (met,1) is logical denoting if the corresponding media is held static, (met,2) is the held concentration</span>
-0026         static_media = [0];<span class="comment">%[NaN] %met by x by y by 2, with the fourth dimension as in global_static_media</span>
+0026         static_media = [0];<span class="comment">%[NaN] %met by x by y by 2, with the fourth dimension as in global_static_media ****</span>
 0027         barrier = [0]; <span class="comment">%x by y, logical</span>
 0028         initial_pop = [0];<span class="comment">%[0] %models by x by y, default 0</span>
 0029         <span class="comment">%TODO: initial_pop modes (rectangle, random...)</span>
 0030     <span class="keyword">end</span>
 0031     
 0032     methods
-0033         <a name="_sub0" href="#_subfunctions" class="code">function obj=CometsLayout()</a>
+0033         <span class="keyword">function</span> obj=<a href="CometsLayout.html" class="code" title="">CometsLayout</a>()
 0034         <span class="keyword">end</span>
 0035         
-0036         <a name="_sub1" href="#_subfunctions" class="code">function self=addModel(self,model)</a>
+0036         <span class="keyword">function</span> self=<a href="#_sub2" class="code" title="subfunction self=addModel(self,model)">addModel</a>(self,model)
 0037             self.models = [self.models model];
 0038             
 0039             <span class="comment">%if the model contains any external metabolites, add them to this mets list</span>
@@ -124,13 +120,13 @@ This function is called by:
 0079         <span class="comment">%function self=removeModel(self,model)</span>
 0080         <span class="comment">%end</span>
 0081         
-0082         <a name="_sub2" href="#_subfunctions" class="code">function self=setParams(self,params)</a>
+0082         <span class="keyword">function</span> self=<a href="#_sub3" class="code" title="subfunction self=setParams(self,params)">setParams</a>(self,params)
 0083             self.params = params;
 0084             <span class="comment">%todo: load local properties from params todo: pass params to</span>
 0085             <span class="comment">%all contained models</span>
 0086         <span class="keyword">end</span>
 0087         
-0088         <a name="_sub3" href="#_subfunctions" class="code">function idx=metIdx(self,name)</a>
+0088         <span class="keyword">function</span> idx=<a href="#_sub4" class="code" title="subfunction idx=metIdx(self,name)">metIdx</a>(self,name)
 0089             <span class="comment">%given the String name of a metabolite, returns its index in</span>
 0090             <span class="comment">%the mets list. If not found, it will return an empty matrix.</span>
 0091             <span class="comment">%Check for this case with isempty(idx)</span>
@@ -142,7 +138,7 @@ This function is called by:
 0097             <span class="keyword">end</span>
 0098         <span class="keyword">end</span>
 0099         
-0100         <a name="_sub4" href="#_subfunctions" class="code">function self = setXdim(self,x)</a>
+0100         <span class="keyword">function</span> self = <a href="#_sub5" class="code" title="subfunction self = setXdim(self,x)">setXdim</a>(self,x)
 0101             diff = x - self.xdim;
 0102             <span class="keyword">if</span> diff &lt; 0
 0103                 self.media_refresh = self.media_refresh(1:x,:); <span class="comment">%met by x by y, default 0</span>
@@ -161,7 +157,7 @@ This function is called by:
 0116             self.xdim = x;
 0117         <span class="keyword">end</span>
 0118         
-0119         <a name="_sub5" href="#_subfunctions" class="code">function self = setYdim(self,y)</a>
+0119         <span class="keyword">function</span> self = <a href="#_sub6" class="code" title="subfunction self = setYdim(self,y)">setYdim</a>(self,y)
 0120             diff = y - self.ydim;
 0121             <span class="keyword">if</span> diff &lt; 0
 0122                 self.media_refresh = self.media_refresh(:,1:y); <span class="comment">%met by x by y, default 0</span>
@@ -180,7 +176,7 @@ This function is called by:
 0135             self.ydim = y;
 0136         <span class="keyword">end</span>
 0137         
-0138         <a name="_sub6" href="#_subfunctions" class="code">function self = setDims(self,x,y)</a>
+0138         <span class="keyword">function</span> self = <a href="#_sub7" class="code" title="subfunction self = setDims(self,x,y)">setDims</a>(self,x,y)
 0139             self = self.setXdim(x);
 0140             self = self.setYdim(y);
 0141         <span class="keyword">end</span>
@@ -188,6 +184,6 @@ This function is called by:
 0143     
 0144 <span class="keyword">end</span>
 0145</pre></div>
-<hr><address>Generated on Tue 09-Aug-2016 14:24:19 by <strong><a href="http://www.artefact.tk/software/matlab/m2html/" target="_parent">m2html</a></strong> &copy; 2005</address>
+<hr><address>Generated on Wed 07-Sep-2016 12:29:11 by <strong><a href="http://www.artefact.tk/software/matlab/m2html/" target="_parent">m2html</a></strong> &copy; 2003</address>
 </body>
 </html>

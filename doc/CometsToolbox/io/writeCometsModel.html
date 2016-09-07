@@ -6,12 +6,9 @@
   <meta name="keywords" content="writeCometsModel">
   <meta name="description" content="WRITECOMETSMODEL Summary of this function goes here">
   <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
-  <meta name="generator" content="m2html &copy; 2005 Guillaume Flandin">
+  <meta name="generator" content="m2html &copy; 2003 Guillaume Flandin">
   <meta name="robots" content="index, follow">
   <link type="text/css" rel="stylesheet" href="../../m2html.css">
-  <script type="text/javascript">
-    if (top.frames.length == 0) { top.location = "../../index.html"; };
-  </script>
 </head>
 <body>
 <a name="_top"></a>
@@ -33,12 +30,11 @@
 <h2><a name="_cross"></a>CROSS-REFERENCE INFORMATION <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
 This function calls:
 <ul style="list-style-image:url(../../matlabicon.gif)">
-</ul>
+<li><a href="../../CometsToolbox/external/m2html/@template/char.html" class="code" title="function s = char(tpl)">char</a>	TEMPLATE Convert a template object in a one line description string</li></ul>
 This function is called by:
 <ul style="list-style-image:url(../../matlabicon.gif)">
 <li><a href="writeCometsLayout.html" class="code" title="function writeCometsLayout( input, filedir, filename )">writeCometsLayout</a>	WRITECOMETSLAYOUT Create a layout file along with the corresponding model</li></ul>
 <!-- crossreference -->
-
 
 
 <h2><a name="_source"></a>SOURCE CODE <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
@@ -49,7 +45,7 @@ This function is called by:
 0005 
 0006 <span class="keyword">if</span> isa(input,<span class="string">'string'</span>)
 0007     strct=load(input);
-0008     model=strct.(char(fieldnames(strct)));
+0008     model=strct.(<a href="../../CometsToolbox/external/m2html/@template/char.html" class="code" title="function s = char(tpl)">char</a>(fieldnames(strct)));
 0009 <span class="keyword">else</span>
 0010     <span class="keyword">if</span> isa(input,<span class="string">'struct'</span>)
 0011         model=input;
@@ -68,7 +64,7 @@ This function is called by:
 0024         error([<span class="string">'Invalid argument in writeCometsModel('</span> class(input)<span class="keyword">...</span>
 0025             <span class="string">', '</span> class(filename) <span class="string">'): The input model requires the '</span><span class="keyword">...</span>
 0026             <span class="string">'following fields: [mets, metNames, metFormulas, rxns, '</span><span class="keyword">...</span>
-0027             <span class="string">'S, lb, ub, c]. Identified fields are '</span> [char(fieldnames(model))]]);
+0027             <span class="string">'S, lb, ub, c]. Identified fields are '</span> [<a href="../../CometsToolbox/external/m2html/@template/char.html" class="code" title="function s = char(tpl)">char</a>(fieldnames(model))]]);
 0028     <span class="keyword">end</span>
 0029 <span class="keyword">end</span>
 0030         
@@ -120,14 +116,14 @@ This function is called by:
 0076 <span class="comment">%Print metabolite names</span>
 0077 fprintf(fileID,<span class="string">'METABOLITE_NAMES\n'</span>);
 0078 <span class="keyword">for</span> i=1:length(model.mets)
-0079   fprintf(fileID,<span class="string">'    %s\n'</span>,char(model.mets(i)));  
+0079   fprintf(fileID,<span class="string">'    %s\n'</span>,<a href="../../CometsToolbox/external/m2html/@template/char.html" class="code" title="function s = char(tpl)">char</a>(model.mets(i)));  
 0080 <span class="keyword">end</span>
 0081 fprintf(fileID,<span class="string">'//\n'</span>);
 0082 
 0083 <span class="comment">%Print reaction names</span>
 0084 fprintf(fileID,<span class="string">'REACTION_NAMES\n'</span>);
 0085 <span class="keyword">for</span> i=1:length(model.rxns)
-0086     fprintf(fileID,<span class="string">'    %s\n'</span>,char(model.rxns(i)));
+0086     fprintf(fileID,<span class="string">'    %s\n'</span>,<a href="../../CometsToolbox/external/m2html/@template/char.html" class="code" title="function s = char(tpl)">char</a>(model.rxns(i)));
 0087 <span class="keyword">end</span>
 0088 fprintf(fileID,<span class="string">'//\n'</span>);
 0089 
@@ -142,6 +138,6 @@ This function is called by:
 0098 fclose(fileID);
 0099 <span class="keyword">end</span>
 0100</pre></div>
-<hr><address>Generated on Tue 09-Aug-2016 14:24:19 by <strong><a href="http://www.artefact.tk/software/matlab/m2html/" target="_parent">m2html</a></strong> &copy; 2005</address>
+<hr><address>Generated on Wed 07-Sep-2016 12:29:11 by <strong><a href="http://www.artefact.tk/software/matlab/m2html/" target="_parent">m2html</a></strong> &copy; 2003</address>
 </body>
 </html>

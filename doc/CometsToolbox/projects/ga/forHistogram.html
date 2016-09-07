@@ -1,0 +1,80 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+                "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+<head>
+  <title>Description of forHistogram</title>
+  <meta name="keywords" content="forHistogram">
+  <meta name="description" content="Uday Tripathi 7/2016">
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <meta name="generator" content="m2html &copy; 2003 Guillaume Flandin">
+  <meta name="robots" content="index, follow">
+  <link type="text/css" rel="stylesheet" href="../../../m2html.css">
+</head>
+<body>
+<a name="_top"></a>
+<!-- # CometsToolbox --><!-- # projects --><!-- menu.html ga -->
+<h1>forHistogram
+</h1>
+
+<h2><a name="_name"></a>PURPOSE <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+<div class="box"><strong>Uday Tripathi 7/2016</strong></div>
+
+<h2><a name="_synopsis"></a>SYNOPSIS <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+<div class="box"><strong>This is a script file. </strong></div>
+
+<h2><a name="_description"></a>DESCRIPTION <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+<div class="fragment"><pre class="comment"> Uday Tripathi 7/2016</pre></div>
+
+<!-- crossreference -->
+<h2><a name="_cross"></a>CROSS-REFERENCE INFORMATION <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+This function calls:
+<ul style="list-style-image:url(../../../matlabicon.gif)">
+<li><a href="decode.html" class="code" title="function sequence=decode(hash, mets, models)">decode</a>	Uday Tripathi 7/2016</li></ul>
+This function is called by:
+<ul style="list-style-image:url(../../../matlabicon.gif)">
+</ul>
+<!-- crossreference -->
+
+
+<h2><a name="_source"></a>SOURCE CODE <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+<div class="fragment"><pre>0001 <span class="comment">% Uday Tripathi 7/2016</span>
+0002 
+0003 <span class="comment">% Generates data for histogram when generating results from GA</span>
+0004 
+0005 keys=masterHash.keys;
+0006 glucose=0;
+0007 sucrose=0;
+0008 maltose=0;
+0009 fructose=0;
+0010 mannose=0;
+0011 dulcose=0;
+0012 modelsCount=zeros(24,1);
+0013 <span class="keyword">for</span> i=1:masterHash.Count
+0014    k=keys(i);
+0015    <span class="keyword">if</span> (masterHash(k{1})==1000)
+0016       seq=<a href="decode.html" class="code" title="function sequence=decode(hash, mets, models)">decode</a>(k{1},mets,models);
+0017       <span class="keyword">if</span> (isempty(strmatch(<span class="string">'EX D-Glucose e0'</span>,seq))==0)
+0018           glucose=glucose+1;
+0019       <span class="keyword">elseif</span> (isempty(strmatch(<span class="string">'EX Sucrose e0'</span>,seq))==0)
+0020           sucrose=sucrose+1;
+0021       <span class="keyword">elseif</span> (isempty(strmatch(<span class="string">'EX Maltose e0'</span>,seq))==0)
+0022           maltose=maltose+1;
+0023       <span class="keyword">elseif</span> (isempty(strmatch(<span class="string">'EX D-Fructose e0'</span>,seq))==0)
+0024           fructose=fructose+1;
+0025       <span class="keyword">elseif</span> (isempty(strmatch(<span class="string">'EX D-Mannose e0'</span>,seq))==0)
+0026           mannose=mannose+1;
+0027       <span class="keyword">elseif</span> (isempty(strmatch(<span class="string">'EX Dulcose e0'</span>,seq))==0)
+0028           dulcose=dulcose+1;
+0029       <span class="keyword">end</span>
+0030       
+0031       <span class="keyword">for</span> j=4:6
+0032          temp=seq(j);
+0033          temp=temp{1};
+0034          num=str2num(temp);
+0035          modelsCount(num)=modelsCount(num)+1;
+0036       <span class="keyword">end</span>
+0037    <span class="keyword">end</span>
+0038 <span class="keyword">end</span></pre></div>
+<hr><address>Generated on Wed 07-Sep-2016 12:29:11 by <strong><a href="http://www.artefact.tk/software/matlab/m2html/" target="_parent">m2html</a></strong> &copy; 2003</address>
+</body>
+</html>

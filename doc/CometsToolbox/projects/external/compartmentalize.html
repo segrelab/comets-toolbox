@@ -1,0 +1,117 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+                "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+<head>
+  <title>Description of compartmentalize</title>
+  <meta name="keywords" content="compartmentalize">
+  <meta name="description" content="COMPARTMENTALIZE Add a compartment to the model which contains all">
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <meta name="generator" content="m2html &copy; 2003 Guillaume Flandin">
+  <meta name="robots" content="index, follow">
+  <link type="text/css" rel="stylesheet" href="../../../m2html.css">
+</head>
+<body>
+<a name="_top"></a>
+<!-- # CometsToolbox --><!-- # projects --><!-- menu.html external -->
+<h1>compartmentalize
+</h1>
+
+<h2><a name="_name"></a>PURPOSE <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+<div class="box"><strong>COMPARTMENTALIZE Add a compartment to the model which contains all</strong></div>
+
+<h2><a name="_synopsis"></a>SYNOPSIS <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+<div class="box"><strong>function [outputArgs] = compartmentalize(varargin) </strong></div>
+
+<h2><a name="_description"></a>DESCRIPTION <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+<div class="fragment"><pre class="comment">COMPARTMENTALIZE Add a compartment to the model which contains all
+external media
+
+ usage: [layout model] = COMPARTMENTALIZE(layout, model)
+   layout: a CometsLayout optionally containing the model to be altered
+   model: a COBRA model 
+   Returns a CometsLayout which has replaced the specified model with a
+   transformed one if it was already present in the layout, as well as the
+   transformed model
+
+ [layout model] = COMPARTMENTALIZE(layout, modelname)
+   layout: a CometsLayout which must contain the named model modelname:
+   the String contained in one model's descriiption field 
+   Returns a CometsLayout which has replaced the specified model with a
+   transformed one, as well as the transformed model
+
+ [layout] = COMPARTMENTALIZE(layout)
+   layout: a CometsLayout containing at least one model Returns a
+   CometsLayout in which all models have been transformed</pre></div>
+
+<!-- crossreference -->
+<h2><a name="_cross"></a>CROSS-REFERENCE INFORMATION <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+This function calls:
+<ul style="list-style-image:url(../../../matlabicon.gif)">
+</ul>
+This function is called by:
+<ul style="list-style-image:url(../../../matlabicon.gif)">
+</ul>
+<!-- crossreference -->
+
+<h2><a name="_subfunctions"></a>SUBFUNCTIONS <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+<ul style="list-style-image:url(../../../matlabicon.gif)">
+<li><a href="#_sub1" class="code">function [layout, model] = compartmentalizeOneModel(layout, model)</a></li></ul>
+<h2><a name="_source"></a>SOURCE CODE <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+<div class="fragment"><pre>0001 <a name="_sub0" href="#_subfunctions" class="code">function [outputArgs] = compartmentalize(varargin)</a>
+0002 <span class="comment">%COMPARTMENTALIZE Add a compartment to the model which contains all</span>
+0003 <span class="comment">%external media</span>
+0004 <span class="comment">%</span>
+0005 <span class="comment">% usage: [layout model] = COMPARTMENTALIZE(layout, model)</span>
+0006 <span class="comment">%   layout: a CometsLayout optionally containing the model to be altered</span>
+0007 <span class="comment">%   model: a COBRA model</span>
+0008 <span class="comment">%   Returns a CometsLayout which has replaced the specified model with a</span>
+0009 <span class="comment">%   transformed one if it was already present in the layout, as well as the</span>
+0010 <span class="comment">%   transformed model</span>
+0011 <span class="comment">%</span>
+0012 <span class="comment">% [layout model] = COMPARTMENTALIZE(layout, modelname)</span>
+0013 <span class="comment">%   layout: a CometsLayout which must contain the named model modelname:</span>
+0014 <span class="comment">%   the String contained in one model's descriiption field</span>
+0015 <span class="comment">%   Returns a CometsLayout which has replaced the specified model with a</span>
+0016 <span class="comment">%   transformed one, as well as the transformed model</span>
+0017 <span class="comment">%</span>
+0018 <span class="comment">% [layout] = COMPARTMENTALIZE(layout)</span>
+0019 <span class="comment">%   layout: a CometsLayout containing at least one model Returns a</span>
+0020 <span class="comment">%   CometsLayout in which all models have been transformed</span>
+0021 
+0022 
+0023 <span class="comment">% $Author: mquintin $    $Date: 2016/08/24 16:54:48 $    $Revision: 0.1 $</span>
+0024 <span class="comment">% Copyright: Daniel Segrè, Boston University Bioinformatics Program 2016</span>
+0025 
+0026 <span class="keyword">if</span> nargin == 1
+0027     layout = varargin{1};
+0028     <span class="keyword">for</span> i = 1:length(layout.models)
+0029         model = layout.models{i};
+0030         [l, m] = <a href="#_sub1" class="code" title="subfunction [layout, model] = compartmentalizeOneModel(layout, model)">compartmentalizeOneModel</a>(layout, model);
+0031         layout = l;
+0032     <span class="keyword">end</span>
+0033     outputArgs = layout;
+0034 <span class="keyword">else</span>
+0035     layout = varargin{1};
+0036     model = varargin{2};
+0037     <span class="keyword">if</span> isstruct(model)
+0038         outputArgs = <a href="#_sub1" class="code" title="subfunction [layout, model] = compartmentalizeOneModel(layout, model)">compartmentalizeOneModel</a>(layout, model);
+0039     <span class="keyword">elseif</span> ischar(model)
+0040         <span class="keyword">for</span> i = 1:length(layout.models)
+0041             m = layout.models{i};
+0042             <span class="keyword">if</span> strmatch(model,m.description)
+0043                 model = m;
+0044                 <span class="keyword">break</span>;
+0045             <span class="keyword">end</span>
+0046         <span class="keyword">end</span>
+0047         outputArgs = <a href="#_sub1" class="code" title="subfunction [layout, model] = compartmentalizeOneModel(layout, model)">compartmentalizeOneModel</a>(layout, model);
+0048     <span class="keyword">end</span>
+0049 <span class="keyword">end</span>
+0050 
+0051 <span class="keyword">end</span>
+0052 
+0053 <a name="_sub1" href="#_subfunctions" class="code">function [layout, model] = compartmentalizeOneModel(layout, model)</a>
+0054 <span class="comment">%TODO</span>
+0055 <span class="keyword">end</span></pre></div>
+<hr><address>Generated on Wed 07-Sep-2016 12:29:11 by <strong><a href="http://www.artefact.tk/software/matlab/m2html/" target="_parent">m2html</a></strong> &copy; 2003</address>
+</body>
+</html>

@@ -1,0 +1,360 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+                "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+<head>
+  <title>Description of findNearRxns</title>
+  <meta name="keywords" content="findNearRxns">
+  <meta name="description" content="findNearRxns.m">
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <meta name="generator" content="m2html &copy; 2003 Guillaume Flandin">
+  <meta name="robots" content="index, follow">
+  <link type="text/css" rel="stylesheet" href="../../../../m2html.css">
+</head>
+<body>
+<a name="_top"></a>
+<!-- # CometsToolbox --><!-- # external --><!-- # Paint4Net v1.3 --><!-- menu.html Draw_by_met -->
+<h1>findNearRxns
+</h1>
+
+<h2><a name="_name"></a>PURPOSE <a href="#_top"><img alt="^" border="0" src="../../../../up.png"></a></h2>
+<div class="box"><strong>findNearRxns.m</strong></div>
+
+<h2><a name="_synopsis"></a>SYNOPSIS <a href="#_top"><img alt="^" border="0" src="../../../../up.png"></a></h2>
+<div class="box"><strong>function Rxns=findNearRxns(model,Rxns,direction,flux) </strong></div>
+
+<h2><a name="_description"></a>DESCRIPTION <a href="#_top"><img alt="^" border="0" src="../../../../up.png"></a></h2>
+<div class="fragment"><pre class="comment"> findNearRxns.m
+ Additional script of the Paint4Net to find the neightbor reactions
+
+ function Rxns=findNearRxns(model,Rxns,direction,flux)
+
+ INPUT
+
+ model - COBRA Toolbox model
+ metAbbr - a cell type variable that can take a value that represents the
+       abbreviation of a metabolite in the COBRA model. This metabolite is
+       the start point for visualization. 
+ Rxns - a list of reactions in the COBRA model in the form
+       {'Rxn_Abbr_1','Rxn_Abbr_2',...,'Rxn_Abbr_n'} or cell type vector from the
+       MATLAB workcpase.
+ direction - a string type variable that can take value of 'struc', 'sub',
+       'prod' or 'both' (default is 'struc') indicating a direction for the
+       algorithm. In case of 'struc' (structure) the algorithm visualizes all
+       metabolites connected to the specified reactions in the argument rxns.
+       The key feature of this function is visualization of all specified reactions
+       not taking in account a steady state fluxes in that way representing the
+       structure of the COBRA model. In case of 'sub' (substrates) the algorithm
+       visualizes only those metabolites which are substrates for the specified 
+       reactions in the argument rxns. This time the algorithm is using a stoichiometric 
+       matrix and the steady state fluxes to determine direction of each reaction. 
+       The algorithm is using an assumption that only those fluxes which rates
+       are smaller than -10-9 mmol*g-1*h-1 or greater than +10-9 mmol*g-1*h-1 
+       are non-zero fluxes. In case of 'prod' (products) the algorithm visualizes 
+       only those metabolites which are products for the specified reactions in 
+       the argument rxns but in case of 'both' the algorithm visualizes both
+       – substrates and products - for the specified reactions in the argument
+       rxns. For both cases the algorithm is using the same rules regarding to 
+       calculation of the directions for each reaction as for case of 'sub'.
+       This argument is essential for the command draw_by_met of the
+       Paint4Net v1.2
+       because the command draw_by_met is calling out the command draw_by_rxn
+       and passing the argument direction.
+ flux - a double type Nx1 size vector of fluxes of reactions where N is number 
+       of reactions (default is vector of x). This vector is calculated during
+       the optimization of the objective function. Use the command
+       optimizeCbModel.m.
+
+ OUTPUT
+
+ Rxns - a list of reactions from the COBRA model.
+
+ Andrejs Kostromins 17/02/2012 E-mail: andrejs.kostromins@gmail.com</pre></div>
+
+<!-- crossreference -->
+<h2><a name="_cross"></a>CROSS-REFERENCE INFORMATION <a href="#_top"><img alt="^" border="0" src="../../../../up.png"></a></h2>
+This function calls:
+<ul style="list-style-image:url(../../../../matlabicon.gif)">
+</ul>
+This function is called by:
+<ul style="list-style-image:url(../../../../matlabicon.gif)">
+<li><a href="draw_by_met.html" class="code" title="function [involvedRxns,involvedMets,deadEnds,deadRxns]=draw_by_met(model,metAbbr,drawMap,radius,direction,excludeMets,flux,save,closev)">draw_by_met</a>	draw_by_met.m</li></ul>
+<!-- crossreference -->
+
+
+<h2><a name="_source"></a>SOURCE CODE <a href="#_top"><img alt="^" border="0" src="../../../../up.png"></a></h2>
+<div class="fragment"><pre>0001 <span class="comment">% findNearRxns.m</span>
+0002 <span class="comment">% Additional script of the Paint4Net to find the neightbor reactions</span>
+0003 <span class="comment">%</span>
+0004 <span class="comment">% function Rxns=findNearRxns(model,Rxns,direction,flux)</span>
+0005 <span class="comment">%</span>
+0006 <span class="comment">% INPUT</span>
+0007 <span class="comment">%</span>
+0008 <span class="comment">% model - COBRA Toolbox model</span>
+0009 <span class="comment">% metAbbr - a cell type variable that can take a value that represents the</span>
+0010 <span class="comment">%       abbreviation of a metabolite in the COBRA model. This metabolite is</span>
+0011 <span class="comment">%       the start point for visualization.</span>
+0012 <span class="comment">% Rxns - a list of reactions in the COBRA model in the form</span>
+0013 <span class="comment">%       {'Rxn_Abbr_1','Rxn_Abbr_2',...,'Rxn_Abbr_n'} or cell type vector from the</span>
+0014 <span class="comment">%       MATLAB workcpase.</span>
+0015 <span class="comment">% direction - a string type variable that can take value of 'struc', 'sub',</span>
+0016 <span class="comment">%       'prod' or 'both' (default is 'struc') indicating a direction for the</span>
+0017 <span class="comment">%       algorithm. In case of 'struc' (structure) the algorithm visualizes all</span>
+0018 <span class="comment">%       metabolites connected to the specified reactions in the argument rxns.</span>
+0019 <span class="comment">%       The key feature of this function is visualization of all specified reactions</span>
+0020 <span class="comment">%       not taking in account a steady state fluxes in that way representing the</span>
+0021 <span class="comment">%       structure of the COBRA model. In case of 'sub' (substrates) the algorithm</span>
+0022 <span class="comment">%       visualizes only those metabolites which are substrates for the specified</span>
+0023 <span class="comment">%       reactions in the argument rxns. This time the algorithm is using a stoichiometric</span>
+0024 <span class="comment">%       matrix and the steady state fluxes to determine direction of each reaction.</span>
+0025 <span class="comment">%       The algorithm is using an assumption that only those fluxes which rates</span>
+0026 <span class="comment">%       are smaller than -10-9 mmol*g-1*h-1 or greater than +10-9 mmol*g-1*h-1</span>
+0027 <span class="comment">%       are non-zero fluxes. In case of 'prod' (products) the algorithm visualizes</span>
+0028 <span class="comment">%       only those metabolites which are products for the specified reactions in</span>
+0029 <span class="comment">%       the argument rxns but in case of 'both' the algorithm visualizes both</span>
+0030 <span class="comment">%       – substrates and products - for the specified reactions in the argument</span>
+0031 <span class="comment">%       rxns. For both cases the algorithm is using the same rules regarding to</span>
+0032 <span class="comment">%       calculation of the directions for each reaction as for case of 'sub'.</span>
+0033 <span class="comment">%       This argument is essential for the command draw_by_met of the</span>
+0034 <span class="comment">%       Paint4Net v1.2</span>
+0035 <span class="comment">%       because the command draw_by_met is calling out the command draw_by_rxn</span>
+0036 <span class="comment">%       and passing the argument direction.</span>
+0037 <span class="comment">% flux - a double type Nx1 size vector of fluxes of reactions where N is number</span>
+0038 <span class="comment">%       of reactions (default is vector of x). This vector is calculated during</span>
+0039 <span class="comment">%       the optimization of the objective function. Use the command</span>
+0040 <span class="comment">%       optimizeCbModel.m.</span>
+0041 <span class="comment">%</span>
+0042 <span class="comment">% OUTPUT</span>
+0043 <span class="comment">%</span>
+0044 <span class="comment">% Rxns - a list of reactions from the COBRA model.</span>
+0045 <span class="comment">%</span>
+0046 <span class="comment">% Andrejs Kostromins 17/02/2012 E-mail: andrejs.kostromins@gmail.com</span>
+0047 
+0048 <a name="_sub0" href="#_subfunctions" class="code">function Rxns=findNearRxns(model,Rxns,direction,flux)</a>
+0049 
+0050 RxnsIDs=findRxnIDs(model,Rxns); <span class="comment">%find reaction IDs in the model</span>
+0051 metIndexes(1)=-1; <span class="comment">%declare variable</span>
+0052 
+0053 <span class="keyword">for</span> q=1:length(RxnsIDs) <span class="comment">%cycle through the reaction IDs</span>
+0054     
+0055     metIndex = find(model.S(:,RxnsIDs(q))); <span class="comment">%find metabolite index in the S matrix</span>
+0056     
+0057     <span class="keyword">for</span> w=1:length(metIndex) <span class="comment">%cycle till the met index</span>
+0058         
+0059         <span class="keyword">switch</span> direction <span class="comment">%check the value of the variable direction</span>
+0060             
+0061             <span class="keyword">case</span> <span class="string">'sub'</span> <span class="comment">%in cace of direction = 'sub'</span>
+0062                 
+0063                 <span class="comment">%if the metabolite in the S matrix has positive coefficient, but the flux is negative or the opposite</span>
+0064                 <span class="keyword">if</span> model.S(metIndex(w),RxnsIDs(q))&gt;0 &amp;&amp; flux(RxnsIDs(q))&lt;-1e-9 || model.S(metIndex(w),RxnsIDs(q))&lt;0 &amp;&amp; flux(RxnsIDs(q))&gt;1e-9
+0065                     
+0066                     <span class="keyword">if</span> metIndexes(1)==-1
+0067                         metIndexes(1,1)=metIndex(w); <span class="comment">%add to the list of indexes</span>
+0068                     <span class="keyword">else</span>
+0069                         
+0070                         unique=true;
+0071                         
+0072                         <span class="keyword">for</span> e=1:length(metIndexes) <span class="comment">%cycle through the indexes</span>
+0073                             
+0074                             <span class="keyword">if</span> metIndexes(e)==metIndex(w); <span class="comment">%if index already exist</span>
+0075                                 unique=false;
+0076                                 <span class="keyword">break</span>;
+0077                             <span class="keyword">end</span>
+0078                             
+0079                         <span class="keyword">end</span>
+0080                         
+0081                         <span class="keyword">if</span> unique <span class="comment">%if index is unique</span>
+0082                             metIndexes(1+length(metIndexes),1)=metIndex(w);                
+0083                         <span class="keyword">end</span>
+0084                         
+0085                     <span class="keyword">end</span>     
+0086                     
+0087                 <span class="keyword">end</span>
+0088                 
+0089             <span class="keyword">case</span> <span class="string">'prod'</span> <span class="comment">%in cace of direction = 'prod'</span>
+0090                 
+0091                 <span class="comment">%if the metabolite in the S matrix has negative coefficient and the flux is negative or the opposite</span>
+0092                 <span class="keyword">if</span> model.S(metIndex(w),RxnsIDs(q))&lt;0 &amp;&amp; flux(RxnsIDs(q))&lt;-1e-9 || model.S(metIndex(w),RxnsIDs(q))&gt;0 &amp;&amp; flux(RxnsIDs(q))&gt;1e-9
+0093                     
+0094                     <span class="keyword">if</span> metIndexes(1)==-1
+0095                         metIndexes(1,1)=metIndex(w); <span class="comment">%add to the list of indexes</span>
+0096                     <span class="keyword">else</span>
+0097                         
+0098                         unique=true;
+0099                         
+0100                         <span class="keyword">for</span> e=1:length(metIndexes) <span class="comment">%cycle through the indexes</span>
+0101                             
+0102                             <span class="keyword">if</span> metIndexes(e)==metIndex(w); <span class="comment">%if index already exist</span>
+0103                                 unique=false;
+0104                                 <span class="keyword">break</span>;
+0105                             <span class="keyword">end</span>
+0106                             
+0107                         <span class="keyword">end</span>
+0108                         
+0109                         <span class="keyword">if</span> unique <span class="comment">%if index is unique</span>
+0110                             metIndexes(1+length(metIndexes),1)=metIndex(w);                
+0111                         <span class="keyword">end</span>
+0112                         
+0113                     <span class="keyword">end</span>   
+0114                     
+0115                 <span class="keyword">end</span>
+0116                 
+0117             <span class="keyword">case</span> <span class="string">'both'</span> <span class="comment">%in cace of direction = 'both'</span>
+0118                 
+0119                 <span class="comment">%if the reaction in the S matrix has nonzero coefficient and the flux is negative or positive</span>
+0120                 <span class="keyword">if</span> model.S(metIndex(w),RxnsIDs(q))~=0 &amp;&amp; (flux(RxnsIDs(q))&lt;-1e-9 || flux(RxnsIDs(q))&gt;1e-9)
+0121                     
+0122                     <span class="keyword">if</span> metIndexes(1)==-1
+0123                         metIndexes(1,1)=metIndex(w); <span class="comment">%add to the list of indexes</span>
+0124                     <span class="keyword">else</span>
+0125                         
+0126                         unique=true;
+0127                         
+0128                         <span class="keyword">for</span> e=1:length(metIndexes) <span class="comment">%cycle through the indexes</span>
+0129                             
+0130                             <span class="keyword">if</span> metIndexes(e)==metIndex(w); <span class="comment">%if index already exist</span>
+0131                                 unique=false;
+0132                                 <span class="keyword">break</span>;
+0133                             <span class="keyword">end</span>
+0134                             
+0135                         <span class="keyword">end</span>
+0136                         
+0137                         <span class="keyword">if</span> unique <span class="comment">%if index is unique</span>
+0138                             metIndexes(1+length(metIndexes),1)=metIndex(w);                
+0139                         <span class="keyword">end</span>
+0140                         
+0141                     <span class="keyword">end</span>   
+0142                     
+0143                 <span class="keyword">end</span>
+0144                 
+0145             <span class="keyword">case</span> <span class="string">'struc'</span> <span class="comment">%in cace of direction = 'struc'</span>
+0146                 
+0147                 
+0148                 <span class="keyword">if</span> model.S(metIndex(w),RxnsIDs(q))~=0 <span class="comment">%if the reaction in the S matrix has nonzero coefficient</span>
+0149                     
+0150                     <span class="keyword">if</span> metIndexes(1)==-1
+0151                         metIndexes(1,1)=metIndex(w); <span class="comment">%add to the list of indexes</span>
+0152                     <span class="keyword">else</span>
+0153                         
+0154                         unique=true;
+0155                         
+0156                         <span class="keyword">for</span> e=1:length(metIndexes) <span class="comment">%cycle through the indexes</span>
+0157                             
+0158                             <span class="keyword">if</span> metIndexes(e)==metIndex(w); <span class="comment">%if index already exist</span>
+0159                                 unique=false;
+0160                                 <span class="keyword">break</span>;
+0161                             <span class="keyword">end</span>
+0162                             
+0163                         <span class="keyword">end</span>
+0164                         
+0165                         <span class="keyword">if</span> unique <span class="comment">%if index is unique</span>
+0166                             metIndexes(1+length(metIndexes),1)=metIndex(w);                
+0167                         <span class="keyword">end</span>
+0168                         
+0169                     <span class="keyword">end</span>  
+0170                     
+0171                 <span class="keyword">end</span>  
+0172                 
+0173         <span class="keyword">end</span>   
+0174         
+0175     <span class="keyword">end</span>
+0176     
+0177 <span class="keyword">end</span>
+0178 
+0179 <span class="keyword">for</span> q=1:length(metIndexes) <span class="comment">%cycle through the indexes</span>
+0180     mets{q,1}=model.mets{metIndexes(q)};
+0181 <span class="keyword">end</span>
+0182 
+0183 Rxns2=findRxnsFromMets(model,mets);  <span class="comment">%find reactions around the metabolites</span>
+0184 RxnsID=findRxnIDs(model,Rxns2); <span class="comment">%find reaction IDs in the model</span>
+0185 metsID2=findMetIDs(model,mets); <span class="comment">%find metabolite IDs in the model</span>
+0186 Direction_Rxns{1}=<span class="string">'-1'</span>; <span class="comment">%declare variable</span>
+0187 
+0188 <span class="keyword">for</span> q=1:length(RxnsID) <span class="comment">%cycle through the reaction IDs</span>
+0189     
+0190     <span class="keyword">for</span> w=1:length(metsID2) <span class="comment">%cycle through the metabolite IDs</span>
+0191         
+0192         <span class="keyword">switch</span> direction <span class="comment">%check the value of the variable direction</span>
+0193             
+0194             <span class="keyword">case</span> <span class="string">'sub'</span> <span class="comment">%in cace of direction = 'sub'</span>
+0195                 
+0196                 <span class="comment">%if the metabolite in the S matrix has negative coefficient and the flux is negative or the opposite</span>
+0197                 <span class="keyword">if</span> model.S(metsID2(w),RxnsID(q))&lt;0 &amp;&amp; flux(RxnsID(q))&lt;-1e-9 || model.S(metsID2(w),RxnsID(q))&gt;0 &amp;&amp; flux(RxnsID(q))&gt;1e-9
+0198                     
+0199                    <span class="keyword">if</span> strcmp(Direction_Rxns{1},<span class="string">'-1'</span>)
+0200                       Direction_Rxns{1,1}=Rxns2{q};            
+0201                    <span class="keyword">else</span>
+0202                       Direction_Rxns{length(Direction_Rxns)+1,1}=Rxns2{q};
+0203                    <span class="keyword">end</span>
+0204                    
+0205                 <span class="keyword">end</span>
+0206                 
+0207             <span class="keyword">case</span> <span class="string">'prod'</span> <span class="comment">%in cace of direction = 'prod'</span>
+0208                 
+0209                 <span class="comment">%if the metabolite in the S matrix has positive coefficient, but the flux is negative or the opposite</span>
+0210                 <span class="keyword">if</span> model.S(metsID2(w),RxnsID(q))&gt;0 &amp;&amp; flux(RxnsID(q))&lt;-1e-9 || model.S(metsID2(w),RxnsID(q))&lt;0 &amp;&amp; flux(RxnsID(q))&gt;1e-9
+0211                     
+0212                    <span class="keyword">if</span> strcmp(Direction_Rxns{1},<span class="string">'-1'</span>)
+0213                       Direction_Rxns{1,1}=Rxns2{q};            
+0214                    <span class="keyword">else</span>
+0215                       Direction_Rxns{length(Direction_Rxns)+1,1}=Rxns2{q};
+0216                    <span class="keyword">end</span>
+0217                    
+0218                 <span class="keyword">end</span>
+0219                 
+0220             <span class="keyword">case</span> <span class="string">'both'</span> <span class="comment">%in cace of direction = 'both'</span>
+0221                 
+0222                <span class="comment">%if the reaction in the S matrix has nonzero coefficient and the flux is negative or positive</span>
+0223                <span class="keyword">if</span> model.S(metsID2(w),RxnsID(q))~=0 &amp;&amp; (flux(RxnsID(q))&lt;-1e-9 || flux(RxnsID(q))&gt;1e-9)
+0224                    
+0225                    <span class="keyword">if</span> strcmp(Direction_Rxns{1},<span class="string">'-1'</span>)
+0226                       Direction_Rxns{1,1}=Rxns2{q};            
+0227                    <span class="keyword">else</span>
+0228                       Direction_Rxns{length(Direction_Rxns)+1,1}=Rxns2{q};
+0229                    <span class="keyword">end</span>
+0230                    
+0231                <span class="keyword">end</span>
+0232                
+0233             <span class="keyword">case</span> <span class="string">'struc'</span> <span class="comment">%in cace of direction = 'struc'</span>
+0234                 
+0235                 
+0236                <span class="keyword">if</span> model.S(metsID2(w),RxnsID(q))~=0 <span class="comment">%if the reaction in the S matrix has nonzero coefficient</span>
+0237                    
+0238                    <span class="keyword">if</span> strcmp(Direction_Rxns{1},<span class="string">'-1'</span>)
+0239                       Direction_Rxns{1,1}=Rxns2{q};            
+0240                    <span class="keyword">else</span>
+0241                       Direction_Rxns{length(Direction_Rxns)+1,1}=Rxns2{q};
+0242                    <span class="keyword">end</span>
+0243                    
+0244                <span class="keyword">end</span>
+0245                 
+0246         <span class="keyword">end</span>    
+0247         
+0248     <span class="keyword">end</span>
+0249     
+0250 <span class="keyword">end</span>
+0251 
+0252 <span class="keyword">if</span> ~strcmp(Direction_Rxns{1},<span class="string">'-1'</span>) <span class="comment">%if list of reactions is not empty</span>
+0253     
+0254     <span class="keyword">for</span> q=1:length(Direction_Rxns) <span class="comment">%cycle through the reactions</span>
+0255         
+0256         <span class="keyword">for</span> w=1:length(Rxns) <span class="comment">%cycle through the reactions</span>
+0257             
+0258             unique=true;
+0259             
+0260             <span class="keyword">if</span> strcmp(Rxns{w,1},Direction_Rxns{q,1}); <span class="comment">%check uniqueness of reaction</span>
+0261                unique=false;       
+0262                <span class="keyword">break</span>;
+0263             <span class="keyword">end</span>      
+0264             
+0265         <span class="keyword">end</span>
+0266 
+0267         <span class="keyword">if</span> unique <span class="comment">%if reaction is unique</span>
+0268                Rxns{1+length(Rxns),1}=Direction_Rxns{q};                
+0269         <span class="keyword">end</span> 
+0270         
+0271     <span class="keyword">end</span>
+0272     
+0273 <span class="keyword">end</span></pre></div>
+<hr><address>Generated on Wed 07-Sep-2016 12:29:11 by <strong><a href="http://www.artefact.tk/software/matlab/m2html/" target="_parent">m2html</a></strong> &copy; 2003</address>
+</body>
+</html>

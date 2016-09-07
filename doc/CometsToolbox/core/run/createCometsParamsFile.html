@@ -6,12 +6,9 @@
   <meta name="keywords" content="createCometsParamsFile">
   <meta name="description" content="CREATECOMETSPARAMSFILE Create the Comets params file for a COMETS run.">
   <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
-  <meta name="generator" content="m2html &copy; 2005 Guillaume Flandin">
+  <meta name="generator" content="m2html &copy; 2003 Guillaume Flandin">
   <meta name="robots" content="index, follow">
   <link type="text/css" rel="stylesheet" href="../../../m2html.css">
-  <script type="text/javascript">
-    if (top.frames.length == 0) { top.location = "../../../index.html"; };
-  </script>
 </head>
 <body>
 <a name="_top"></a>
@@ -45,7 +42,6 @@ This function is called by:
 <h2><a name="_subfunctions"></a>SUBFUNCTIONS <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
 <ul style="list-style-image:url(../../../matlabicon.gif)">
 <li><a href="#_sub1" class="code">function printparam(name)</a></li></ul>
-
 <h2><a name="_source"></a>SOURCE CODE <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
 <div class="fragment"><pre>0001 <a name="_sub0" href="#_subfunctions" class="code">function createCometsParamsFile( directory, filename, params )</a>
 0002 <span class="comment">%CREATECOMETSPARAMSFILE Create the Comets params file for a COMETS run.</span>
@@ -104,7 +100,7 @@ This function is called by:
 0055 usedIdx = ismember(upper(pfields),upper(allparams));
 0056 used = pfields(usedIdx); <span class="comment">%the names of fields which occur in the given CometsParams</span>
 0057 
-0058     <a name="_sub1" href="#_subfunctions" class="code">function printparam(name)</a>
+0058     <span class="keyword">function</span> <a href="#_sub1" class="code" title="subfunction printparam(name)">printparam</a>(name)
 0059         val = params.(name);
 0060         <span class="keyword">if</span> ismember(upper(name),upper(booleanparams))
 0061             <span class="keyword">if</span> val
@@ -125,6 +121,6 @@ This function is called by:
 0076 
 0077 <span class="keyword">end</span>
 0078</pre></div>
-<hr><address>Generated on Tue 09-Aug-2016 14:24:19 by <strong><a href="http://www.artefact.tk/software/matlab/m2html/" target="_parent">m2html</a></strong> &copy; 2005</address>
+<hr><address>Generated on Wed 07-Sep-2016 12:29:11 by <strong><a href="http://www.artefact.tk/software/matlab/m2html/" target="_parent">m2html</a></strong> &copy; 2003</address>
 </body>
 </html>
