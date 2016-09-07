@@ -13,12 +13,12 @@ layout.params.writeBiomassLog=true; %confirm that this worked if biomass.txt app
 layout.params.maxCycles=20;
 layout.media_amt(:)=10; %add some media
 
-cd('C:\sync\biomes\scripts\CometsToolbox\scratch\test\out'); %always run in scratch
+cd('C:\sync\biomes\scripts\CometsToolbox\test\out'); %always run in scratch
 
-layout = setInitialPop(layout,'1x1');
-runfolder = fullfile(pwd, 'setInitialPop1x1'); %
-runComets(layout,runfolder);
+%layout = setInitialPop(layout,'1x1');
+%runfolder = fullfile(pwd, 'setInitialPop1x1'); %
+%runComets(layout,runfolder);
 
-%layout = setInitialPop(layout,'colonies');
+layout = setInitialPop(layout,'colonies');
 %runfolder = fullfile(pwd, 'setInitialPopColonies'); %
 %runComets(layout,runfolder);
