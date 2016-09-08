@@ -18,13 +18,13 @@ else
 end
 
 %assert that the model is a well-structured COBRA model
-%check for these fields: metNames, metFormulas, rxns, S, lb, ub, c, mets
-for cf={'mets' 'metNames' 'metFormulas' 'rxns' 'S' 'lb' 'ub' 'c'}
+%check for these fields: metNames, rxns, S, lb, ub, c, mets
+for cf={'mets' 'metNames' 'rxns' 'S' 'lb' 'ub' 'c'}
     if ~isfield(model,cf)
         error(['Invalid argument in writeCometsModel(' class(input)...
             ', ' class(filename) '): The input model requires the '...
             'following fields: [mets, metNames, metFormulas, rxns, '...
-            'S, lb, ub, c]. Identified fields are ' [char(fieldnames(model))]]);
+            'S, lb, ub, c]. Identified fields are ' char(fieldnames(model))]);
     end
 end
         
