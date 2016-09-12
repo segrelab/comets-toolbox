@@ -50,13 +50,6 @@ if ~iscell(layout.mets)
         'or char.']);
 end
 
-
-%write the model files
-for i = 1:length(layout.models)
-    m = layout.models{i};
-    writeCometsModel(m,getModelFilePath(m));
-end
-
 filename = fullfile(filedir,filename);
 fileID=fopen(filename,'w');
 
@@ -360,15 +353,27 @@ for i = 1:length(pfields)
     end
 end
 fprintf(fileID,'//\n');
+fclose(fileID);
 
+%write the model files
+for i = 1:length(layout.models)
+    m = layout.models{i};
+    writeCometsModel(m,getModelFilePath(m));
+end
 
     function mname = getModelFileName(model)
-        [pathstr,name,ext] = fileparts(model.description);
+        desc = model.description;
+        desc = strrep(desc,' ','_'); %replace whitespace
+        desc = regexprep(desc,'\W',''); %remove special chars
+        [pathstr,name,ext] = fileparts(desc);
         %mname = fullfile(filedir,[name '.txt']); %absolute path
-        mname = [name '.txt']; %relative path: file goes in this directory
+        mname = [name '.txt']; %relative path; file goes in current directory
     end
     function mname = getModelFilePath(model)
-        [pathstr,name,ext] = fileparts(model.description);
+        desc = model.description;
+        desc = strrep(desc,' ','_'); %replace whitespace
+        desc = regexprep(desc,'\W',''); %remove special chars
+        [pathstr,name,ext] = fileparts(desc);
         mname = fullfile(filedir,[name '.txt']); %absolute path
     end
 
