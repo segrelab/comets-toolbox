@@ -303,11 +303,8 @@ if sum(sum(any(layout.initial_pop))) > 0 %some initial pop is set
         for y = 1:s(3)
             v = layout.initial_pop(:,x,y);
             if any(v)
-                presentIdx = find(v);
-                for i=1:length(presentIdx)
-                    val = v(presentIdx(i));
-                    fprintf(fileID,'\t%d %d %d %d\n',x-1,y-1,i-1,val);
-                end
+                %x y pop1 pop2 pop3...
+                fprintf(fileID,['\t%d %d' sprintf(' %d',v) '\n'],x-1,y-1);
             end
         end
     end

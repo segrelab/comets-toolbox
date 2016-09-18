@@ -20,5 +20,6 @@ cd('C:\sync\biomes\scripts\CometsToolbox\test\out'); %always run in scratch
 %runComets(layout,runfolder);
 
 layout = setInitialPop(layout,'colonies');
-%runfolder = fullfile(pwd, 'setInitialPopColonies'); %
+runfolder = fullfile(pwd, 'setInitialPopColonies');
+writeCometsLayout(layout,runfolder);
 %runComets(layout,runfolder);
