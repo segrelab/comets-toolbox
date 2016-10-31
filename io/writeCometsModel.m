@@ -83,7 +83,11 @@ fprintf(fileID,'//\n');
 %Print reaction names
 fprintf(fileID,'REACTION_NAMES\n');
 for i=1:length(model.rxns)
-    fprintf(fileID,'    %s\n',char(model.rxns(i)));
+    rxnname = model.rxns{i};
+    if length(strtrim(rxnname)) < 1
+        rxnname = ['reaction_' num2str(i)];
+    end
+    fprintf(fileID,'    %s\n',rxnname);
 end
 fprintf(fileID,'//\n');
 
