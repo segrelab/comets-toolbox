@@ -19,6 +19,10 @@ function [model, failed, failedflag] = normalizeMetNames(model)
 
 
 %call COBRA to strip the compartment if in the form "metName[c]" or "metName(c)"
+
+%TODO: This script is currently incompatible with compartments in the form
+%"metname_c"
+
 [basemetnames, compsymbols] = parseMetNames(model.mets);
 
 newmetnames = cell(length(basemetnames),1);

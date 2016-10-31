@@ -24,6 +24,7 @@ if matchstart
     caseopt = 'matchcase';
 end
 
+q = regexptranslate('escape',q); %treat the string as literal
 posn = regexp(arr,q,caseopt,'once');
 
 if matchstart
