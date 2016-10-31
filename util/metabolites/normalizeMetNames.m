@@ -28,7 +28,8 @@ failedflag = zeros(length(basemetnames),1);
 mksqlite('open','metnames.db');
 for i = 1:length(basemetnames)
     met = basemetnames{i};
-    res = mksqlite('select official from PSEUDONYM where pseudonym == ?',met);
+    %use LIKE instead of == to ignore case
+    res = mksqlite('select official from PSEUDONYM where pseudonym like ?',met);
     if ~isempty(res) %match found
         %if ischar(res.official)
         %    newmetnames{i} = res.official;
@@ -48,13 +49,25 @@ for i = 1:length(basemetnames)
         %the first. 
         %Note that this means multiple returns (which shouldn't occur, but 
         %aren't enforced not to occur by the DB) will be hidden
+        
         newname = {res.official};
         newmetnames{i} = newname{1};
         
     else %no match found
-        newmetnames{i} = met;
-        failedflag(i) = 1;
-        failed{i} = met;
+        %try searching on the model.metNames field instead
+        [tempbase, tempcomp] = parseMetNames(model.metNames(i));
+        res = mksqlite('select official from PSEUDONYM where pseudonym like ?',tempbase{1});
+        if ~isempty(res)
+            newname = {res.official};
+            newmetnames{i} = newname{1};
+            if strcmp('',compsymbols{i})
+                compsymbols{i} = tempcomp{1};
+            end
+        else %still no match
+            newmetnames{i} = met;
+            failedflag(i) = 1;
+            failed{i} = met;
+        end
     end
 end
 mksqlite('close');
@@ -64,7 +77,9 @@ failed = failed(~cellfun('isempty',failed));
 
 %reattach compartment symbols
 for i = 1:length(newmetnames)
-    newmetnames{i} = [newmetnames{i} '[' compsymbols{i} ']'];
+    if ~strcmp('',compsymbols{i})
+        newmetnames{i} = [newmetnames{i} '[' compsymbols{i} ']'];
+    end
 end
 
 %apply change to the model
