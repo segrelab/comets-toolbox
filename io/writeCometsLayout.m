@@ -109,6 +109,7 @@ fprintf(fileID,'\t\tworld_media\n');
 for i = 1:length(layout.mets)
     m = layout.mets{i};
     idx = layout.metIdx(m);
+    m = strrep(m,' ','_');
     fprintf(fileID,'\t\t%s %g\n',char(m),layout.media_amt(idx));
 end
 fprintf(fileID,'\t//\n');

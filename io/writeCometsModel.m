@@ -87,6 +87,7 @@ for i=1:length(model.rxns)
     if length(strtrim(rxnname)) < 1
         rxnname = ['reaction_' num2str(i)];
     end
+    rxnname = strrep(rxnname,' ','_');
     fprintf(fileID,'    %s\n',rxnname);
 end
 fprintf(fileID,'//\n');

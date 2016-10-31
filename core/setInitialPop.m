@@ -37,7 +37,7 @@ if nmodels < 1
 end
 
 %set size of colonies within populated grid cells
-dpop = 1e-5; %default population value
+dpop = 1e-9; %default population value
 if nargin < 3
     pop = [];
 end
