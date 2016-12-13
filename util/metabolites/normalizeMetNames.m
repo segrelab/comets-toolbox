@@ -29,7 +29,9 @@ newmetnames = cell(length(basemetnames),1);
 failed = cell(length(basemetnames),1);
 failedflag = zeros(length(basemetnames),1);
 
-mksqlite('open','metnames.db');
+dbpath = which('metabolites\metnames.db');
+mksqlite('open',dbpath);
+
 for i = 1:length(basemetnames)
     met = basemetnames{i};
     %use LIKE instead of == to ignore case

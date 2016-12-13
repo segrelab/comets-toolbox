@@ -50,6 +50,12 @@ if ~iscell(layout.mets)
         'or char.']);
 end
 
+%sort the metabolites in the layout alphabetically. Some sections of the
+%layout file may refer to media by their position in the sorted list, not
+%their position in the world_media section
+layout = sortMetabolites(layout);
+
+
 filename = fullfile(filedir,filename);
 fileID=fopen(filename,'w');
 
@@ -138,7 +144,35 @@ fprintf(fileID,'\t//\n');
 % // Media
 % TODO: This section should handle specification of media on a cell-by-cell
 % basis.
-fprintf(fileID,'\tmedia\n\t//\n');
+fprintf(fileID,'\tmedia\n');
+
+ms = size(layout.initial_media);
+%s = [# metabolites in media, x, y]
+
+if length(ms) < 3 %don't break the loop if static_media is empty or 1x1
+    ms(3) = 1;
+end
+
+for x = 1:ms(2) %for each x coordinate
+    for y = 1:ms(3) %and each y coordinate
+        v = layout.initial_media(:,x,y,1);%is it set?
+        if length(v) < length(layout.mets)%must include a value for all media
+            v(length(layout.mets)) = 0;
+        end
+        if any(v)
+            fprintf(fileID,'\t\t%d %d',x-1,y-1);
+            for j = 1:length(v)
+                if v(j) %this medium is set
+                    fprintf(fileID,' %d', layout.initial_media(j,x,y,2)); 
+                else %use the global value
+                    fprintf(fileID,' %d', layout.media_amt(j));
+                end
+            end
+            fprintf(fileID,'\n');
+        end
+    end
+end
+fprintf(fileID,'\t//\n');
 
 % // 2d. Media Refresh
 %
@@ -168,7 +202,7 @@ for x = 1:s(2)
     for y = 1:s(3)
         row = layout.media_refresh(:,x,y);
         if any(row)
-            fprintf(fileID,'\t\t%d %d %g\n',x,y,row);
+            fprintf(fileID,'\t\t%d %d %g\n',x-1,y-1,row);
         end
     end
 end
@@ -226,7 +260,7 @@ for x = 1:s(2)
             b(i) = 1; %is this medium static?
             sm = [b;full(v)];
             row = sm(1:(2*gs(1)));%pairs of logical/value for each media
-            fprintf(fileID,'\t\t%d %d',x,y);
+            fprintf(fileID,'\t\t%d %d',x-1,y-1);
             for j = 1:length(row)
                 fprintf(fileID,' %d',row(j));
             end
@@ -248,7 +282,7 @@ s = size(layout.barrier);
 for x = 1:s(1)
     for y = 1:s(2)
         if layout.barrier(x,y)
-            fprintf(fileID,'\t\t%d %d\n',x,y);
+            fprintf(fileID,'\t\t%d %d\n',x-1,y-1);
         end
     end
 end

@@ -16,16 +16,18 @@ classdef CometsLayout
         xdim = 1;
         ydim = 1;
         mets = {}; %cell array of strings
-        media_amt = [0];%[NaN] %vector 1/met, default 0
+        media_amt = [0];%vector 1/met, default 0. Initial media concentration in every cell
         params = CometsParams();
         %use sparse matrices. Empty elements use default values
-        diffusion_const = [0]; %[NaN] %vector 1/met, default in params
-        global_media_refresh = [];%[0] %vector 1/met, default 0
-        media_refresh = [0];%[0] %met by x by y, fill with 0 ****
-        global_static_media = [];%[NaN] %met by 2. (met,1) is logical denoting if the corresponding media is held static, (met,2) is the held concentration
-        static_media = [0];%[NaN] %met by x by y by 2, with the fourth dimension as in global_static_media ****
+        diffusion_const = [0]; %vector 1/met, default in params
+        global_media_refresh = [];%vector 1/met, default 0
+        media_refresh = [0];%[0] %met by x by y, fill with 0
+        global_static_media = [];%met by 2. (met,1) is logical denoting if the corresponding media is held static, (met,2) is the held concentration
+        static_media = [0];%met by x by y by 2, with the fourth dimension as in global_static_media ****
+        initial_media = [0]; %met by x by y by 2. Initial media concentration in the specified cell. Fourth dimension denotes [isThisValueSet?, value]
+        %To further explain these last three, if the fourth dimension holds (1,0) the value in the cell is not empty/default; it's set to zero.
         barrier = [0]; %x by y, logical
-        initial_pop = [0];%[0] %models by x by y, default 0
+        initial_pop = [0];%models by x by y, default 0
         %TODO: initial_pop modes (rectangle, random...)
     end
     
@@ -81,20 +83,10 @@ classdef CometsLayout
         
         function self=setParams(self,params)
             self.params = params;
-            %todo: load local properties from params todo: pass params to
-            %all contained models
         end
         
         function idx=metIdx(self,name)
-            %given the String name of a metabolite, returns its index in
-            %the mets list. If not found, it will return an empty matrix.
-            %Check for this case with isempty(idx)
-            idx = [];
-            if ~isempty(self.mets)
-                %idx = find(cellfun('length',regexp(self.mets,name))==1);
-                idx = find(strcmp(name,self.mets),1,'first');
-                %should be a single integer
-            end
+            idx = stridx(name,self.mets,false);
         end
         
         function self = setXdim(self,x)
@@ -138,6 +130,56 @@ classdef CometsLayout
         function self = setDims(self,x,y)
             self = self.setXdim(x);
             self = self.setYdim(y);
+        end
+        
+        function self = setInitialMediaInCell(self,x,y,metname,value)
+            idx = stridx(metname,self.mets,false);
+            self.initial_media(idx,x,y,1)=1;
+            self.initial_media(idx,x,y,2)=value;
+        end
+        
+        %sort the list of metabolites alphabetically, and rearrange other
+        %lists accordingly
+        function self = sortMetabolites(self)
+            %lists to rearrange: mets, media_amt, diffusion_const, global_media_refresh
+            %media_refresh, global_static_media, static_media, initial_media
+            nmets = length(self.mets);
+            x = self.xdim;
+            y = self.ydim;
+            [self.mets, map] = sort(self.mets);
+            if any(self.media_amt)
+                self.media_amt = self.media_amt(map);
+            end
+            if any(self.diffusion_const)
+                self.diffusion_const = self.diffusion_const(map);
+            end
+            if any(self.global_media_refresh)
+                self.global_media_refresh = self.global_media_refresh(map);
+            end
+            if any(self.media_refresh(:))
+                s = size(self.media_refresh);
+                if s(1) < nmets
+                    self.media_refresh(nmets,z,y) = 0;
+                end
+                self.media_refresh = self.media_refresh(map,:,:);
+            end
+            if any(self.global_static_media(:))
+                self.global_static_media = self.global_static_media(map,:);
+            end
+            if any(self.static_media(:))
+                s = size(self.static_media);
+                if s(1) < nmets
+                    self.static_media(nmets,x,y,2) = 0;
+                end
+                self.static_media = self.static_media(map,:,:,:);
+            end
+            if any(self.initial_media(:))
+                s = size(self.initial_media);
+                if s(1) < nmets
+                    self.initial_media(nmets,x,y,2) = 0;
+                end
+                self.initial_media = self.initial_media(map,:,:,:);
+            end
         end
     end
     
