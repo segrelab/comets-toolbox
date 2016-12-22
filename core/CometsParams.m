@@ -24,26 +24,25 @@ classdef CometsParams
         slideshowRate = 1
         slideshowLayer = 324
         writeFluxLog = false
-        FluxLogName = './flux.txt'
+        FluxLogName = './flux.m'
         FluxLogRate = 1
         writeMediaLog = false
-        MediaLogName = './media.txt'
+        MediaLogName = './media.m'
         MediaLogRate = 1
         writeBiomassLog = false
-        BiomassLogName = './biomass.txt'
+        BiomassLogName = './biomass.m'
         BiomassLogRate = 1
         writeTotalBiomassLog = false
         totalBiomassLogRate = 1
-        TotalbiomassLogName = './total_biomass'
+        TotalbiomassLogName = './total_biomass.m'
         useLogNameTimeStamp = false
         slideshowName = './res.png'
         
-        %COMETS package params with defaults:
+        %COMETS FBA package params with defaults:
         numDiffPerStep = 10
         numRunThreads = 1
         growthDiffRate = 0
         flowDiffRate = 3e-9
-        exchangestyle = 'Monod Style'
         defaultKm = 0.01
         defaultHill = 1
         timeStep = 0.01
@@ -56,11 +55,12 @@ classdef CometsParams
         showCycleTime = true
         showCycleCount = true
         defaultVmax = 10
+        %randomOrder = false
         %logFormat = 'COMETS' %['COMETS', 'Matlab']
         biomassMotionStyle = 'Diffusion (Crank-Nicolson)' %['Diffusion (Crank-Nicolson)', 'Diffusion
         %(Eight Point)', 'Diffusion 3D']
         %Not yet implemented: ['Convection 2D', 'Convection 3D']
-        exchangeStyle = 'Standard FBA' %['Standard FBA', 'Monod Style', 'Pseudo-Monod
+        exchangeStyle = 'Monod Style' %['Standard FBA', 'Monod Style', 'Pseudo-Monod
         %Style']
         
         
