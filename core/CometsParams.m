@@ -4,17 +4,11 @@ classdef CometsParams
     
     %Constructor CometsParams()
     %
-    % $Author: mquintin $	$Date: 2016/08/16 17:05:10 $	$Revision: 0.1 $
+    % $Author: mquintin $	$Date: 2016/08/16 17:05:10 $	$Revision: 0.2 $
+    % Last edit: mquintin 12/30/2016
     % Copyright: Daniel Segrè, Boston University Bioinformatics Program 2016
     
-    properties
-        % Session/SSH parameters
-        %local = false; %run on the local machine?
-        %server;
-        %username;
-        %password; %TODO: how to secure this?
-        % Don't store it- prompt at runtime
-        
+    properties       
         % COMETS global params with defaults:
         maxCycles = 200
         pixelScale = 5
@@ -43,8 +37,7 @@ classdef CometsParams
         numRunThreads = 1
         growthDiffRate = 0
         flowDiffRate = 3e-9
-        defaultKm = 0.01
-        defaultHill = 1
+        defaultDiffusionConstant = 1e-6
         timeStep = 0.01
         deathRate = 0.0
         spaceWidth = 0.01 %COMETS calculates spaceVolume with this, dont include Vol
@@ -54,7 +47,6 @@ classdef CometsParams
         toroidalWorld = false
         showCycleTime = true
         showCycleCount = true
-        defaultVmax = 10
         %randomOrder = false
         %logFormat = 'COMETS' %['COMETS', 'Matlab']
         biomassMotionStyle = 'Diffusion (Crank-Nicolson)' %['Diffusion (Crank-Nicolson)', 'Diffusion
@@ -63,11 +55,12 @@ classdef CometsParams
         exchangeStyle = 'Monod Style' %['Standard FBA', 'Monod Style', 'Pseudo-Monod
         %Style']
         
-        
-        %TODO: Find appropriate values
-        defaultReactionLower = 0.0
-        defaultReactionUpper = 100
-        defaultDiffusionConstant = 1e-6
+        %Model-relevent parameters
+        defaultReactionLower = -1000
+        defaultReactionUpper = 1000
+        defaultKm = 0.01
+        defaultHill = 1
+        defaultVmax = 10        
         
     end
     

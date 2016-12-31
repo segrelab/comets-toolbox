@@ -390,7 +390,7 @@ fclose(fileID);
 %write the model files
 for i = 1:length(layout.models)
     m = layout.models{i};
-    writeCometsModel(m,getModelFilePath(m));
+    writeCometsModel(m,getModelFilePath(m),layout.params);
 end
 
     function mname = getModelFileName(model)

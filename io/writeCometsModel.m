@@ -1,6 +1,7 @@
-function f = writeCometsModel( input, filename )
-%WRITECOMETSMODEL Summary of this function goes here
-%   Detailed explanation goes here
+function f = writeCometsModel( input, filename, cometsParams)
+%WRITECOMETSMODEL create a Comets input file for the given model
+%   The third argument is optional, and can be used to override the default
+%kinetic parameters declared in the CometsParams class
 
 
 if isa(input,'string')
@@ -55,8 +56,18 @@ end
 
 fprintf(fileID,'//\n');
 
+%get the default flux and kinetic parameters
+if nargin < 3
+    %load defaults from the CometsParams class
+    cometsParams = CometsParams(); 
+end
+defaults.ub = cometsParams.defaultReactionUpper;
+defaults.lb = cometsParams.defaultReactionLower;
+defaults.km = cometsParams.defaultKm;
+defaults.vmax = cometsParams.defaultVmax;
+
 %Print the bounds
-fprintf(fileID,'BOUNDS  %d  %d\n',-1000,1000);
+fprintf(fileID,'BOUNDS  %d  %d\n',defaults.lb,defaults.ub);
 for i=1:length(model.rxns)
     fprintf(fileID,'    %d   %f   %f\n',i,model.lb(i),model.ub(i));
 end
@@ -99,6 +110,33 @@ for i=1:length(exchange_rxnsIndex)
     fprintf(fileID,' %d',idx); 
 end
 fprintf(fileID,'\n//\n');
+
+%Print kinetic parameters
+%Note that the reaction indices refer to the position of the reaction ID in
+%the Exchange Reactions block, *Not* the actual index of the reaction
+%KM
+if isfield(model,'km') && any(model.km)
+    fprintf(fileID,'KM_VALUES\t%d\n',defaults.km);
+    idx = find(~isnan(model.km) & model.km ~= defaults.km);
+    for i=1:length(idx)
+        rxnidx = idx(i);
+        exchidx = find(exchange_rxnsIndex==rxnidx);
+        fprintf(fileID,'    %d %d\n',exchidx,model.km(rxnidx));
+    end
+    fprintf(fileID,'//\n');
+end
+
+%Vmax
+if isfield(model,'vmax') && any(model.vmax)
+    fprintf(fileID,'VMAX_VALUES\t%d\n',defaults.vmax);
+    idx = find(~isnan(model.vmax) & model.vmax ~= defaults.vmax);
+    for i=1:length(idx)
+        rxnidx = idx(i);
+        exchidx = find(exchange_rxnsIndex==rxnidx);
+        fprintf(fileID,'    %d %d\n',exchidx,model.vmax(rxnidx));
+    end
+    fprintf(fileID,'//\n');
+end
 
 fclose(fileID);
 end
