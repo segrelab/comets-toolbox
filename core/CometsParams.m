@@ -40,14 +40,14 @@ classdef CometsParams
         defaultDiffusionConstant = 1e-6
         timeStep = 0.01
         deathRate = 0.0
-        spaceWidth = 0.01 %COMETS calculates spaceVolume with this, dont include Vol
+        spaceWidth = 0.01 %COMETS calculates spaceVolume with this ^3
         maxSpaceBiomass = 2.2E-4
         minSpaceBiomass = 0.25e-10
         allowCellOverlap = true
         toroidalWorld = false
         showCycleTime = true
         showCycleCount = true
-        %randomOrder = false
+        randomOrder = false
         %logFormat = 'COMETS' %['COMETS', 'Matlab']
         biomassMotionStyle = 'Diffusion (Crank-Nicolson)' %['Diffusion (Crank-Nicolson)', 'Diffusion
         %(Eight Point)', 'Diffusion 3D']
