@@ -17,8 +17,8 @@ while ischar(tline)
         modelID = str2num(regexp(tline,'(?<=biomass\_\d*\_)\d*','match','ONCE'));
     
         if isempty(regexp(tline,'sparse','match','ONCE'));
-            x = str2num(regexp(tline,'(?<=biomass\_\d*\_\d*\()\d*','match','ONCE'));
-            y = str2num(regexp(tline,'(?<=biomass\_\d*\_\d*\(\d*, )\d*','match','ONCE'));
+            y = str2num(regexp(tline,'(?<=biomass\_\d*\_\d*\()\d*','match','ONCE'));
+            x = str2num(regexp(tline,'(?<=biomass\_\d*\_\d*\(\d*, )\d*','match','ONCE'));
             z = str2num(tline(regexp(tline,'(?<=\= )\d'):end-1));
             
             X(k) = x;
