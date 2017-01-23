@@ -394,19 +394,12 @@ for i = 1:length(layout.models)
 end
 
     function mname = getModelFileName(model)
-        desc = model.description;
-        desc = strrep(desc,' ','_'); %replace whitespace
-        desc = regexprep(desc,'\W',''); %remove special chars
-        [pathstr,name,ext] = fileparts(desc);
-        %mname = fullfile(filedir,[name '.txt']); %absolute path
+        name = getModelName(model);
         mname = [name '.txt']; %relative path; file goes in current directory
     end
     function mname = getModelFilePath(model)
-        desc = model.description;
-        desc = strrep(desc,' ','_'); %replace whitespace
-        desc = regexprep(desc,'\W',''); %remove special chars
-        [pathstr,name,ext] = fileparts(desc);
-        mname = fullfile(filedir,[name '.txt']); %absolute path
+        fname = getModelFileName(model);
+        mname = fullfile(filedir,fname); %absolute path
     end
 
 end
