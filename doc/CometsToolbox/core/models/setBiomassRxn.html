@@ -1,0 +1,150 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+                "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+<head>
+  <title>Description of setBiomassRxn</title>
+  <meta name="keywords" content="setBiomassRxn">
+  <meta name="description" content="SETBIOMASRXN Set a logical vector in a COBRA model structure to indicate">
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <meta name="generator" content="m2html &copy; 2003 Guillaume Flandin">
+  <meta name="robots" content="index, follow">
+  <link type="text/css" rel="stylesheet" href="../../../m2html.css">
+</head>
+<body>
+<a name="_top"></a>
+
+<!-- # CometsToolbox -->
+<!-- ../menu.html core -->
+<!-- menu.html models -->
+<h1>setBiomassRxn
+
+</h1>
+
+<h2><a name="_name"></a>PURPOSE <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+<div class="box"><strong>SETBIOMASRXN Set a logical vector in a COBRA model structure to indicate</strong></div>
+
+<h2><a name="_synopsis"></a>SYNOPSIS <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+<div class="box"><strong>function [model, status] = setBiomassRxn( model, rxnNames, val) </strong></div>
+
+<h2><a name="_description"></a>DESCRIPTION <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+<div class="fragment"><pre class="comment">SETBIOMASRXN Set a logical vector in a COBRA model structure to indicate
+if a reaction should be used to calculate the biomass flux. If no such
+reactions are indicated, COMETS will default to using the objective
+reaction for this.
+Arguments:
+ model: a Cobra model struct
+ rxnName: the String name of a reaction as in model.rxns, or in 
+             model.rxnNames if not found in rxns.
+          Or a cell array of reaction names
+          Alternatively, the index of a reaction or an array of indexes
+       If an empty list {} or [] is given, the biomassRxn vector will be
+       removed from the model.
+ val: Optional value to set, treated as a logical (&quot;does this reaction make
+           biomass?&quot;). Default = true
+
+Returns a modified model struct, and status = 1 if successful or 0 if the
+reaction could not be found.
+
+ $Author: mquintin $    $Date: 2017/02/01 $    $Revision: 0.1 $
+ Last edit: mquintin 01/02/2017
+ Copyright: Daniel Segrè, Boston University Bioinformatics Program 2016</pre></div>
+
+<!-- crossreference -->
+<h2><a name="_cross"></a>CROSS-REFERENCE INFORMATION <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+This function calls:
+<ul style="list-style-image:url(../../../matlabicon.gif)">
+
+<li><a href="../../../CometsToolbox/util/stridx.html" class="code" title="function [idx] = stridx(query, list, allowSubstr)">stridx</a>	STRIDX(str, {str}, [true]) Get the indexes of the query string in the given cell array.</li>
+</ul>
+This function is called by:
+<ul style="list-style-image:url(../../../matlabicon.gif)">
+
+</ul>
+<!-- crossreference -->
+
+
+
+
+<h2><a name="_source"></a>SOURCE CODE <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+<div class="fragment"><pre>0001 <a name="_sub0" href="#_subfunctions" class="code">function [model, status] = setBiomassRxn( model, rxnNames, val)</a>
+0002 <span class="comment">%SETBIOMASRXN Set a logical vector in a COBRA model structure to indicate</span>
+0003 <span class="comment">%if a reaction should be used to calculate the biomass flux. If no such</span>
+0004 <span class="comment">%reactions are indicated, COMETS will default to using the objective</span>
+0005 <span class="comment">%reaction for this.</span>
+0006 <span class="comment">%Arguments:</span>
+0007 <span class="comment">% model: a Cobra model struct</span>
+0008 <span class="comment">% rxnName: the String name of a reaction as in model.rxns, or in</span>
+0009 <span class="comment">%             model.rxnNames if not found in rxns.</span>
+0010 <span class="comment">%          Or a cell array of reaction names</span>
+0011 <span class="comment">%          Alternatively, the index of a reaction or an array of indexes</span>
+0012 <span class="comment">%       If an empty list {} or [] is given, the biomassRxn vector will be</span>
+0013 <span class="comment">%       removed from the model.</span>
+0014 <span class="comment">% val: Optional value to set, treated as a logical (&quot;does this reaction make</span>
+0015 <span class="comment">%           biomass?&quot;). Default = true</span>
+0016 <span class="comment">%</span>
+0017 <span class="comment">%Returns a modified model struct, and status = 1 if successful or 0 if the</span>
+0018 <span class="comment">%reaction could not be found.</span>
+0019 <span class="comment">%</span>
+0020 <span class="comment">% $Author: mquintin $    $Date: 2017/02/01 $    $Revision: 0.1 $</span>
+0021 <span class="comment">% Last edit: mquintin 01/02/2017</span>
+0022 <span class="comment">% Copyright: Daniel Segrè, Boston University Bioinformatics Program 2016</span>
+0023 <span class="comment">%</span>
+0024 status = 0;
+0025 
+0026 idx = -1;
+0027 
+0028 <span class="comment">%default to setting the indicated reactions' biomass status to true</span>
+0029 <span class="keyword">if</span> nargin &lt; 3 || val
+0030     val = 1;
+0031 <span class="keyword">else</span>
+0032     val = 0;
+0033 <span class="keyword">end</span>
+0034 
+0035 
+0036 
+0037 <span class="comment">%parse the reaction names</span>
+0038 <span class="keyword">if</span> ischar(rxnNames) <span class="comment">%a single reaction name</span>
+0039     rxnNames = {rxnNames};
+0040 <span class="keyword">end</span>
+0041 <span class="keyword">if</span> iscell(rxnNames) <span class="comment">%string names given</span>
+0042     idx = zeros(length(rxnNames));
+0043     <span class="keyword">for</span> i = 1:length(rxnNames)
+0044         j = <a href="../../../CometsToolbox/util/stridx.html" class="code" title="function [idx] = stridx(query, list, allowSubstr)">stridx</a>(rxnNames{i},model.rxns,false);
+0045         <span class="keyword">if</span> isempty(j)
+0046             j = <a href="../../../CometsToolbox/util/stridx.html" class="code" title="function [idx] = stridx(query, list, allowSubstr)">stridx</a>(rxnNames{i},model.rxnNames,false);
+0047         <span class="keyword">end</span>
+0048         <span class="keyword">if</span> ~isempty(j)
+0049             idx(i) = j(1);
+0050             status = 1;
+0051         <span class="keyword">end</span>
+0052     <span class="keyword">end</span>
+0053 <span class="keyword">end</span>
+0054 
+0055 <span class="keyword">if</span> isnumeric(rxnNames) <span class="comment">%works for a single index or an array</span>
+0056     idx = rxnNames;
+0057 <span class="keyword">end</span>
+0058 
+0059 <span class="comment">%handle cases where the value is being reset</span>
+0060 <span class="keyword">if</span> isempty(rxnNames) &amp;&amp; isfield(model,<span class="string">'biomassRxn'</span>)
+0061     model = rmfield(model,<span class="string">'biomassRxn'</span>);
+0062 <span class="keyword">end</span>
+0063 
+0064 <span class="comment">%initialize or grow the vector if necessary</span>
+0065 <span class="keyword">if</span> ~isempty(rxnNames) &amp;&amp; ~isfield(model,<span class="string">'biomassRxn'</span>)
+0066     model.km = NaN(1,length(model.rxns));
+0067 <span class="keyword">elseif</span> ~isempty(rxnNames) &amp;&amp; length(model.biomassRxn) &lt; length(model.rxns)
+0068     model.biomassRxn(length(model.biomassRxn)+1:length(model.rxns)) = 0;
+0069 <span class="keyword">end</span>
+0070 
+0071 <span class="comment">%set the value</span>
+0072 <span class="keyword">for</span> i=1:length(idx)
+0073     j = idx(i);
+0074     model.biomassRxn(j) = val;
+0075 <span class="keyword">end</span>
+0076 
+0077 <span class="keyword">end</span>
+0078</pre></div>
+
+<hr><address>Generated on Tue 24-Jan-2017 14:13:21 by <strong><a href="http://www.artefact.tk/software/matlab/m2html/" target="_parent">m2html</a></strong> &copy; 2003</address>
+</body>
+</html>

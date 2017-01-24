@@ -1,0 +1,158 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+                "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+<head>
+  <title>Description of normalizeMetNames</title>
+  <meta name="keywords" content="normalizeMetNames">
+  <meta name="description" content="NORMALIZEMETS Replace the model.mets with a standardized name and format">
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <meta name="generator" content="m2html &copy; 2003 Guillaume Flandin">
+  <meta name="robots" content="index, follow">
+  <link type="text/css" rel="stylesheet" href="../../../m2html.css">
+</head>
+<body>
+<a name="_top"></a>
+
+<!-- # CometsToolbox -->
+<!-- ../menu.html util -->
+<!-- menu.html metabolites -->
+<h1>normalizeMetNames
+
+</h1>
+
+<h2><a name="_name"></a>PURPOSE <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+<div class="box"><strong>NORMALIZEMETS Replace the model.mets with a standardized name and format</strong></div>
+
+<h2><a name="_synopsis"></a>SYNOPSIS <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+<div class="box"><strong>function [model, failed, failedflag] = normalizeMetNames(model) </strong></div>
+
+<h2><a name="_description"></a>DESCRIPTION <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+<div class="fragment"><pre class="comment">NORMALIZEMETS Replace the model.mets with a standardized name and format
+ 
+ [OUTPUTARGS] = NORMALIZEMETNAMES(INPUTARGS) 
+   model: A COBRA model
+   failed: cell array of the met names which did not have a match in
+   the alias DB
+   failedflag: logical array denoting for each met wether it did not have
+   a match in the alias DB (1 = no match found)
+ 
+ Examples: 
+ 
+ Provide sample usage code here
+ 
+ See also: List related files here</pre></div>
+
+<!-- crossreference -->
+<h2><a name="_cross"></a>CROSS-REFERENCE INFORMATION <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+This function calls:
+<ul style="list-style-image:url(../../../matlabicon.gif)">
+
+<li><a href="../../../CometsToolbox/external/mksqlite-2.4/mksqlite.html" class="code" title="">mksqlite</a>	MKSQLITE Eine MATLAB Schnittstelle zu SQLite</li>
+</ul>
+This function is called by:
+<ul style="list-style-image:url(../../../matlabicon.gif)">
+
+</ul>
+<!-- crossreference -->
+
+
+
+
+<h2><a name="_source"></a>SOURCE CODE <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+<div class="fragment"><pre>0001 <a name="_sub0" href="#_subfunctions" class="code">function [model, failed, failedflag] = normalizeMetNames(model)</a>
+0002 <span class="comment">%NORMALIZEMETS Replace the model.mets with a standardized name and format</span>
+0003 <span class="comment">%</span>
+0004 <span class="comment">% [OUTPUTARGS] = NORMALIZEMETNAMES(INPUTARGS)</span>
+0005 <span class="comment">%   model: A COBRA model</span>
+0006 <span class="comment">%   failed: cell array of the met names which did not have a match in</span>
+0007 <span class="comment">%   the alias DB</span>
+0008 <span class="comment">%   failedflag: logical array denoting for each met wether it did not have</span>
+0009 <span class="comment">%   a match in the alias DB (1 = no match found)</span>
+0010 <span class="comment">%</span>
+0011 <span class="comment">% Examples:</span>
+0012 <span class="comment">%</span>
+0013 <span class="comment">% Provide sample usage code here</span>
+0014 <span class="comment">%</span>
+0015 <span class="comment">% See also: List related files here</span>
+0016 
+0017 <span class="comment">% $Author: mquintin $    $Date: 2016/10/28 12:59:12 $    $Revision: 0.1 $</span>
+0018 <span class="comment">% Copyright: Daniel Segrè, Boston University Bioinformatics Program 2016</span>
+0019 
+0020 
+0021 <span class="comment">%call COBRA to strip the compartment if in the form &quot;metName[c]&quot; or &quot;metName(c)&quot;</span>
+0022 
+0023 <span class="comment">%TODO: This script is currently incompatible with compartments in the form</span>
+0024 <span class="comment">%&quot;metname_c&quot;</span>
+0025 
+0026 [basemetnames, compsymbols] = parseMetNames(model.mets);
+0027 
+0028 newmetnames = cell(length(basemetnames),1);
+0029 failed = cell(length(basemetnames),1);
+0030 failedflag = zeros(length(basemetnames),1);
+0031 
+0032 dbpath = which(<span class="string">'metabolites\metnames.db'</span>);
+0033 <a href="../../../CometsToolbox/external/mksqlite-2.4/mksqlite.html" class="code" title="">mksqlite</a>(<span class="string">'open'</span>,dbpath);
+0034 
+0035 <span class="keyword">for</span> i = 1:length(basemetnames)
+0036     met = basemetnames{i};
+0037     <span class="comment">%use LIKE instead of == to ignore case</span>
+0038     res = <a href="../../../CometsToolbox/external/mksqlite-2.4/mksqlite.html" class="code" title="">mksqlite</a>(<span class="string">'select official from PSEUDONYM where pseudonym like ?'</span>,met);
+0039     <span class="keyword">if</span> ~isempty(res) <span class="comment">%match found</span>
+0040         <span class="comment">%if ischar(res.official)</span>
+0041         <span class="comment">%    newmetnames{i} = res.official;</span>
+0042         <span class="comment">%elseif iscell(res.official)</span>
+0043         <span class="comment">%    newmetnames{i} = res.official{1};</span>
+0044         <span class="comment">%else %something weird happened. Default to failing</span>
+0045         <span class="comment">%    newmetnames{i} = met;</span>
+0046         <span class="comment">%    failedflag(i) = 1;</span>
+0047         <span class="comment">%    failed{i} = met;</span>
+0048         <span class="comment">%end</span>
+0049         
+0050         <span class="comment">%the above is temporarily removed due to strange behavior in</span>
+0051         <span class="comment">%mksqlite when multiple values are returned. I expected</span>
+0052         <span class="comment">%res.official to contain a single value, either a string or a cell</span>
+0053         <span class="comment">%array. Instead it contains multiple values: a string for each</span>
+0054         <span class="comment">%returned record. So, I'll wrap them in a cell array and pull out</span>
+0055         <span class="comment">%the first.</span>
+0056         <span class="comment">%Note that this means multiple returns (which shouldn't occur, but</span>
+0057         <span class="comment">%aren't enforced not to occur by the DB) will be hidden</span>
+0058         
+0059         newname = {res.official};
+0060         newmetnames{i} = newname{1};
+0061         
+0062     <span class="keyword">else</span> <span class="comment">%no match found</span>
+0063         <span class="comment">%try searching on the model.metNames field instead</span>
+0064         [tempbase, tempcomp] = parseMetNames(model.metNames(i));
+0065         res = <a href="../../../CometsToolbox/external/mksqlite-2.4/mksqlite.html" class="code" title="">mksqlite</a>(<span class="string">'select official from PSEUDONYM where pseudonym like ?'</span>,tempbase{1});
+0066         <span class="keyword">if</span> ~isempty(res)
+0067             newname = {res.official};
+0068             newmetnames{i} = newname{1};
+0069             <span class="keyword">if</span> strcmp(<span class="string">''</span>,compsymbols{i})
+0070                 compsymbols{i} = tempcomp{1};
+0071             <span class="keyword">end</span>
+0072         <span class="keyword">else</span> <span class="comment">%still no match</span>
+0073             newmetnames{i} = met;
+0074             failedflag(i) = 1;
+0075             failed{i} = met;
+0076         <span class="keyword">end</span>
+0077     <span class="keyword">end</span>
+0078 <span class="keyword">end</span>
+0079 <a href="../../../CometsToolbox/external/mksqlite-2.4/mksqlite.html" class="code" title="">mksqlite</a>(<span class="string">'close'</span>);
+0080 
+0081 <span class="comment">%trim the 'failed' cell array</span>
+0082 failed = failed(~cellfun(<span class="string">'isempty'</span>,failed));
+0083 
+0084 <span class="comment">%reattach compartment symbols</span>
+0085 <span class="keyword">for</span> i = 1:length(newmetnames)
+0086     <span class="keyword">if</span> ~strcmp(<span class="string">''</span>,compsymbols{i})
+0087         newmetnames{i} = [newmetnames{i} <span class="string">'['</span> compsymbols{i} <span class="string">']'</span>];
+0088     <span class="keyword">end</span>
+0089 <span class="keyword">end</span>
+0090 
+0091 <span class="comment">%apply change to the model</span>
+0092 model.mets = newmetnames;
+0093 <span class="keyword">end</span></pre></div>
+
+<hr><address>Generated on Tue 24-Jan-2017 14:13:21 by <strong><a href="http://www.artefact.tk/software/matlab/m2html/" target="_parent">m2html</a></strong> &copy; 2003</address>
+</body>
+</html>

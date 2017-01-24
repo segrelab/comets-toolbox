@@ -12,8 +12,11 @@
 </head>
 <body>
 <a name="_top"></a>
-<!-- # CometsToolbox --><!-- menu.html core -->
+
+<!-- # CometsToolbox -->
+<!-- menu.html core -->
 <h1>CometsLayout
+
 </h1>
 
 <h2><a name="_name"></a>PURPOSE <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
@@ -29,15 +32,42 @@
 <h2><a name="_cross"></a>CROSS-REFERENCE INFORMATION <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
 This function calls:
 <ul style="list-style-image:url(../../matlabicon.gif)">
-<li><a href="CometsLayout.html" class="code" title="">CometsLayout</a>	</li><li><a href="CometsParams.html" class="code" title="">CometsParams</a>	</li></ul>
+
+<li><a href="CometsLayout.html" class="code" title="">CometsLayout</a>	</li>
+<li><a href="CometsParams.html" class="code" title="">CometsParams</a>	</li>
+<li><a href="../../CometsToolbox/util/stridx.html" class="code" title="function [idx] = stridx(query, list, allowSubstr)">stridx</a>	STRIDX(str, {str}, [true]) Get the indexes of the query string in the given cell array.</li>
+</ul>
 This function is called by:
 <ul style="list-style-image:url(../../matlabicon.gif)">
-<li><a href="CometsLayout.html" class="code" title="">CometsLayout</a>	</li><li><a href="../../CometsToolbox/factory/createLayout.html" class="code" title="function layout = createLayout(varargin)">createLayout</a>	CREATELAYOUT intialize a new blank Layout or one using the given models</li><li><a href="../../CometsToolbox/projects/ga/createGALayout.html" class="code" title="function layout=createGALayout(genome)">createGALayout</a>	Uday Tripathi 7/2016</li><li><a href="../../CometsToolbox/sample/demo62.html" class="code" title="">demo62</a>	Import from SBML</li><li><a href="../../CometsToolbox/scratch/scratchpad.html" class="code" title="">scratchpad</a>	A script to hold experiments while designing COMETS utility functions</li><li><a href="../../CometsToolbox/scratch/write_run.html" class="code" title="">write_run</a>	test writing the files for a COMETS run, then execute COMETS from the</li><li><a href="../../CometsToolbox/test/testSetInitialPop.html" class="code" title="">testSetInitialPop</a>	TESTSETINITIALPOP Confirm that the setInitialPop function works as</li></ul>
+
+<li><a href="CometsLayout.html" class="code" title="">CometsLayout</a>	</li>
+<li><a href="../../CometsToolbox/factory/createLayout.html" class="code" title="function layout = createLayout(varargin)">createLayout</a>	CREATELAYOUT intialize a new blank Layout or one using the given models</li>
+<li><a href="../../CometsToolbox/projects/ga/createGALayout.html" class="code" title="function layout=createGALayout(genome)">createGALayout</a>	Uday Tripathi 7/2016</li>
+<li><a href="../../CometsToolbox/sample/demo62.html" class="code" title="">demo62</a>	Import from SBML</li>
+<li><a href="../../CometsToolbox/scratch/scratchpad.html" class="code" title="">scratchpad</a>	A script to hold experiments while designing COMETS utility functions</li>
+<li><a href="../../CometsToolbox/scratch/write_run.html" class="code" title="">write_run</a>	test writing the files for a COMETS run, then execute COMETS from the</li>
+<li><a href="../../CometsToolbox/test/testSetInitialPop.html" class="code" title="">testSetInitialPop</a>	TESTSETINITIALPOP Confirm that the setInitialPop function works as</li>
+</ul>
 <!-- crossreference -->
+
 
 <h2><a name="_subfunctions"></a>SUBFUNCTIONS <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
 <ul style="list-style-image:url(../../matlabicon.gif)">
-<li><a href="#_sub1" class="code">function obj=CometsLayout()</a></li><li><a href="#_sub2" class="code">function self=addModel(self,model)</a></li><li><a href="#_sub3" class="code">function self=setParams(self,params)</a></li><li><a href="#_sub4" class="code">function idx=metIdx(self,name)</a></li><li><a href="#_sub5" class="code">function self = setXdim(self,x)</a></li><li><a href="#_sub6" class="code">function self = setYdim(self,y)</a></li><li><a href="#_sub7" class="code">function self = setDims(self,x,y)</a></li></ul>
+
+<li><a href="#_sub1" class="code">function obj=CometsLayout()</a></li>
+<li><a href="#_sub2" class="code">function self=addModel(self,model)</a></li>
+<li><a href="#_sub3" class="code">function self=setParams(self,params)</a></li>
+<li><a href="#_sub4" class="code">function idx=metIdx(self,name)</a></li>
+<li><a href="#_sub5" class="code">function self = setXdim(self,x)</a></li>
+<li><a href="#_sub6" class="code">function self = setYdim(self,y)</a></li>
+<li><a href="#_sub7" class="code">function self = setDims(self,x,y)</a></li>
+<li><a href="#_sub8" class="code">function self = setInitialMediaInCell(self,x,y,metname,value)</a></li>
+<li><a href="#_sub9" class="code">function self = setInitialMedia(self,metname,value)</a></li>
+<li><a href="#_sub10" class="code">function self = setMedia(self, metname, value)</a></li>
+<li><a href="#_sub11" class="code">function self = sortMetabolites(self)</a></li>
+</ul>
+
+
 <h2><a name="_source"></a>SOURCE CODE <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
 <div class="fragment"><pre>0001 classdef <a href="CometsLayout.html" class="code" title="">CometsLayout</a>
 0002     <span class="comment">%CometsLayout Defines the COMETS world and contains COBRA models.</span>
@@ -57,133 +87,186 @@ This function is called by:
 0016         xdim = 1;
 0017         ydim = 1;
 0018         mets = {}; <span class="comment">%cell array of strings</span>
-0019         media_amt = [0];<span class="comment">%[NaN] %vector 1/met, default 0</span>
+0019         media_amt = [0];<span class="comment">%vector 1/met, default 0. Initial media concentration in every cell</span>
 0020         params = <a href="CometsParams.html" class="code" title="">CometsParams</a>();
 0021         <span class="comment">%use sparse matrices. Empty elements use default values</span>
-0022         diffusion_const = [0]; <span class="comment">%[NaN] %vector 1/met, default in params</span>
-0023         global_media_refresh = [];<span class="comment">%[0] %vector 1/met, default 0</span>
-0024         media_refresh = [0];<span class="comment">%[0] %met by x by y, fill with 0 ****</span>
-0025         global_static_media = [];<span class="comment">%[NaN] %met by 2. (met,1) is logical denoting if the corresponding media is held static, (met,2) is the held concentration</span>
-0026         static_media = [0];<span class="comment">%[NaN] %met by x by y by 2, with the fourth dimension as in global_static_media ****</span>
-0027         barrier = [0]; <span class="comment">%x by y, logical</span>
-0028         initial_pop = [0];<span class="comment">%[0] %models by x by y, default 0</span>
-0029         <span class="comment">%TODO: initial_pop modes (rectangle, random...)</span>
-0030     <span class="keyword">end</span>
-0031     
-0032     methods
-0033         <span class="keyword">function</span> obj=<a href="CometsLayout.html" class="code" title="">CometsLayout</a>()
-0034         <span class="keyword">end</span>
-0035         
-0036         <span class="keyword">function</span> self=<a href="#_sub2" class="code" title="subfunction self=addModel(self,model)">addModel</a>(self,model)
-0037             self.models = [self.models model];
-0038             
-0039             <span class="comment">%if the model contains any external metabolites, add them to this mets list</span>
-0040             <span class="comment">%get exchange reactions</span>
-0041             excl = findExcRxns(model); <span class="comment">%logical: does this rxn have 1 metabolite?</span>
-0042             exc = model.S(:,excl); <span class="comment">%S matrix slice of just exchange reactions</span>
-0043             [row,col] = find(exc);
-0044             names = model.mets(row);
-0045             
-0046             <span class="comment">%mis = sum(abs(exc)); %collapse to vector of exchange metabolites</span>
-0047             <span class="comment">%names = model.mets(mis~=0); %get logical index of cells</span>
-0048             
-0049             newnames = setdiff(names, self.mets);
-0050             self.mets = [self.mets; newnames]; <span class="comment">%must maintain order, don't use Union</span>
-0051             
-0052             diff = length(self.mets) - length(self.media_amt);
-0053             <span class="keyword">if</span> diff &gt; 0
-0054                 self.media_amt = [self.media_amt; zeros(diff,1)];
-0055             <span class="keyword">end</span>
-0056             
-0057             diff = length(self.mets) - length(self.diffusion_const);
-0058             <span class="keyword">if</span> diff &gt; 0
-0059                 self.diffusion_const = [self.diffusion_const; zeros(diff,1)];
-0060             <span class="keyword">end</span>
-0061             
-0062             diff = length(self.mets) - length(self.global_media_refresh);
-0063             <span class="keyword">if</span> diff &gt; 0
-0064                 self.global_media_refresh = [self.global_media_refresh; zeros(diff,1)];
-0065             <span class="keyword">end</span>
-0066             
-0067             diff = length(self.mets) - size(self.global_static_media,1);
-0068             <span class="keyword">if</span> diff &gt; 0
-0069                 self.global_static_media = [self.global_static_media; zeros(diff,2)];
-0070             <span class="keyword">end</span>
-0071             
-0072             diff = length(self.mets) - size(self.static_media,1);
-0073             <span class="keyword">if</span> diff &gt; 0
-0074                 <span class="comment">%self.static_media = [self.static_media; zeros(diff,self.xdim,self.ydim,2)];</span>
-0075                 self.static_media(diff,:,:,:)=0;
-0076             <span class="keyword">end</span>
-0077         <span class="keyword">end</span>
-0078         
-0079         <span class="comment">%function self=removeModel(self,model)</span>
-0080         <span class="comment">%end</span>
-0081         
-0082         <span class="keyword">function</span> self=<a href="#_sub3" class="code" title="subfunction self=setParams(self,params)">setParams</a>(self,params)
-0083             self.params = params;
-0084             <span class="comment">%todo: load local properties from params todo: pass params to</span>
-0085             <span class="comment">%all contained models</span>
+0022         diffusion_const = [0]; <span class="comment">%vector 1/met, default in params</span>
+0023         global_media_refresh = [];<span class="comment">%vector 1/met, default 0</span>
+0024         media_refresh = [0];<span class="comment">%[0] %met by x by y, fill with 0</span>
+0025         global_static_media = [];<span class="comment">%met by 2. (met,1) is logical denoting if the corresponding media is held static, (met,2) is the held concentration</span>
+0026         static_media = [0];<span class="comment">%met by x by y by 2, with the fourth dimension as in global_static_media ****</span>
+0027         initial_media = [0]; <span class="comment">%met by x by y by 2. Initial media concentration in the specified cell. Fourth dimension denotes [isThisValueSet?, value]</span>
+0028         <span class="comment">%To further explain these last three, if the fourth dimension holds (1,0) the value in the cell is not empty/default; it's set to zero.</span>
+0029         barrier = [0]; <span class="comment">%x by y, logical</span>
+0030         initial_pop = [0];<span class="comment">%models by x by y, default 0</span>
+0031         <span class="comment">%TODO: initial_pop modes (rectangle, random...)</span>
+0032     <span class="keyword">end</span>
+0033     
+0034     methods
+0035         <span class="keyword">function</span> obj=<a href="CometsLayout.html" class="code" title="">CometsLayout</a>()
+0036         <span class="keyword">end</span>
+0037         
+0038         <span class="keyword">function</span> self=<a href="#_sub2" class="code" title="subfunction self=addModel(self,model)">addModel</a>(self,model)
+0039             self.models = [self.models model];
+0040             
+0041             <span class="comment">%if the model contains any external metabolites, add them to this mets list</span>
+0042             <span class="comment">%get exchange reactions</span>
+0043             excl = findExcRxns(model); <span class="comment">%logical: does this rxn have 1 metabolite?</span>
+0044             exc = model.S(:,excl); <span class="comment">%S matrix slice of just exchange reactions</span>
+0045             [row,col] = find(exc);
+0046             names = model.mets(row);
+0047             
+0048             <span class="comment">%mis = sum(abs(exc)); %collapse to vector of exchange metabolites</span>
+0049             <span class="comment">%names = model.mets(mis~=0); %get logical index of cells</span>
+0050             
+0051             newnames = setdiff(names, self.mets);
+0052             self.mets = [self.mets; newnames]; <span class="comment">%must maintain order, don't use Union</span>
+0053             
+0054             diff = length(self.mets) - length(self.media_amt);
+0055             <span class="keyword">if</span> diff &gt; 0
+0056                 self.media_amt = [self.media_amt; zeros(diff,1)];
+0057             <span class="keyword">end</span>
+0058             
+0059             diff = length(self.mets) - length(self.diffusion_const);
+0060             <span class="keyword">if</span> diff &gt; 0
+0061                 self.diffusion_const = [self.diffusion_const; zeros(diff,1)];
+0062             <span class="keyword">end</span>
+0063             
+0064             diff = length(self.mets) - length(self.global_media_refresh);
+0065             <span class="keyword">if</span> diff &gt; 0
+0066                 self.global_media_refresh = [self.global_media_refresh; zeros(diff,1)];
+0067             <span class="keyword">end</span>
+0068             
+0069             diff = length(self.mets) - size(self.global_static_media,1);
+0070             <span class="keyword">if</span> diff &gt; 0
+0071                 self.global_static_media = [self.global_static_media; zeros(diff,2)];
+0072             <span class="keyword">end</span>
+0073             
+0074             diff = length(self.mets) - size(self.static_media,1);
+0075             <span class="keyword">if</span> diff &gt; 0
+0076                 <span class="comment">%self.static_media = [self.static_media; zeros(diff,self.xdim,self.ydim,2)];</span>
+0077                 self.static_media(diff,:,:,:)=0;
+0078             <span class="keyword">end</span>
+0079         <span class="keyword">end</span>
+0080         
+0081         <span class="comment">%function self=removeModel(self,model)</span>
+0082         <span class="comment">%end</span>
+0083         
+0084         <span class="keyword">function</span> self=<a href="#_sub3" class="code" title="subfunction self=setParams(self,params)">setParams</a>(self,params)
+0085             self.params = params;
 0086         <span class="keyword">end</span>
 0087         
 0088         <span class="keyword">function</span> idx=<a href="#_sub4" class="code" title="subfunction idx=metIdx(self,name)">metIdx</a>(self,name)
-0089             <span class="comment">%given the String name of a metabolite, returns its index in</span>
-0090             <span class="comment">%the mets list. If not found, it will return an empty matrix.</span>
-0091             <span class="comment">%Check for this case with isempty(idx)</span>
-0092             idx = [];
-0093             <span class="keyword">if</span> ~isempty(self.mets)
-0094                 <span class="comment">%idx = find(cellfun('length',regexp(self.mets,name))==1);</span>
-0095                 idx = find(strcmp(name,self.mets),1,<span class="string">'first'</span>);
-0096                 <span class="comment">%should be a single integer</span>
-0097             <span class="keyword">end</span>
-0098         <span class="keyword">end</span>
-0099         
-0100         <span class="keyword">function</span> self = <a href="#_sub5" class="code" title="subfunction self = setXdim(self,x)">setXdim</a>(self,x)
-0101             diff = x - self.xdim;
-0102             <span class="keyword">if</span> diff &lt; 0
-0103                 self.media_refresh = self.media_refresh(1:x,:); <span class="comment">%met by x by y, default 0</span>
-0104                 self.static_media = self.static_media(:,1:x,:); <span class="comment">%met by x by y by 2, with the fourth dimension as in global_static_media</span>
-0105                 self.barrier = self.barrier(1:x,:); <span class="comment">%x by y, logical</span>
-0106                 self.initial_pop = self.initial_pop(:,1:x,:); <span class="comment">%models by x by y</span>
-0107             <span class="keyword">elseif</span> diff &gt; 0
-0108                 <span class="comment">%self.media_refresh = [self.media_refresh; zeros(diff,self.ydim)]; %met by x by y, default 0</span>
-0109                 self.media_refresh(:,x,:) = 0;
-0110                 <span class="comment">%self.static_media = [self.static_media; zeros(length(self.mets),diff,self.ydim,2)]; %met by x by y by 2, with the fourth dimension as in global_static_media</span>
-0111                 self.static_media(:,x,:,:) = 0;
-0112                 self.barrier = [self.barrier; zeros(diff,self.ydim)]; <span class="comment">%x by y, logical</span>
-0113                 <span class="comment">%self.initial_pop = [self.initial_pop; nan(length(self.models),diff,self.ydim)]; %models by x by y</span>
-0114                 self.initial_pop(:,x,:) = 0;
-0115             <span class="keyword">end</span>
-0116             self.xdim = x;
-0117         <span class="keyword">end</span>
-0118         
-0119         <span class="keyword">function</span> self = <a href="#_sub6" class="code" title="subfunction self = setYdim(self,y)">setYdim</a>(self,y)
-0120             diff = y - self.ydim;
-0121             <span class="keyword">if</span> diff &lt; 0
-0122                 self.media_refresh = self.media_refresh(:,1:y); <span class="comment">%met by x by y, default 0</span>
-0123                 self.static_media = self.static_media(:,:,1:y); <span class="comment">%met by x by y by 2, with the fourth dimension as in global_static_media</span>
-0124                 self.barrier = self.barrier(:,1:y); <span class="comment">%x by y, logical</span>
-0125                 self.initial_pop = self.initial_pop(:,:,1:y); <span class="comment">%models by x by y</span>
-0126             <span class="keyword">elseif</span> diff &gt; 0
-0127                 <span class="comment">%self.media_refresh = [self.media_refresh; zeros(self.xdim,diff)]; %met by x by y, default 0</span>
-0128                 self.media_refresh(:,:,y) = 0;
-0129                 <span class="comment">%self.static_media = [self.static_media; zeros(length(self.mets),self.xdim,diff,2)]; %met by x by y by 2, with the fourth dimension as in global_static_media</span>
-0130                 self.static_media(:,:,y,:) = 0;
-0131                 self.barrier = [self.barrier zeros(self.xdim,diff)]; <span class="comment">%x by y, logical</span>
-0132                 <span class="comment">%self.initial_pop = [self.initial_pop; nan(length(self.models),self.xdim,diff)]; %models by x by y</span>
-0133                 self.initial_pop(:,:,y,:) = 0;
-0134             <span class="keyword">end</span>
-0135             self.ydim = y;
-0136         <span class="keyword">end</span>
-0137         
-0138         <span class="keyword">function</span> self = <a href="#_sub7" class="code" title="subfunction self = setDims(self,x,y)">setDims</a>(self,x,y)
-0139             self = self.setXdim(x);
-0140             self = self.setYdim(y);
-0141         <span class="keyword">end</span>
-0142     <span class="keyword">end</span>
-0143     
-0144 <span class="keyword">end</span>
-0145</pre></div>
-<hr><address>Generated on Wed 07-Sep-2016 12:29:11 by <strong><a href="http://www.artefact.tk/software/matlab/m2html/" target="_parent">m2html</a></strong> &copy; 2003</address>
+0089             idx = <a href="../../CometsToolbox/util/stridx.html" class="code" title="function [idx] = stridx(query, list, allowSubstr)">stridx</a>(name,self.mets,false);
+0090         <span class="keyword">end</span>
+0091         
+0092         <span class="keyword">function</span> self = <a href="#_sub5" class="code" title="subfunction self = setXdim(self,x)">setXdim</a>(self,x)
+0093             diff = x - self.xdim;
+0094             <span class="keyword">if</span> diff &lt; 0
+0095                 self.media_refresh = self.media_refresh(1:x,:); <span class="comment">%met by x by y, default 0</span>
+0096                 self.static_media = self.static_media(:,1:x,:); <span class="comment">%met by x by y by 2, with the fourth dimension as in global_static_media</span>
+0097                 self.barrier = self.barrier(1:x,:); <span class="comment">%x by y, logical</span>
+0098                 self.initial_pop = self.initial_pop(:,1:x,:); <span class="comment">%models by x by y</span>
+0099             <span class="keyword">elseif</span> diff &gt; 0
+0100                 <span class="comment">%self.media_refresh = [self.media_refresh; zeros(diff,self.ydim)]; %met by x by y, default 0</span>
+0101                 self.media_refresh(:,x,:) = 0;
+0102                 <span class="comment">%self.static_media = [self.static_media; zeros(length(self.mets),diff,self.ydim,2)]; %met by x by y by 2, with the fourth dimension as in global_static_media</span>
+0103                 self.static_media(:,x,:,:) = 0;
+0104                 self.barrier = [self.barrier; zeros(diff,self.ydim)]; <span class="comment">%x by y, logical</span>
+0105                 <span class="comment">%self.initial_pop = [self.initial_pop; nan(length(self.models),diff,self.ydim)]; %models by x by y</span>
+0106                 self.initial_pop(:,x,:) = 0;
+0107             <span class="keyword">end</span>
+0108             self.xdim = x;
+0109         <span class="keyword">end</span>
+0110         
+0111         <span class="keyword">function</span> self = <a href="#_sub6" class="code" title="subfunction self = setYdim(self,y)">setYdim</a>(self,y)
+0112             diff = y - self.ydim;
+0113             <span class="keyword">if</span> diff &lt; 0
+0114                 self.media_refresh = self.media_refresh(:,1:y); <span class="comment">%met by x by y, default 0</span>
+0115                 self.static_media = self.static_media(:,:,1:y); <span class="comment">%met by x by y by 2, with the fourth dimension as in global_static_media</span>
+0116                 self.barrier = self.barrier(:,1:y); <span class="comment">%x by y, logical</span>
+0117                 self.initial_pop = self.initial_pop(:,:,1:y); <span class="comment">%models by x by y</span>
+0118             <span class="keyword">elseif</span> diff &gt; 0
+0119                 <span class="comment">%self.media_refresh = [self.media_refresh; zeros(self.xdim,diff)]; %met by x by y, default 0</span>
+0120                 self.media_refresh(:,:,y) = 0;
+0121                 <span class="comment">%self.static_media = [self.static_media; zeros(length(self.mets),self.xdim,diff,2)]; %met by x by y by 2, with the fourth dimension as in global_static_media</span>
+0122                 self.static_media(:,:,y,:) = 0;
+0123                 self.barrier = [self.barrier zeros(self.xdim,diff)]; <span class="comment">%x by y, logical</span>
+0124                 <span class="comment">%self.initial_pop = [self.initial_pop; nan(length(self.models),self.xdim,diff)]; %models by x by y</span>
+0125                 self.initial_pop(:,:,y,:) = 0;
+0126             <span class="keyword">end</span>
+0127             self.ydim = y;
+0128         <span class="keyword">end</span>
+0129         
+0130         <span class="keyword">function</span> self = <a href="#_sub7" class="code" title="subfunction self = setDims(self,x,y)">setDims</a>(self,x,y)
+0131             self = self.setXdim(x);
+0132             self = self.setYdim(y);
+0133         <span class="keyword">end</span>
+0134         
+0135         <span class="keyword">function</span> self = <a href="#_sub8" class="code" title="subfunction self = setInitialMediaInCell(self,x,y,metname,value)">setInitialMediaInCell</a>(self,x,y,metname,value)
+0136             idx = <a href="../../CometsToolbox/util/stridx.html" class="code" title="function [idx] = stridx(query, list, allowSubstr)">stridx</a>(metname,self.mets,false);
+0137             self.initial_media(idx,x,y,1)=1;
+0138             self.initial_media(idx,x,y,2)=value;
+0139         <span class="keyword">end</span>
+0140         
+0141         <span class="comment">%set the initial amount of the metabolite given by name</span>
+0142         <span class="keyword">function</span> self = <a href="#_sub9" class="code" title="subfunction self = setInitialMedia(self,metname,value)">setInitialMedia</a>(self,metname,value)
+0143             self.media_amt(<a href="../../CometsToolbox/util/stridx.html" class="code" title="function [idx] = stridx(query, list, allowSubstr)">stridx</a>(metname, self.mets, false)) = value;
+0144         <span class="keyword">end</span>
+0145         
+0146         <span class="comment">%rename setInitialMedia for simplicity</span>
+0147         <span class="keyword">function</span> self = <a href="#_sub10" class="code" title="subfunction self = setMedia(self, metname, value)">setMedia</a>(self, metname, value)
+0148             self = <a href="#_sub9" class="code" title="subfunction self = setInitialMedia(self,metname,value)">setInitialMedia</a>(self, metname, value);
+0149         <span class="keyword">end</span>
+0150         
+0151         <span class="comment">%sort the list of metabolites alphabetically, and rearrange other</span>
+0152         <span class="comment">%lists accordingly</span>
+0153         <span class="keyword">function</span> self = <a href="#_sub11" class="code" title="subfunction self = sortMetabolites(self)">sortMetabolites</a>(self)
+0154             <span class="comment">%lists to rearrange: mets, media_amt, diffusion_const, global_media_refresh</span>
+0155             <span class="comment">%media_refresh, global_static_media, static_media, initial_media</span>
+0156             nmets = length(self.mets);
+0157             x = self.xdim;
+0158             y = self.ydim;
+0159             [self.mets, map] = sort(self.mets);
+0160             <span class="keyword">if</span> any(self.media_amt)
+0161                 self.media_amt = self.media_amt(map);
+0162             <span class="keyword">end</span>
+0163             <span class="keyword">if</span> any(self.diffusion_const)
+0164                 self.diffusion_const = self.diffusion_const(map);
+0165             <span class="keyword">end</span>
+0166             <span class="keyword">if</span> any(self.global_media_refresh)
+0167                 self.global_media_refresh = self.global_media_refresh(map);
+0168             <span class="keyword">end</span>
+0169             <span class="keyword">if</span> any(self.media_refresh(:))
+0170                 s = size(self.media_refresh);
+0171                 <span class="keyword">if</span> s(1) &lt; nmets
+0172                     self.media_refresh(nmets,z,y) = 0;
+0173                 <span class="keyword">end</span>
+0174                 self.media_refresh = self.media_refresh(map,:,:);
+0175             <span class="keyword">end</span>
+0176             <span class="keyword">if</span> any(self.global_static_media(:))
+0177                 self.global_static_media = self.global_static_media(map,:);
+0178             <span class="keyword">end</span>
+0179             <span class="keyword">if</span> any(self.static_media(:))
+0180                 s = size(self.static_media);
+0181                 <span class="keyword">if</span> s(1) &lt; nmets
+0182                     self.static_media(nmets,x,y,2) = 0;
+0183                 <span class="keyword">end</span>
+0184                 self.static_media = self.static_media(map,:,:,:);
+0185             <span class="keyword">end</span>
+0186             <span class="keyword">if</span> any(self.initial_media(:))
+0187                 s = size(self.initial_media);
+0188                 <span class="keyword">if</span> s(1) &lt; nmets
+0189                     self.initial_media(nmets,x,y,2) = 0;
+0190                 <span class="keyword">end</span>
+0191                 self.initial_media = self.initial_media(map,:,:,:);
+0192             <span class="keyword">end</span>
+0193         <span class="keyword">end</span>
+0194     <span class="keyword">end</span>
+0195     
+0196 <span class="keyword">end</span>
+0197</pre></div>
+
+<hr><address>Generated on Tue 24-Jan-2017 14:13:21 by <strong><a href="http://www.artefact.tk/software/matlab/m2html/" target="_parent">m2html</a></strong> &copy; 2003</address>
 </body>
 </html>

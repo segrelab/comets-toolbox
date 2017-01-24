@@ -12,8 +12,11 @@
 </head>
 <body>
 <a name="_top"></a>
-<!-- # CometsToolbox --><!-- menu.html core -->
+
+<!-- # CometsToolbox -->
+<!-- menu.html core -->
 <h1>CometsParams
+
 </h1>
 
 <h2><a name="_name"></a>PURPOSE <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
@@ -29,15 +32,26 @@
 <h2><a name="_cross"></a>CROSS-REFERENCE INFORMATION <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
 This function calls:
 <ul style="list-style-image:url(../../matlabicon.gif)">
-<li><a href="CometsParams.html" class="code" title="">CometsParams</a>	</li></ul>
+
+<li><a href="CometsParams.html" class="code" title="">CometsParams</a>	</li>
+</ul>
 This function is called by:
 <ul style="list-style-image:url(../../matlabicon.gif)">
-<li><a href="CometsLayout.html" class="code" title="">CometsLayout</a>	</li><li><a href="CometsParams.html" class="code" title="">CometsParams</a>	</li></ul>
+
+<li><a href="CometsLayout.html" class="code" title="">CometsLayout</a>	</li>
+<li><a href="CometsParams.html" class="code" title="">CometsParams</a>	</li>
+<li><a href="../../CometsToolbox/io/writeCometsModel.html" class="code" title="function f = writeCometsModel( input, filename, cometsParams)">writeCometsModel</a>	WRITECOMETSMODEL create a Comets input file for the given model</li>
+</ul>
 <!-- crossreference -->
+
 
 <h2><a name="_subfunctions"></a>SUBFUNCTIONS <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
 <ul style="list-style-image:url(../../matlabicon.gif)">
-<li><a href="#_sub1" class="code">function self = CometsParams()</a></li></ul>
+
+<li><a href="#_sub1" class="code">function self = CometsParams()</a></li>
+</ul>
+
+
 <h2><a name="_source"></a>SOURCE CODE <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
 <div class="fragment"><pre>0001 classdef <a href="CometsParams.html" class="code" title="">CometsParams</a>
 0002     <span class="comment">%CometsParams A wrapper for  global and model-level parameters used in</span>
@@ -45,81 +59,75 @@ This function is called by:
 0004     
 0005     <span class="comment">%Constructor CometsParams()</span>
 0006     <span class="comment">%</span>
-0007     <span class="comment">% $Author: mquintin $    $Date: 2016/08/16 17:05:10 $    $Revision: 0.1 $</span>
-0008     <span class="comment">% Copyright: Daniel Segrè, Boston University Bioinformatics Program 2016</span>
-0009     
-0010     properties
-0011         <span class="comment">% Session/SSH parameters</span>
-0012         <span class="comment">%local = false; %run on the local machine?</span>
-0013         <span class="comment">%server;</span>
-0014         <span class="comment">%username;</span>
-0015         <span class="comment">%password; %TODO: how to secure this?</span>
-0016         <span class="comment">% Don't store it- prompt at runtime</span>
-0017         
-0018         <span class="comment">% COMETS global params with defaults:</span>
-0019         maxCycles = 200
-0020         pixelScale = 5
-0021         saveslideshow = false
-0022         slideshowExt = <span class="string">'png'</span>
-0023         slideshowColorRelative = true
-0024         slideshowRate = 1
-0025         slideshowLayer = 324
-0026         writeFluxLog = false
-0027         FluxLogName = <span class="string">'./flux.txt'</span>
-0028         FluxLogRate = 1
-0029         writeMediaLog = false
-0030         MediaLogName = <span class="string">'./media.txt'</span>
-0031         MediaLogRate = 1
-0032         writeBiomassLog = false
-0033         BiomassLogName = <span class="string">'./biomass.txt'</span>
-0034         BiomassLogRate = 1
-0035         writeTotalBiomassLog = false
-0036         totalBiomassLogRate = 1
-0037         TotalbiomassLogName = <span class="string">'./total_biomass'</span>
-0038         useLogNameTimeStamp = false
-0039         slideshowName = <span class="string">'./res.png'</span>
-0040         
-0041         <span class="comment">%COMETS package params with defaults:</span>
-0042         numDiffPerStep = 10
-0043         numRunThreads = 1
-0044         growthDiffRate = 0
-0045         flowDiffRate = 3e-9
-0046         exchangestyle = <span class="string">'Monod Style'</span>
-0047         defaultKm = 0.01
-0048         defaultHill = 1
-0049         timeStep = 0.01
-0050         deathRate = 0.0
-0051         spaceWidth = 0.01 <span class="comment">%COMETS calculates spaceVolume with this, dont include Vol</span>
-0052         maxSpaceBiomass = 2.2E-4
-0053         minSpaceBiomass = 0.25e-10
-0054         allowCellOverlap = true
-0055         toroidalWorld = false
-0056         showCycleTime = true
-0057         showCycleCount = true
-0058         defaultVmax = 10
-0059         <span class="comment">%logFormat = 'COMETS' %['COMETS', 'Matlab']</span>
-0060         biomassMotionStyle = <span class="string">'Diffusion (Crank-Nicolson)'</span> <span class="comment">%['Diffusion (Crank-Nicolson)', 'Diffusion</span>
-0061         <span class="comment">%(Eight Point)', 'Diffusion 3D']</span>
-0062         <span class="comment">%Not yet implemented: ['Convection 2D', 'Convection 3D']</span>
-0063         exchangeStyle = <span class="string">'Standard FBA'</span> <span class="comment">%['Standard FBA', 'Monod Style', 'Pseudo-Monod</span>
-0064         <span class="comment">%Style']</span>
-0065         
-0066         
-0067         <span class="comment">%TODO: Find appropriate values</span>
-0068         defaultReactionLower = 0.0
-0069         defaultReactionUpper = 100
-0070         defaultDiffusionConstant = 1e-6
-0071         
-0072     <span class="keyword">end</span>
-0073     
-0074     methods
-0075         <span class="comment">%constructor</span>
-0076         <span class="keyword">function</span> self = <a href="CometsParams.html" class="code" title="">CometsParams</a>()
-0077         <span class="keyword">end</span>
-0078     <span class="keyword">end</span>
-0079     
-0080 <span class="keyword">end</span>
-0081</pre></div>
-<hr><address>Generated on Wed 07-Sep-2016 12:29:11 by <strong><a href="http://www.artefact.tk/software/matlab/m2html/" target="_parent">m2html</a></strong> &copy; 2003</address>
+0007     <span class="comment">% $Author: mquintin $    $Date: 2016/08/16 17:05:10 $    $Revision: 0.2 $</span>
+0008     <span class="comment">% Last edit: mquintin 12/30/2016</span>
+0009     <span class="comment">% Copyright: Daniel Segrè, Boston University Bioinformatics Program 2016</span>
+0010     
+0011     properties       
+0012         <span class="comment">% COMETS global params with defaults:</span>
+0013         maxCycles = 200
+0014         pixelScale = 5
+0015         saveslideshow = false
+0016         slideshowExt = <span class="string">'png'</span>
+0017         slideshowColorRelative = true
+0018         slideshowRate = 1
+0019         slideshowLayer = 324
+0020         writeFluxLog = false
+0021         FluxLogName = <span class="string">'./flux.m'</span>
+0022         FluxLogRate = 1
+0023         writeMediaLog = false
+0024         MediaLogName = <span class="string">'./media.m'</span>
+0025         MediaLogRate = 1
+0026         writeBiomassLog = false
+0027         BiomassLogName = <span class="string">'./biomass.m'</span>
+0028         BiomassLogRate = 1
+0029         writeTotalBiomassLog = false
+0030         totalBiomassLogRate = 1
+0031         TotalbiomassLogName = <span class="string">'./total_biomass.m'</span>
+0032         useLogNameTimeStamp = false
+0033         slideshowName = <span class="string">'./res.png'</span>
+0034         
+0035         <span class="comment">%COMETS FBA package params with defaults:</span>
+0036         numDiffPerStep = 10
+0037         numRunThreads = 1
+0038         growthDiffRate = 0
+0039         flowDiffRate = 3e-9
+0040         defaultDiffusionConstant = 1e-6
+0041         timeStep = 0.01
+0042         deathRate = 0.0
+0043         spaceWidth = 0.01 <span class="comment">%COMETS calculates spaceVolume with this ^3</span>
+0044         maxSpaceBiomass = 2.2E-4
+0045         minSpaceBiomass = 0.25e-10
+0046         allowCellOverlap = true
+0047         toroidalWorld = false
+0048         showCycleTime = true
+0049         showCycleCount = true
+0050         randomOrder = false
+0051         <span class="comment">%logFormat = 'COMETS' %['COMETS', 'Matlab']</span>
+0052         biomassMotionStyle = <span class="string">'Diffusion (Crank-Nicolson)'</span> <span class="comment">%['Diffusion (Crank-Nicolson)', 'Diffusion</span>
+0053         <span class="comment">%(Eight Point)', 'Diffusion 3D']</span>
+0054         <span class="comment">%Not yet implemented: ['Convection 2D', 'Convection 3D']</span>
+0055         exchangeStyle = <span class="string">'Monod Style'</span> <span class="comment">%['Standard FBA', 'Monod Style', 'Pseudo-Monod</span>
+0056         <span class="comment">%Style']</span>
+0057         
+0058         <span class="comment">%Model-relevent parameters</span>
+0059         defaultReactionLower = -1000
+0060         defaultReactionUpper = 1000
+0061         defaultKm = 0.01
+0062         defaultHill = 1
+0063         defaultVmax = 10        
+0064         
+0065     <span class="keyword">end</span>
+0066     
+0067     methods
+0068         <span class="comment">%constructor</span>
+0069         <span class="keyword">function</span> self = <a href="CometsParams.html" class="code" title="">CometsParams</a>()
+0070         <span class="keyword">end</span>
+0071     <span class="keyword">end</span>
+0072     
+0073 <span class="keyword">end</span>
+0074</pre></div>
+
+<hr><address>Generated on Tue 24-Jan-2017 14:13:21 by <strong><a href="http://www.artefact.tk/software/matlab/m2html/" target="_parent">m2html</a></strong> &copy; 2003</address>
 </body>
 </html>

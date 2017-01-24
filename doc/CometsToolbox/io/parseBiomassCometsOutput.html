@@ -1,0 +1,98 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+                "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+<head>
+  <title>Description of parseBiomassCometsOutput</title>
+  <meta name="keywords" content="parseBiomassCometsOutput">
+  <meta name="description" content="parseBiomassCometsOutput:">
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <meta name="generator" content="m2html &copy; 2003 Guillaume Flandin">
+  <meta name="robots" content="index, follow">
+  <link type="text/css" rel="stylesheet" href="../../m2html.css">
+</head>
+<body>
+<a name="_top"></a>
+
+<!-- # CometsToolbox -->
+<!-- menu.html io -->
+<h1>parseBiomassCometsOutput
+
+</h1>
+
+<h2><a name="_name"></a>PURPOSE <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="box"><strong>parseBiomassCometsOutput:</strong></div>
+
+<h2><a name="_synopsis"></a>SYNOPSIS <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="box"><strong>function [out] = parseBiomassCometsOutput(biomassFile) </strong></div>
+
+<h2><a name="_description"></a>DESCRIPTION <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="fragment"><pre class="comment"> parseBiomassCometsOutput:
+ parses biomass file into struct with following fields:
+ x: x pixel
+ y: y pixel
+ biomass: biomass value
+ timeStep: cycle time step
+ model: model ID</pre></div>
+
+<!-- crossreference -->
+<h2><a name="_cross"></a>CROSS-REFERENCE INFORMATION <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+This function calls:
+<ul style="list-style-image:url(../../matlabicon.gif)">
+
+</ul>
+This function is called by:
+<ul style="list-style-image:url(../../matlabicon.gif)">
+
+</ul>
+<!-- crossreference -->
+
+
+
+
+<h2><a name="_source"></a>SOURCE CODE <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="fragment"><pre>0001 <a name="_sub0" href="#_subfunctions" class="code">function [out] = parseBiomassCometsOutput(biomassFile)</a>
+0002 <span class="comment">% parseBiomassCometsOutput:</span>
+0003 <span class="comment">% parses biomass file into struct with following fields:</span>
+0004 <span class="comment">% x: x pixel</span>
+0005 <span class="comment">% y: y pixel</span>
+0006 <span class="comment">% biomass: biomass value</span>
+0007 <span class="comment">% timeStep: cycle time step</span>
+0008 <span class="comment">% model: model ID</span>
+0009 
+0010 f = fopen(biomassFile);
+0011 tline = fgetl(f);
+0012 <span class="comment">% build a</span>
+0013 k = 1;
+0014 <span class="keyword">while</span> ischar(tline)
+0015     
+0016         timeStep = str2num(regexp(tline,<span class="string">'(?&lt;=biomass\_)\d*'</span>,<span class="string">'match'</span>,<span class="string">'ONCE'</span>));
+0017         modelID = str2num(regexp(tline,<span class="string">'(?&lt;=biomass\_\d*\_)\d*'</span>,<span class="string">'match'</span>,<span class="string">'ONCE'</span>));
+0018     
+0019         <span class="keyword">if</span> isempty(regexp(tline,<span class="string">'sparse'</span>,<span class="string">'match'</span>,<span class="string">'ONCE'</span>));
+0020             y = str2num(regexp(tline,<span class="string">'(?&lt;=biomass\_\d*\_\d*\()\d*'</span>,<span class="string">'match'</span>,<span class="string">'ONCE'</span>));
+0021             x = str2num(regexp(tline,<span class="string">'(?&lt;=biomass\_\d*\_\d*\(\d*, )\d*'</span>,<span class="string">'match'</span>,<span class="string">'ONCE'</span>));
+0022             z = str2num(tline(regexp(tline,<span class="string">'(?&lt;=\= )\d'</span>):end-1));
+0023             
+0024             X(k) = x;
+0025             Y(k) = y;
+0026             Biomass(k) = z;
+0027             T(k) = timeStep;
+0028             ModelId(k) = modelID;
+0029             k = k+1;
+0030         <span class="keyword">end</span>
+0031         tline = fgetl(f);
+0032 
+0033     
+0034 <span class="keyword">end</span>
+0035 
+0036 out.x = X;
+0037 out.y = Y;
+0038 out.biomass = Biomass;
+0039 out.model = ModelId;
+0040 out.timeStep = T;
+0041 
+0042 <span class="keyword">end</span></pre></div>
+
+<hr><address>Generated on Tue 24-Jan-2017 14:13:21 by <strong><a href="http://www.artefact.tk/software/matlab/m2html/" target="_parent">m2html</a></strong> &copy; 2003</address>
+</body>
+</html>

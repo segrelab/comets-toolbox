@@ -138,7 +138,7 @@ classdef CometsLayout
             self.initial_media(idx,x,y,2)=value;
         end
         
-        %set the media_amt of the metabolite given by name
+        %set the initial amount of the metabolite given by name
         function self = setInitialMedia(self,metname,value)
             self.media_amt(stridx(metname, self.mets, false)) = value;
         end

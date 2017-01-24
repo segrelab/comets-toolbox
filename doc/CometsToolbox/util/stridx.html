@@ -4,7 +4,7 @@
 <head>
   <title>Description of stridx</title>
   <meta name="keywords" content="stridx">
-  <meta name="description" content="STRIDX(str, {str}, [allowSubstr]) Get the indexes of the query string in the given cell array.">
+  <meta name="description" content="STRIDX(str, {str}, [true]) Get the indexes of the query string in the given cell array.">
   <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
   <meta name="generator" content="m2html &copy; 2003 Guillaume Flandin">
   <meta name="robots" content="index, follow">
@@ -12,18 +12,21 @@
 </head>
 <body>
 <a name="_top"></a>
-<!-- # CometsToolbox --><!-- menu.html util -->
+
+<!-- # CometsToolbox -->
+<!-- menu.html util -->
 <h1>stridx
+
 </h1>
 
 <h2><a name="_name"></a>PURPOSE <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
-<div class="box"><strong>STRIDX(str, {str}, [allowSubstr]) Get the indexes of the query string in the given cell array.</strong></div>
+<div class="box"><strong>STRIDX(str, {str}, [true]) Get the indexes of the query string in the given cell array.</strong></div>
 
 <h2><a name="_synopsis"></a>SYNOPSIS <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
-<div class="box"><strong>function [idx] = stridx(varargin) </strong></div>
+<div class="box"><strong>function [idx] = stridx(query, list, allowSubstr) </strong></div>
 
 <h2><a name="_description"></a>DESCRIPTION <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
-<div class="fragment"><pre class="comment">STRIDX(str, {str}, [allowSubstr]) Get the indexes of the query string in the given cell array.
+<div class="fragment"><pre class="comment">STRIDX(str, {str}, [true]) Get the indexes of the query string in the given cell array.
  
  If the third argument is set to 'false', only exact matches at the start 
  of the cell will be returned. Otherwise the query is case-insensitive and
@@ -37,16 +40,25 @@
 <h2><a name="_cross"></a>CROSS-REFERENCE INFORMATION <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
 This function calls:
 <ul style="list-style-image:url(../../matlabicon.gif)">
+
 </ul>
 This function is called by:
 <ul style="list-style-image:url(../../matlabicon.gif)">
+
+<li><a href="../../CometsToolbox/core/CometsLayout.html" class="code" title="">CometsLayout</a>	</li>
+<li><a href="../../CometsToolbox/core/models/setBiomassRxn.html" class="code" title="function [model, status] = setBiomassRxn( model, rxnNames, val)">setBiomassRxn</a>	SETBIOMASRXN Set a logical vector in a COBRA model structure to indicate</li>
+<li><a href="../../CometsToolbox/core/models/setKm.html" class="code" title="function [model, status] = setKm( model, rxnNames, km )">setKm</a>	SETKM Set the KM of a reaction in a format to be included in a COMETS</li>
+<li><a href="../../CometsToolbox/core/models/setVmax.html" class="code" title="function [model, status] = setVmax( model, rxnNames, vmax )">setVmax</a>	SETVMAX Set the Vmax of a reaction in a format to be included in a COMETS</li>
+<li><a href="../../CometsToolbox/test/testStridx.html" class="code" title="function tests = testStridx">testStridx</a>	run with: res = runtests('testStridx.m')</li>
 </ul>
 <!-- crossreference -->
 
 
+
+
 <h2><a name="_source"></a>SOURCE CODE <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
-<div class="fragment"><pre>0001 <a name="_sub0" href="#_subfunctions" class="code">function [idx] = stridx(varargin)</a>
-0002 <span class="comment">%STRIDX(str, {str}, [allowSubstr]) Get the indexes of the query string in the given cell array.</span>
+<div class="fragment"><pre>0001 <a name="_sub0" href="#_subfunctions" class="code">function [idx] = stridx(query, list, allowSubstr)</a>
+0002 <span class="comment">%STRIDX(str, {str}, [true]) Get the indexes of the query string in the given cell array.</span>
 0003 <span class="comment">%</span>
 0004 <span class="comment">% If the third argument is set to 'false', only exact matches at the start</span>
 0005 <span class="comment">% of the cell will be returned. Otherwise the query is case-insensitive and</span>
@@ -60,28 +72,27 @@ This function is called by:
 0013 <span class="comment">% $Author: mquintin $    $Date: 2016/09/02 13:42:57 $    $Revision: 0.1 $</span>
 0014 <span class="comment">% Copyright: Daniel Segrè, Boston University Bioinformatics Program 2016</span>
 0015 
-0016 q = varargin{1};
-0017 arr = varargin{2};
-0018 caseopt = <span class="string">'ignorecase'</span>;
-0019 matchstart = false;
-0020 <span class="keyword">if</span> nargin &gt; 2 
-0021     matchstart = ~varargin{3};
-0022 <span class="keyword">end</span>   
-0023 <span class="keyword">if</span> matchstart
-0024     caseopt = <span class="string">'matchcase'</span>;
-0025 <span class="keyword">end</span>
+0016 <span class="keyword">if</span> ~exist(<span class="string">'allowSubstr'</span>,<span class="string">'var'</span>) || isempty(allowSubstr) || allowSubstr
+0017     caseopt = <span class="string">'ignorecase'</span>;
+0018     matchstart = false;
+0019 <span class="keyword">else</span>
+0020     matchstart = true;
+0021     caseopt = <span class="string">'matchcase'</span>;
+0022 <span class="keyword">end</span>
+0023 
+0024 q = regexptranslate(<span class="string">'escape'</span>,query); <span class="comment">%treat the string as literal</span>
+0025 posn = regexp(list,q,caseopt,<span class="string">'once'</span>);
 0026 
-0027 posn = regexp(arr,q,caseopt,<span class="string">'once'</span>);
-0028 
-0029 <span class="keyword">if</span> matchstart
-0030     <span class="comment">%this may look awkward, but one-line solutions tend to break on empty</span>
-0031     <span class="comment">%cells</span>
-0032     posn = cellfun(@(x) any(x(:)==1),posn,<span class="string">'UniformOutput'</span>,false);
-0033     idx = find([posn{:}]);
-0034 <span class="keyword">else</span>
-0035     idx = find(~cellfun(<span class="string">'isempty'</span>,posn));
-0036 <span class="keyword">end</span>
-0037 <span class="keyword">end</span></pre></div>
-<hr><address>Generated on Wed 07-Sep-2016 12:29:11 by <strong><a href="http://www.artefact.tk/software/matlab/m2html/" target="_parent">m2html</a></strong> &copy; 2003</address>
+0027 <span class="keyword">if</span> matchstart
+0028     <span class="comment">%this may look awkward, but one-line solutions tend to break on empty</span>
+0029     <span class="comment">%cells</span>
+0030     posn = cellfun(@(x) any(x(:)==1),posn,<span class="string">'UniformOutput'</span>,false);
+0031     idx = find([posn{:}]);
+0032 <span class="keyword">else</span>
+0033     idx = find(~cellfun(<span class="string">'isempty'</span>,posn));
+0034 <span class="keyword">end</span>
+0035 <span class="keyword">end</span></pre></div>
+
+<hr><address>Generated on Tue 24-Jan-2017 14:13:21 by <strong><a href="http://www.artefact.tk/software/matlab/m2html/" target="_parent">m2html</a></strong> &copy; 2003</address>
 </body>
 </html>
