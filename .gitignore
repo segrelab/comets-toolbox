@@ -3,3 +3,4 @@ scratch
 scratch/*
 dist/*
 test/out/*
+*.asv
