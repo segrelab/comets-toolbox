@@ -138,6 +138,16 @@ classdef CometsLayout
             self.initial_media(idx,x,y,2)=value;
         end
         
+        %set the media_amt of the metabolite given by name
+        function self = setInitialMedia(self,metname,value)
+            self.media_amt(stridx(metname, self.mets, false)) = value;
+        end
+        
+        %rename setInitialMedia for simplicity
+        function self = setMedia(self, metname, value)
+            self = setInitialMedia(self, metname, value);
+        end
+        
         %sort the list of metabolites alphabetically, and rearrange other
         %lists accordingly
         function self = sortMetabolites(self)
