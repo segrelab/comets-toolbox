@@ -1,9 +1,13 @@
-function writeCometsLayout( input, filedir, filename )
+function writeCometsLayout( input, filedir, filename, includeParams)
 %WRITECOMETSLAYOUT Create a layout file along with the corresponding model
 %files
 if nargin == 2
     filename = 'layout.txt';
     %filedir = 'layout';
+end
+
+if nargin < 4
+    includeParams = false; %should the params block be printed within this file?
 end
 
 if isa(input,'string')
@@ -130,7 +134,7 @@ fprintf(fileID,'\t//\n');
 %
 % diffusion_constants    default_value
 %   index_1  diff_const_1 index_2  diff_const_2 index_3  diff_const_3 . . .
-ddiff = layout.params.defaultDiffusionConstant;
+ddiff = layout.params.defaultDiffConst;
 fprintf(fileID,'\tdiffusion_constants %d\n',ddiff);
 for i = 1:length(layout.mets)
     m = layout.mets{i};
@@ -360,31 +364,37 @@ end
 % block:
 %
 % parameters
-%   param_1 = value_1 param_2 = value_2 . . . param_N = value_N
+%   param_1 = value_1 
+%   param_2 = value_2 
+%   . . . 
+%   param_N = value_N
 % //
-fprintf(fileID,'\tparameters\n');
-
-pfields = fieldnames(layout.params);
-dontPrint = {'defaultReactionLower','defaultReactionUpper','defaultDiffusionConstant'};
-for i = 1:length(pfields)
-    p = pfields{i};
-    if ~ismember(p,dontPrint)
-        c = char(p);
-        val = getfield(layout.params,c);
-        if islogical(val)
-            if val
-                val = 'true';
-            else
-                val = 'false';
+if includeParams
+    fprintf(fileID,'\tparameters\n');
+    
+    pfields = fieldnames(layout.params);
+    dontPrint = {'defaultReactionLower','defaultReactionUpper','defaultDiffConst'};
+    for i = 1:length(pfields)
+        p = pfields{i};
+        if ~ismember(p,dontPrint)
+            c = char(p);
+            val = getfield(layout.params,c);
+            if islogical(val)
+                if val
+                    val = 'true';
+                else
+                    val = 'false';
+                end
             end
+            %     if ~ischar(val)
+            %         val = char(val);
+            %     end
+            fprintf(fileID,'\t%s = %s\n',char(p),num2str(val));
         end
-        %     if ~ischar(val)
-        %         val = char(val);
-        %     end
-        fprintf(fileID,'\t%s = %s\n',char(p),num2str(val));
     end
+    fprintf(fileID,'//\n');
 end
-fprintf(fileID,'//\n');
+
 fclose(fileID);
 
 %write the model files

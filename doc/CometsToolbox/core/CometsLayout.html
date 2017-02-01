@@ -90,7 +90,7 @@ This function is called by:
 0019         media_amt = [0];<span class="comment">%vector 1/met, default 0. Initial media concentration in every cell</span>
 0020         params = <a href="CometsParams.html" class="code" title="">CometsParams</a>();
 0021         <span class="comment">%use sparse matrices. Empty elements use default values</span>
-0022         diffusion_const = [0]; <span class="comment">%vector 1/met, default in params</span>
+0022         diffusion_const = [0]; <span class="comment">%vector 1/met, default in params %TODO: Should switch to boolean/val format, like static_media</span>
 0023         global_media_refresh = [];<span class="comment">%vector 1/met, default 0</span>
 0024         media_refresh = [0];<span class="comment">%[0] %met by x by y, fill with 0</span>
 0025         global_static_media = [];<span class="comment">%met by 2. (met,1) is logical denoting if the corresponding media is held static, (met,2) is the held concentration</span>
@@ -267,6 +267,6 @@ This function is called by:
 0196 <span class="keyword">end</span>
 0197</pre></div>
 
-<hr><address>Generated on Tue 24-Jan-2017 14:13:21 by <strong><a href="http://www.artefact.tk/software/matlab/m2html/" target="_parent">m2html</a></strong> &copy; 2003</address>
+<hr><address>Generated on Wed 01-Feb-2017 15:53:14 by <strong><a href="http://www.artefact.tk/software/matlab/m2html/" target="_parent">m2html</a></strong> &copy; 2003</address>
 </body>
 </html>

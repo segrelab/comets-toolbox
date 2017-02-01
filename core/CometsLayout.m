@@ -19,7 +19,7 @@ classdef CometsLayout
         media_amt = [0];%vector 1/met, default 0. Initial media concentration in every cell
         params = CometsParams();
         %use sparse matrices. Empty elements use default values
-        diffusion_const = [0]; %vector 1/met, default in params
+        diffusion_const = [0]; %vector 1/met, default in params %TODO: Should switch to boolean/val format, like static_media
         global_media_refresh = [];%vector 1/met, default 0
         media_refresh = [0];%[0] %met by x by y, fill with 0
         global_static_media = [];%met by 2. (met,1) is logical denoting if the corresponding media is held static, (met,2) is the held concentration
