@@ -1,4 +1,4 @@
-function writeCometsLayout( input, filedir, filename, includeParams)
+function writeCometsLayout( input, filedir, filename, includeParams, writeModels)
 %WRITECOMETSLAYOUT Create a layout file along with the corresponding model
 %files
 if nargin == 2
@@ -7,7 +7,10 @@ if nargin == 2
 end
 
 if nargin < 4
-    includeParams = false; %should the params block be printed within this file?
+    includeParams = true; %should the params block be printed within this file?
+end
+if nargin < 5
+    writeModels = true;
 end
 
 if isa(input,'string')
@@ -167,7 +170,7 @@ for x = 1:ms(2) %for each x coordinate
             fprintf(fileID,'\t\t%d %d',x-1,y-1);
             for j = 1:length(v)
                 if v(j) %this medium is set
-                    fprintf(fileID,' %d', layout.initial_media(j,x,y,2)); 
+                    fprintf(fileID,' %d', layout.initial_media(j,x,y,2));
                 else %use the global value
                     fprintf(fileID,' %d', layout.media_amt(j));
                 end
@@ -364,9 +367,9 @@ end
 % block:
 %
 % parameters
-%   param_1 = value_1 
-%   param_2 = value_2 
-%   . . . 
+%   param_1 = value_1
+%   param_2 = value_2
+%   . . .
 %   param_N = value_N
 % //
 if includeParams
@@ -398,9 +401,11 @@ end
 fclose(fileID);
 
 %write the model files
-for i = 1:length(layout.models)
-    m = layout.models{i};
-    writeCometsModel(m,getModelFilePath(m),layout.params);
+if writeModels
+    for i = 1:length(layout.models)
+        m = layout.models{i};
+        writeCometsModel(m,getModelFilePath(m),layout.params);
+    end
 end
 
     function mname = getModelFileName(model)
