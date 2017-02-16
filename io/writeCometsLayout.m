@@ -142,8 +142,11 @@ fprintf(fileID,'\tdiffusion_constants %d\n',ddiff);
 for i = 1:length(layout.mets)
     m = layout.mets{i};
     idx = layout.metIdx(m);
-    if idx
-        fprintf(fileID,'\t\t%d %g\n',idx,layout.diffusion_const(idx)); %TODO: Should not print if const has not been changed
+    if idx && layout.diffusion_constants(idx,1) %if the diffusion constant is set
+        dc = layout.diffusion_constants(idx,2); 
+        if dc ~= ddiff %and the diffusion constant is not equal to the default
+            fprintf(fileID,'\t\t%d %g\n',idx,dc);
+        end
     end
 end
 fprintf(fileID,'\t//\n');

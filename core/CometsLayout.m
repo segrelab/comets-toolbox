@@ -19,13 +19,13 @@ classdef CometsLayout
         media_amt = [0];%vector 1/met, default 0. Initial media concentration in every cell
         params = CometsParams();
         %use sparse matrices. Empty elements use default values
-        diffusion_const = [0]; %vector 1/met, default in params %TODO: Should switch to boolean/val format, like static_media
+        diffusion_constants = []; %met by 2. If (i,1)=0, met i uses the default diffusion constant. if (i,1)=1, met i's diffusion constant is the value of (i,2)
         global_media_refresh = [];%vector 1/met, default 0
         media_refresh = [0];%[0] %met by x by y, fill with 0
         global_static_media = [];%met by 2. (met,1) is logical denoting if the corresponding media is held static, (met,2) is the held concentration
         static_media = [0];%met by x by y by 2, with the fourth dimension as in global_static_media ****
         initial_media = [0]; %met by x by y by 2. Initial media concentration in the specified cell. Fourth dimension denotes [isThisValueSet?, value]
-        %To further explain these last three, if the fourth dimension holds (1,0) the value in the cell is not empty/default; it's set to zero.
+        %To further explain these last four, if the fourth dimension holds (1,0) the value in the cell is not empty/default; it's set to zero.
         barrier = [0]; %x by y, logical
         initial_pop = [0];%models by x by y, default 0
         %TODO: initial_pop modes (rectangle, random...)
@@ -56,9 +56,9 @@ classdef CometsLayout
                 self.media_amt = [self.media_amt; zeros(diff,1)];
             end
             
-            diff = length(self.mets) - length(self.diffusion_const);
+            diff = length(self.mets) - length(self.diffusion_constants);
             if diff > 0
-                self.diffusion_const = [self.diffusion_const; zeros(diff,1)];
+                self.diffusion_constants = [self.diffusion_constants; zeros(diff,2)];
             end
             
             diff = length(self.mets) - length(self.global_media_refresh);
@@ -160,8 +160,8 @@ classdef CometsLayout
             if any(self.media_amt)
                 self.media_amt = self.media_amt(map);
             end
-            if any(self.diffusion_const)
-                self.diffusion_const = self.diffusion_const(map);
+            if any(self.diffusion_constants)
+                self.diffusion_constants = self.diffusion_constants(map,1:2);
             end
             if any(self.global_media_refresh)
                 self.global_media_refresh = self.global_media_refresh(map);
@@ -191,6 +191,56 @@ classdef CometsLayout
                 self.initial_media = self.initial_media(map,:,:,:);
             end
         end
+        
+        %setDiffusion(self, metnames, [values])
+        %set diffusion constants for the given metabolite or list of
+        %metabolites
+        %'metnames' can be a single metabolite name, a cell array of
+        %metabolite names, a single metabolite index, or an array of
+        %metabolite indexes
+        %'values' can be a single value, an array of values, false, or
+        %not given. If false or not given, the metabolites will have their
+        %"set" flag (the first dimension in diffusion_constants) turned
+        %off. If a single value, all input metabolites will get that value
+        %assigned. If an array, there must be one value per metabolite
+        function self = setDiffusion(varargin)
+            self = varargin{1};
+            
+            midx = [];
+            switch class(varargin{2})
+                case 'char'
+                    midx = metIdx(self,varargin{2});
+                case 'cell'
+                    c = varargin{2};
+                    for i=1:length(c)
+                        midx = [midx metIdx(self,c{i})];
+                    end
+                case 'double' %this covers single values and arrays of doubles
+                    midx = varargin{2};
+                otherwise
+                    error('Metabolites in setDiffusion(layout,mets,values) must be ID''d as a char, cell array of chars, or double');
+            end
+            
+            hasValue = false;
+            if nargin > 2 && varargin{3}
+                hasValue = true;
+                vals = varargin{3};
+                if length(vals) == 1
+                    vals = repmat(vals,length(midx),1);
+                end
+                if length(vals) ~= length(midx)
+                    error('The third argument in setDiffusion(layout,mets,values) must be empty, false, or of the same length as the list of mets');
+                end
+            end
+            
+            if hasValue
+                self.diffusion_constants(midx,1) = 1;
+                self.diffusion_constants(midx,2) = vals;
+            else
+                self.diffusion_constants(midx,1) = 0;
+            end
+        end
+        
     end
     
 end
