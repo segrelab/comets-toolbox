@@ -41,7 +41,7 @@ if exist([run_COMETS_folder '\comets_w64_scr.bat'],'file') ~= 2 % script bat fil
             error('working directory does not exist')
         elseif exist([run_COMETS_folder '\comets_w64_scr.bat'],'file') ~= 2 % script bat file not found
             %error('comets_w64_scr.bat not found in COMETS path')
-            warning('comets_w64_scr.bat not found in %s or in \%COMETS_HOME\%. Creating new file...',run_COMETS_folder)
+            warning('comets_w64_scr.bat not found in %s or in %COMETS_HOME%. Creating new file...',run_COMETS_folder)
             
             %get the name of the most recently created COMETS jar file in COMETS_HOME
             jars = dir([comets_path '\comets*.jar']);
@@ -49,7 +49,7 @@ if exist([run_COMETS_folder '\comets_w64_scr.bat'],'file') ~= 2 % script bat fil
             jarname = jars(idx(length(idx))).name;
             
             fileid = fopen([run_COMETS_folder '\comets_w64_scr.bat'],'w');
-            fprintf(fileid,'%s%s%s','java -Xmx2048m -classpath %COMETS_HOME%/',jarname,';%COMETS_HOME%/lib/x64/glpk-java.jar;%COMETS_HOME%/lib/jogamp-all-platforms/jar/jogl-all.jar;%COMETS_HOME%/lib/jogamp-all-platforms/jar/gluegen.jar;%COMETS_HOME%/lib/jogamp-all-platforms/jar/gluegen-rt.jar;%COMETS_HOME%/lib/jogamp-all-platforms/jar/gluegen-rt-natives-windows-amd64.jar;%COMETS_HOME%/lib/jogamp-all-platforms/jar/jogl-all-natives-windows-amd64.jar;%GUROBI_HOME%/lib/gurobi.jar -Djava.library.path=%COMETS_HOME%/lib/x64;%GUROBI_HOME%/lib/;%GUROBI_HOME%/bin edu.bu.segrelab.comets.Comets -loader edu.bu.segrelab.comets.fba.FBACometsLoader -script comets_script.txt');
+            fprintf(fileid,'%s%s%s','java -Xmx2048m -classpath %COMETS_HOME%/',jarname,';C:/Users/mquintin/workspace/lib/jmatio.jar;%COMETS_HOME%/lib/jmatio.jar;%COMETS_HOME%/lib/x64/glpk-java.jar;%COMETS_HOME%/lib/jogamp-all-platforms/jar/jogl-all.jar;%COMETS_HOME%/lib/jogamp-all-platforms/jar/gluegen.jar;%COMETS_HOME%/lib/jogamp-all-platforms/jar/gluegen-rt.jar;%COMETS_HOME%/lib/jogamp-all-platforms/jar/gluegen-rt-natives-windows-amd64.jar;%COMETS_HOME%/lib/jogamp-all-platforms/jar/jogl-all-natives-windows-amd64.jar;%GUROBI_HOME%/lib/gurobi.jar -Djava.library.path=%COMETS_HOME%/lib;%COMETS_HOME%/lib/x64;%GUROBI_HOME%;%GUROBI_HOME%/lib/;%GUROBI_HOME%/bin edu.bu.segrelab.comets.Comets -loader edu.bu.segrelab.comets.fba.FBACometsLoader -script comets_script.txt');
             fclose(fileid);
         end
     else

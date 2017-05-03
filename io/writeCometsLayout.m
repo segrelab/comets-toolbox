@@ -66,6 +66,49 @@ layout = sortMetabolites(layout);
 filename = fullfile(filedir,filename);
 fileID=fopen(filename,'w');
 
+% Parameters 
+% 
+% This block contains parameters initially loaded with the file. A list of
+% these with their accepted values is here. Here’s the structure of the
+% block:
+%
+% parameters
+%   param_1 = value_1
+%   param_2 = value_2
+%   . . .
+%   param_N = value_N
+% //
+%
+% This block is included at the top of the file for now because
+% flowDiffRate and growthDiffRate will only be applied if parameters are
+% loaded before model files.
+if includeParams
+    fprintf(fileID,'\tparameters\n');
+    
+    pfields = fieldnames(layout.params);
+    dontPrint = {'defaultReactionLower','defaultReactionUpper','defaultDiffConst'};
+    for i = 1:length(pfields)
+        p = pfields{i};
+        if ~ismember(p,dontPrint)
+            c = char(p);
+            val = getfield(layout.params,c);
+            if islogical(val)
+                if val
+                    val = 'true';
+                else
+                    val = 'false';
+                end
+            end
+            %     if ~ischar(val)
+            %         val = char(val);
+            %     end
+            fprintf(fileID,'\t%s = %s\n',char(p),num2str(val));
+        end
+    end
+    fprintf(fileID,'//\n');
+end
+
+
 % The data blocks in this file are mostly nested within each other. The
 % model file block encapsulates the model world and initial population
 % blocks. The rest of the blocks are listed in the model world block.
@@ -142,8 +185,8 @@ fprintf(fileID,'\tdiffusion_constants %d\n',ddiff);
 for i = 1:length(layout.mets)
     m = layout.mets{i};
     idx = layout.metIdx(m);
-    if idx && layout.diffusion_constants(idx,1) %if the diffusion constant is set
-        dc = layout.diffusion_constants(idx,2); 
+    if idx & layout.diffusion_constants(idx,1) %if the diffusion constant is set
+        dc = layout.diffusion_constants(idx,2);
         if dc ~= ddiff %and the diffusion constant is not equal to the default
             fprintf(fileID,'\t\t%d %g\n',idx,dc);
         end
@@ -360,44 +403,6 @@ else %no initial pop is set
         fprintf(fileID,' 1E-7');
     end
     fprintf(fileID,'\n');
-    fprintf(fileID,'//\n');
-end
-
-% 4. Parameters
-%
-% This block contains parameters initially loaded with the file. A list of
-% these with their accepted values is here. Here’s the structure of the
-% block:
-%
-% parameters
-%   param_1 = value_1
-%   param_2 = value_2
-%   . . .
-%   param_N = value_N
-% //
-if includeParams
-    fprintf(fileID,'\tparameters\n');
-    
-    pfields = fieldnames(layout.params);
-    dontPrint = {'defaultReactionLower','defaultReactionUpper','defaultDiffConst'};
-    for i = 1:length(pfields)
-        p = pfields{i};
-        if ~ismember(p,dontPrint)
-            c = char(p);
-            val = getfield(layout.params,c);
-            if islogical(val)
-                if val
-                    val = 'true';
-                else
-                    val = 'false';
-                end
-            end
-            %     if ~ischar(val)
-            %         val = char(val);
-            %     end
-            fprintf(fileID,'\t%s = %s\n',char(p),num2str(val));
-        end
-    end
     fprintf(fileID,'//\n');
 end
 

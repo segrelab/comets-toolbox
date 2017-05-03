@@ -479,7 +479,7 @@ for i=1:length(mdir)
 					[status, msg] = mkdir(escapeblank(options.htmlDir), ...
 						escapeblank(fullfile(ldir{1:j})));
 				end
-				error(msg);
+				%error(msg);
 			end
 		end
 	end
@@ -731,7 +731,8 @@ for i=1:length(mdir)
 					   [options.indexFile options.extension]);
 	if options.verbose
 		fprintf('Creating HTML file %s...\n',curfile);
-	end
+    end
+    try
 	fid = openfile(curfile,'w');
 
 	%- Set template fields
@@ -808,6 +809,8 @@ for i=1:length(mdir)
 	tpl = parse(tpl,'OUT','TPL_MDIR');
 	fprintf(fid,'%s',get(tpl,'OUT'));
 	fclose(fid);
+    catch ME
+    end
 end
 
 %-------------------------------------------------------------------------------
@@ -998,7 +1001,8 @@ for i=1:length(mdir)
 			%- Open for writing the HTML file
 			if options.verbose
 				fprintf('Creating HTML file %s...\n',curfile);
-			end
+            end
+            try
 			fid = openfile(curfile,'w');
 			if strcmp(names{j},options.indexFile)
                 fprintf(['Warning: HTML index file %s will be ' ...
@@ -1276,6 +1280,8 @@ for i=1:length(mdir)
 			fprintf(fid,'%s',get(tpl,'OUT'));
 			fclose(fid2);
 			fclose(fid);
+            catch ME
+            end
 		end
 	end
 end

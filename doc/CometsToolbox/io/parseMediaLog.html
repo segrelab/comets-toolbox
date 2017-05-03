@@ -1,0 +1,101 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+                "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+<head>
+  <title>Description of parseMediaLog</title>
+  <meta name="keywords" content="parseMediaLog">
+  <meta name="description" content="PARSEMEDIALOG load the Comets media log at the given path into a Table">
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <meta name="generator" content="m2html &copy; 2005 Guillaume Flandin">
+  <meta name="robots" content="index, follow">
+  <link type="text/css" rel="stylesheet" href="../../m2html.css">
+  <script type="text/javascript">
+    if (top.frames.length == 0) { top.location = "../../index.html"; };
+  </script>
+</head>
+<body>
+<a name="_top"></a>
+<!-- # CometsToolbox --><!-- menu.html io -->
+<h1>parseMediaLog
+</h1>
+
+<h2><a name="_name"></a>PURPOSE <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="box"><strong>PARSEMEDIALOG load the Comets media log at the given path into a Table</strong></div>
+
+<h2><a name="_synopsis"></a>SYNOPSIS <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="box"><strong>function tab = parseMediaLog(logFilePath) </strong></div>
+
+<h2><a name="_description"></a>DESCRIPTION <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="fragment"><pre class="comment"> PARSEMEDIALOG load the Comets media log at the given path into a Table
+
+ $Author: mquintin $    $Date: 3/24/2017 $    $Revision: 0.1 $
+ Last edit: mquintin 3/24/2017
+ Copyright: Daniel Segrè, Boston University Bioinformatics Program 2017</pre></div>
+
+<!-- crossreference -->
+<h2><a name="_cross"></a>CROSS-REFERENCE INFORMATION <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+This function calls:
+<ul style="list-style-image:url(../../matlabicon.gif)">
+</ul>
+This function is called by:
+<ul style="list-style-image:url(../../matlabicon.gif)">
+</ul>
+<!-- crossreference -->
+
+
+
+<h2><a name="_source"></a>SOURCE CODE <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="fragment"><pre>0001 <a name="_sub0" href="#_subfunctions" class="code">function tab = parseMediaLog(logFilePath)</a>
+0002 <span class="comment">% PARSEMEDIALOG load the Comets media log at the given path into a Table</span>
+0003 <span class="comment">%</span>
+0004 <span class="comment">% $Author: mquintin $    $Date: 3/24/2017 $    $Revision: 0.1 $</span>
+0005 <span class="comment">% Last edit: mquintin 3/24/2017</span>
+0006 <span class="comment">% Copyright: Daniel Segrè, Boston University Bioinformatics Program 2017</span>
+0007 
+0008 <span class="keyword">if</span> nargin &lt; 1
+0009     logFilePath = <span class="string">'log_media.m'</span>;
+0010 <span class="keyword">end</span>
+0011 
+0012 <span class="keyword">if</span> ~exist(logFilePath,<span class="string">'file'</span>)
+0013     error([<span class="string">'Could not find the log file '</span> logFilePath]);
+0014 <span class="keyword">end</span>
+0015 
+0016 tab = table();
+0017 
+0018 <span class="keyword">if</span> exist(logFilePath,<span class="string">'file'</span>) <span class="comment">%the log file exists</span>
+0019     clear -regexp ^media_\d+$;
+0020 
+0021     <span class="comment">%The log file creates a series of objects called media_T, where T is</span>
+0022     <span class="comment">%the timestep.</span>
+0023     <span class="comment">%Names start at media_0 for the first step</span>
+0024     run(logFilePath);
+0025         
+0026     objs = whos;
+0027     mnames = {objs.name};
+0028     
+0029     <span class="keyword">for</span> i = 1:length(mnames)
+0030         mname = mnames{i};
+0031         <span class="keyword">if</span> regexp(mname,<span class="string">'^media_\d+$'</span>)
+0032             splitstr = regexp(mname,<span class="string">'_'</span>,<span class="string">'split'</span>);
+0033             cycle = str2num(splitstr{2}) + 1; <span class="comment">%logs start at media_0</span>
+0034             m = eval(mname);
+0035             m = full([m{1:end}]);
+0036             <span class="comment">%media(cycle,1:length(m)) = m;</span>
+0037                         
+0038             <span class="keyword">for</span> j = 1:length(m)
+0039                 tab = [tab; {cycle, j, m(j)}];
+0040             <span class="keyword">end</span>
+0041             
+0042         <span class="keyword">end</span>
+0043     <span class="keyword">end</span>
+0044     
+0045     clear -regexp ^media_\d+$;
+0046 <span class="keyword">end</span>
+0047 
+0048 tab.Properties.VariableNames = {<span class="string">'t'</span> <span class="string">'met'</span> <span class="string">'amt'</span>};
+0049 tab = sortrows(tab,<span class="string">'t'</span>);
+0050 
+0051 <span class="keyword">end</span></pre></div>
+<hr><address>Generated on Wed 03-May-2017 12:42:44 by <strong><a href="http://www.artefact.tk/software/matlab/m2html/" target="_parent">m2html</a></strong> &copy; 2005</address>
+</body>
+</html>

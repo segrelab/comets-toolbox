@@ -133,7 +133,9 @@ if isfield(model,'km') && any(model.km)
     for i=1:length(idx)
         rxnidx = idx(i);
         exchidx = find(exchange_rxnsIndex==rxnidx);
-        fprintf(fileID,'    %d %d\n',exchidx,model.km(rxnidx));
+        if exchidx
+            fprintf(fileID,'    %d %d\n',exchidx,model.km(rxnidx));
+        end
     end
     fprintf(fileID,'//\n');
 end
@@ -145,7 +147,9 @@ if isfield(model,'vmax') && any(model.vmax)
     for i=1:length(idx)
         rxnidx = idx(i);
         exchidx = find(exchange_rxnsIndex==rxnidx);
-        fprintf(fileID,'    %d %d\n',exchidx,model.vmax(rxnidx));
+        if exchidx
+            fprintf(fileID,'    %d %d\n',exchidx,model.vmax(rxnidx));
+        end
     end
     fprintf(fileID,'//\n');
 end

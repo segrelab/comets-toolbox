@@ -134,13 +134,22 @@ classdef CometsLayout
         
         function self = setInitialMediaInCell(self,x,y,metname,value)
             idx = stridx(metname,self.mets,false);
-            self.initial_media(idx,x,y,1)=1;
-            self.initial_media(idx,x,y,2)=value;
+            if isempty(idx) | ~idx
+                warning(['Could not find ' metname ' in the media list.']);
+            else
+                self.initial_media(idx,x,y,1)=1;
+                self.initial_media(idx,x,y,2)=value;
+            end
         end
         
         %set the initial amount of the metabolite given by name
         function self = setInitialMedia(self,metname,value)
-            self.media_amt(stridx(metname, self.mets, false)) = value;
+            idx = stridx(metname, self.mets, false);
+            if isempty(idx) | ~idx
+                warning(['Could not find ' metname ' in the media list.']);
+            else
+                self.media_amt(idx) = value;
+            end
         end
         
         %rename setInitialMedia for simplicity
@@ -151,7 +160,7 @@ classdef CometsLayout
         %sort the list of metabolites alphabetically, and rearrange other
         %lists accordingly
         function self = sortMetabolites(self)
-            %lists to rearrange: mets, media_amt, diffusion_const, global_media_refresh
+            %lists to rearrange: mets, media_amt, diffusion_constants, global_media_refresh
             %media_refresh, global_static_media, static_media, initial_media
             nmets = length(self.mets);
             x = self.xdim;
@@ -222,7 +231,7 @@ classdef CometsLayout
             end
             
             hasValue = false;
-            if nargin > 2 && varargin{3}
+            if nargin > 2 && (varargin{3} || isnumeric(varargin{3}))
                 hasValue = true;
                 vals = varargin{3};
                 if length(vals) == 1

@@ -6,18 +6,17 @@
   <meta name="keywords" content="runComets">
   <meta name="description" content="RUNCOMETS create the files necessary for a COMETS run, and execute it from">
   <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
-  <meta name="generator" content="m2html &copy; 2003 Guillaume Flandin">
+  <meta name="generator" content="m2html &copy; 2005 Guillaume Flandin">
   <meta name="robots" content="index, follow">
   <link type="text/css" rel="stylesheet" href="../../../m2html.css">
+  <script type="text/javascript">
+    if (top.frames.length == 0) { top.location = "../../../index.html"; };
+  </script>
 </head>
 <body>
 <a name="_top"></a>
-
-<!-- # CometsToolbox -->
-<!-- ../menu.html core -->
-<!-- menu.html run -->
+<!-- # CometsToolbox --><!-- ../menu.html core --><!-- menu.html run -->
 <h1>runComets
-
 </h1>
 
 <h2><a name="_name"></a>PURPOSE <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
@@ -35,17 +34,11 @@ otherwise files will be placed in the current directory</pre></div>
 <h2><a name="_cross"></a>CROSS-REFERENCE INFORMATION <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
 This function calls:
 <ul style="list-style-image:url(../../../matlabicon.gif)">
-
-<li><a href="createCometsFiles.html" class="code" title="function [ output_args ] = createCometsFiles(layout, directory)">createCometsFiles</a>	CREATECOMETSFILES %write the CometsScript, CometsParams, and PackageParams files necessary</li>
-<li><a href="runCometsOnDirectory.html" class="code" title="function comets_output = runCometsOnDirectory(run_COMETS_folder)">runCometsOnDirectory</a>	run_COMETS Run COMETS without a GUI from MATLAB</li>
-</ul>
+<li><a href="createCometsFiles.html" class="code" title="function [ output_args ] = createCometsFiles(layout, directory, layoutFileName, separateParamsFiles)">createCometsFiles</a>	CREATECOMETSFILES(layout, [directory], [layoutFileName], [separateParamsFiles])</li><li><a href="runCometsOnDirectory.html" class="code" title="function comets_output = runCometsOnDirectory(run_COMETS_folder)">runCometsOnDirectory</a>	run_COMETS Run COMETS without a GUI from MATLAB</li></ul>
 This function is called by:
 <ul style="list-style-image:url(../../../matlabicon.gif)">
-
-<li><a href="../../../CometsToolbox/scratch/write_run.html" class="code" title="">write_run</a>	test writing the files for a COMETS run, then execute COMETS from the</li>
-</ul>
+<li><a href="../../../CometsToolbox/scratch/write_run.html" class="code" title="">write_run</a>	test writing the files for a COMETS run, then execute COMETS from the</li></ul>
 <!-- crossreference -->
-
 
 
 
@@ -63,7 +56,7 @@ This function is called by:
 0011 <span class="keyword">end</span>
 0012 cd(directory);
 0013 
-0014 <a href="createCometsFiles.html" class="code" title="function [ output_args ] = createCometsFiles(layout, directory)">createCometsFiles</a>(layout,pwd);<span class="comment">%create layout,model,script &amp; param files</span>
+0014 <a href="createCometsFiles.html" class="code" title="function [ output_args ] = createCometsFiles(layout, directory, layoutFileName, separateParamsFiles)">createCometsFiles</a>(layout,pwd);<span class="comment">%create layout,model,script &amp; param files</span>
 0015 
 0016 disp([<span class="string">'Executing COMETS in the directory '</span> pwd]);
 0017 cometsOutput = <a href="runCometsOnDirectory.html" class="code" title="function comets_output = runCometsOnDirectory(run_COMETS_folder)">runCometsOnDirectory</a>(pwd);<span class="comment">%run</span>
@@ -73,7 +66,6 @@ This function is called by:
 0021 
 0022 <span class="keyword">end</span>
 0023</pre></div>
-
-<hr><address>Generated on Wed 01-Feb-2017 15:53:14 by <strong><a href="http://www.artefact.tk/software/matlab/m2html/" target="_parent">m2html</a></strong> &copy; 2003</address>
+<hr><address>Generated on Wed 03-May-2017 12:42:44 by <strong><a href="http://www.artefact.tk/software/matlab/m2html/" target="_parent">m2html</a></strong> &copy; 2005</address>
 </body>
 </html>

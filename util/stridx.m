@@ -24,12 +24,17 @@ end
 q = regexptranslate('escape',query); %treat the string as literal
 posn = regexp(list,q,caseopt,'once');
 
-if matchstart
+if matchstart %not substring
     %this may look awkward, but one-line solutions tend to break on empty
     %cells
     posn = cellfun(@(x) any(x(:)==1),posn,'UniformOutput',false);
     idx = find([posn{:}]);
-else
+    
+    %result must be the same length as query
+    lengths = cellfun('length',list);
+    validlength = lengths==length(query);
+    idx = intersect(idx,find(validlength));
+else %substing ok
     idx = find(~cellfun('isempty',posn));
 end
 end

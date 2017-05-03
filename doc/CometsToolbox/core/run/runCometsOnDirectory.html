@@ -6,18 +6,17 @@
   <meta name="keywords" content="runCometsOnDirectory">
   <meta name="description" content="run_COMETS Run COMETS without a GUI from MATLAB">
   <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
-  <meta name="generator" content="m2html &copy; 2003 Guillaume Flandin">
+  <meta name="generator" content="m2html &copy; 2005 Guillaume Flandin">
   <meta name="robots" content="index, follow">
   <link type="text/css" rel="stylesheet" href="../../../m2html.css">
+  <script type="text/javascript">
+    if (top.frames.length == 0) { top.location = "../../../index.html"; };
+  </script>
 </head>
 <body>
 <a name="_top"></a>
-
-<!-- # CometsToolbox -->
-<!-- ../menu.html core -->
-<!-- menu.html run -->
+<!-- # CometsToolbox --><!-- ../menu.html core --><!-- menu.html run -->
 <h1>runCometsOnDirectory
-
 </h1>
 
 <h2><a name="_name"></a>PURPOSE <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
@@ -54,15 +53,11 @@ OUTPUT
 <h2><a name="_cross"></a>CROSS-REFERENCE INFORMATION <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
 This function calls:
 <ul style="list-style-image:url(../../../matlabicon.gif)">
-
 </ul>
 This function is called by:
 <ul style="list-style-image:url(../../../matlabicon.gif)">
-
-<li><a href="runComets.html" class="code" title="function cometsOutput = runComets( layout, directory )">runComets</a>	RUNCOMETS create the files necessary for a COMETS run, and execute it from</li>
-</ul>
+<li><a href="runComets.html" class="code" title="function cometsOutput = runComets( layout, directory )">runComets</a>	RUNCOMETS create the files necessary for a COMETS run, and execute it from</li></ul>
 <!-- crossreference -->
-
 
 
 
@@ -110,7 +105,7 @@ This function is called by:
 0041             error(<span class="string">'working directory does not exist'</span>)
 0042         <span class="keyword">elseif</span> exist([run_COMETS_folder <span class="string">'\comets_w64_scr.bat'</span>],<span class="string">'file'</span>) ~= 2 <span class="comment">% script bat file not found</span>
 0043             <span class="comment">%error('comets_w64_scr.bat not found in COMETS path')</span>
-0044             warning(<span class="string">'comets_w64_scr.bat not found in %s or in \%COMETS_HOME\%. Creating new file...'</span>,run_COMETS_folder)
+0044             warning(<span class="string">'comets_w64_scr.bat not found in %s or in %COMETS_HOME%. Creating new file...'</span>,run_COMETS_folder)
 0045             
 0046             <span class="comment">%get the name of the most recently created COMETS jar file in COMETS_HOME</span>
 0047             jars = dir([comets_path <span class="string">'\comets*.jar'</span>]);
@@ -118,7 +113,7 @@ This function is called by:
 0049             jarname = jars(idx(length(idx))).name;
 0050             
 0051             fileid = fopen([run_COMETS_folder <span class="string">'\comets_w64_scr.bat'</span>],<span class="string">'w'</span>);
-0052             fprintf(fileid,<span class="string">'%s%s%s'</span>,<span class="string">'java -Xmx2048m -classpath %COMETS_HOME%/'</span>,jarname,<span class="string">';%COMETS_HOME%/lib/x64/glpk-java.jar;%COMETS_HOME%/lib/jogamp-all-platforms/jar/jogl-all.jar;%COMETS_HOME%/lib/jogamp-all-platforms/jar/gluegen.jar;%COMETS_HOME%/lib/jogamp-all-platforms/jar/gluegen-rt.jar;%COMETS_HOME%/lib/jogamp-all-platforms/jar/gluegen-rt-natives-windows-amd64.jar;%COMETS_HOME%/lib/jogamp-all-platforms/jar/jogl-all-natives-windows-amd64.jar;%GUROBI_HOME%/lib/gurobi.jar -Djava.library.path=%COMETS_HOME%/lib/x64;%GUROBI_HOME%/lib/;%GUROBI_HOME%/bin edu.bu.segrelab.comets.Comets -loader edu.bu.segrelab.comets.fba.FBACometsLoader -script comets_script.txt'</span>);
+0052             fprintf(fileid,<span class="string">'%s%s%s'</span>,<span class="string">'java -Xmx2048m -classpath %COMETS_HOME%/'</span>,jarname,<span class="string">';C:/Users/mquintin/workspace/lib/jmatio.jar;%COMETS_HOME%/lib/jmatio.jar;%COMETS_HOME%/lib/x64/glpk-java.jar;%COMETS_HOME%/lib/jogamp-all-platforms/jar/jogl-all.jar;%COMETS_HOME%/lib/jogamp-all-platforms/jar/gluegen.jar;%COMETS_HOME%/lib/jogamp-all-platforms/jar/gluegen-rt.jar;%COMETS_HOME%/lib/jogamp-all-platforms/jar/gluegen-rt-natives-windows-amd64.jar;%COMETS_HOME%/lib/jogamp-all-platforms/jar/jogl-all-natives-windows-amd64.jar;%GUROBI_HOME%/lib/gurobi.jar -Djava.library.path=%COMETS_HOME%/lib;%COMETS_HOME%/lib/x64;%GUROBI_HOME%;%GUROBI_HOME%/lib/;%GUROBI_HOME%/bin edu.bu.segrelab.comets.Comets -loader edu.bu.segrelab.comets.fba.FBACometsLoader -script comets_script.txt'</span>);
 0053             fclose(fileid);
 0054         <span class="keyword">end</span>
 0055     <span class="keyword">else</span>
@@ -134,7 +129,6 @@ This function is called by:
 0065 <span class="keyword">end</span>
 0066 
 0067 <span class="keyword">end</span></pre></div>
-
-<hr><address>Generated on Wed 01-Feb-2017 15:53:14 by <strong><a href="http://www.artefact.tk/software/matlab/m2html/" target="_parent">m2html</a></strong> &copy; 2003</address>
+<hr><address>Generated on Wed 03-May-2017 12:42:44 by <strong><a href="http://www.artefact.tk/software/matlab/m2html/" target="_parent">m2html</a></strong> &copy; 2005</address>
 </body>
 </html>

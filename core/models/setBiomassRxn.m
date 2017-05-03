@@ -59,14 +59,18 @@ end
 %handle cases where the value is being reset
 if isempty(rxnNames) && isfield(model,'biomassRxn')
     model = rmfield(model,'biomassRxn');
+    if sum(model.c) < 1
+        warning(['After removing the Biomass Reaction, the model ' ...
+            getModelName(model) ' has no Objective Reaction set.']);
+    end
 end
 
 %initialize or grow the vector if necessary
-if ~isempty(rxnNames) && ~isfield(model,'biomassRxn')
-    model.km = NaN(1,length(model.rxns));
-elseif ~isempty(rxnNames) && length(model.biomassRxn) < length(model.rxns)
-    model.biomassRxn(length(model.biomassRxn)+1:length(model.rxns)) = 0;
-end
+%if ~isempty(rxnNames) && ~isfield(model,'biomassRxn')
+%    model.biomassRxn = zeros(1,length(model.rxns));
+%elseif ~isempty(rxnNames) && length(model.biomassRxn) < length(model.rxns)
+%    model.biomassRxn(length(model.biomassRxn)+1:length(model.rxns)) = 0;
+%end
 
 %set the value
 for i=1:length(idx)
