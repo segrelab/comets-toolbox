@@ -36,7 +36,7 @@ if exist(logFilePath,'file') %the log file exists
             %media(cycle,1:length(m)) = m;
                         
             for j = 1:length(m)
-                tab = [tab; {cycle, j, m(j)}];
+                tab = [tab; {cycle, j, m(j), media_names(j)}];
             end
             
         end
@@ -45,7 +45,7 @@ if exist(logFilePath,'file') %the log file exists
     clear -regexp ^media_\d+$;
 end
 
-tab.Properties.VariableNames = {'t' 'met' 'amt'};
+tab.Properties.VariableNames = {'t' 'met' 'amt' 'metname'};
 tab = sortrows(tab,'t');
 
 end

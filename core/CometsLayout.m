@@ -28,6 +28,8 @@ classdef CometsLayout
         %To further explain these last four, if the fourth dimension holds (1,0) the value in the cell is not empty/default; it's set to zero.
         barrier = [0]; %x by y, logical
         initial_pop = [0];%models by x by y, default 0
+        external_rxns = table();
+        external_rxn_mets = table();
         %TODO: initial_pop modes (rectangle, random...)
     end
     
@@ -49,6 +51,11 @@ classdef CometsLayout
             %names = model.mets(mis~=0); %get logical index of cells
             
             newnames = setdiff(names, self.mets);
+            self = addMets(self,newnames);
+        end
+        
+        %Add the metabolites in the cell array newnames to this layout
+        function self = addMets(self,newnames)
             self.mets = [self.mets; newnames]; %must maintain order, don't use Union
             
             diff = length(self.mets) - length(self.media_amt);

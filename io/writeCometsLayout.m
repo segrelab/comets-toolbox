@@ -66,8 +66,8 @@ layout = sortMetabolites(layout);
 filename = fullfile(filedir,filename);
 fileID=fopen(filename,'w');
 
-% Parameters 
-% 
+% Parameters
+%
 % This block contains parameters initially loaded with the file. A list of
 % these with their accepted values is here. Here’s the structure of the
 % block:
@@ -406,6 +406,44 @@ else %no initial pop is set
     fprintf(fileID,'//\n');
 end
 
+%if external reactions are set, print the relevent block
+if ~isempty(layout.external_rxn_mets)
+    fprintf(fileID,'reactions\n');
+    fprintf(fileID,'\treactants\n');
+    mets = layout.external_rxn_mets;
+    rxns = layout.external_rxns;
+    metdims = size(mets);
+    nrows = metdims(1);
+    reactionnames = rxns.name;
+    for i = 1:nrows
+        row = mets(i,:);
+        rxnidx = stridx(row.rxn,reactionnames);
+        if row.stoich < 0
+            fprintf(fileID,['\t\t' rxnidx ' ' stridx(row.met,mets.met) ' ' -row.stoich ' '  rxns(rxnidx,2) '\n']);
+        end
+    end
+    fprintf(fileID,'\tenzymes\n');
+    rxndims = size(rxns);
+    nrows = rxndims(1);
+    for i = 1:nrows
+        row = rxns(i,:);
+        if ~strcmp(row.enzyme,'')
+            enzidx = stridx(row.enzyme,mets.met);
+            fprintf(fileID,['\t\t' i ' ' enzidx ' ' row.km '\n']);
+        end
+    end
+    fprintf(fileID,'\tproducts\n');
+    nrows = metdims(1);
+    for i = 1:nrows
+        row = mets(i,:);
+        rxnidx = stridx(row.rxn,reactionnames);
+        if row.stoich > 0
+            fprintf(fileID,['\t\t' rxnidx ' ' stridx(row.met,mets.met) ' ' row.stoich '\n']);
+        end
+    end
+    fprintf(fileID,'//\n');
+end
+
 fclose(fileID);
 
 %write the model files
@@ -416,14 +454,14 @@ if writeModels
     end
 end
 
-    function mname = getModelFileName(model)
-        name = getModelName(model);
-        mname = [name '.txt']; %relative path; file goes in current directory
-    end
-    function mname = getModelFilePath(model)
-        fname = getModelFileName(model);
-        mname = fullfile(filedir,fname); %absolute path
-    end
+function mname = getModelFileName(model)
+name = getModelName(model);
+mname = [name '.txt']; %relative path; file goes in current directory
+end
+function mname = getModelFilePath(model)
+fname = getModelFileName(model);
+mname = fullfile(filedir,fname); %absolute path
+end
 
 end
 
