@@ -54,12 +54,12 @@ if iscell(metabolites)
         s = stoichiometries(i);
         metrow = {rxnName, metabolites{i}, s};
         t.mets = [t.mets; metrow];
-        layout = addMetIfNotPresent(layout,metabolites(i));
+        layout = addMetIfNotPresent(layout,metabolites{i});
     end
 elseif ischar(metabolites)
     metrow = {rxnName, metabolites, stoichiometries(1)};
     t.mets = [t.mets; metrow];
-    layout = addMetIfNotPresent(layout,{metabolites});
+    layout = addMetIfNotPresent(layout,metabolites);
 end
 
 %make sure the column names are set correctly

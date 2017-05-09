@@ -21,6 +21,14 @@ else
     caseopt = 'matchcase';
 end
 
+if iscell(query)
+    if length(query)==1
+        query = query{1};
+    else
+        error('The query argument to stridx() should be a char array');
+    end
+end
+
 q = regexptranslate('escape',query); %treat the string as literal
 posn = regexp(list,q,caseopt,'once');
 

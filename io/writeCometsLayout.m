@@ -185,7 +185,7 @@ fprintf(fileID,'\tdiffusion_constants %d\n',ddiff);
 for i = 1:length(layout.mets)
     m = layout.mets{i};
     idx = layout.metIdx(m);
-    if idx & layout.diffusion_constants(idx,1) %if the diffusion constant is set
+    if idx && layout.diffusion_constants(idx,1) %if the diffusion constant is set
         dc = layout.diffusion_constants(idx,2);
         if dc ~= ddiff %and the diffusion constant is not equal to the default
             fprintf(fileID,'\t\t%d %g\n',idx,dc);
@@ -417,9 +417,12 @@ if ~isempty(layout.external_rxn_mets)
     reactionnames = rxns.name;
     for i = 1:nrows
         row = mets(i,:);
-        rxnidx = stridx(row.rxn,reactionnames);
+        rxnidx = stridx(row.rxn{1},reactionnames,false);
         if row.stoich < 0
-            fprintf(fileID,['\t\t' rxnidx ' ' stridx(row.met,mets.met) ' ' -row.stoich ' '  rxns(rxnidx,2) '\n']);
+            metidx = stridx(row.met{1},layout.mets,false);
+            sto = -row.stoich;
+            k = rxns(rxnidx,:).k;
+            fprintf(fileID,'\t\t%d %d %d %d\n', rxnidx, metidx, sto, k);
         end
     end
     fprintf(fileID,'\tenzymes\n');
@@ -427,18 +430,20 @@ if ~isempty(layout.external_rxn_mets)
     nrows = rxndims(1);
     for i = 1:nrows
         row = rxns(i,:);
-        if ~strcmp(row.enzyme,'')
-            enzidx = stridx(row.enzyme,mets.met);
-            fprintf(fileID,['\t\t' i ' ' enzidx ' ' row.km '\n']);
+        if ~strcmp(row.enzyme{1},'')
+            enzidx = stridx(row.enzyme{1},layout.mets,false);
+            fprintf(fileID,'\t\t%d %d %d\n', i, enzidx, row.km);
         end
     end
     fprintf(fileID,'\tproducts\n');
     nrows = metdims(1);
     for i = 1:nrows
         row = mets(i,:);
-        rxnidx = stridx(row.rxn,reactionnames);
+        rxnidx = stridx(row.rxn{1},reactionnames,false);
         if row.stoich > 0
-            fprintf(fileID,['\t\t' rxnidx ' ' stridx(row.met,mets.met) ' ' row.stoich '\n']);
+            metidx = stridx(row.met{1},layout.mets,false);
+            sto = row.stoich;
+            fprintf(fileID,'\t\t%d %d %d\n', rxnidx, metidx, sto);
         end
     end
     fprintf(fileID,'//\n');
