@@ -141,22 +141,24 @@ classdef CometsLayout
         
         function self = setInitialMediaInCell(self,x,y,metname,value)
             idx = stridx(metname,self.mets,false);
-            if isempty(idx) | ~idx
-                warning(['Could not find ' metname ' in the media list.']);
-            else
-                self.initial_media(idx,x,y,1)=1;
-                self.initial_media(idx,x,y,2)=value;
+            if isempty(idx) || ~idx
+                warning(['Could not find ' metname ' in the media list. Adding it as a new media component.']);
+                self = addMets(self,{metname});
+                idx = stridx(metname,self.mets,false);
             end
+            self.initial_media(idx,x,y,1)=1;
+            self.initial_media(idx,x,y,2)=value;
         end
         
         %set the initial amount of the metabolite given by name
         function self = setInitialMedia(self,metname,value)
             idx = stridx(metname, self.mets, false);
-            if isempty(idx) | ~idx
-                warning(['Could not find ' metname ' in the media list.']);
-            else
-                self.media_amt(idx) = value;
+            if isempty(idx) || ~idx
+                warning(['Could not find ' metname ' in the media list. Adding it as a new media component.']);
+                self = addMets(self,{metname});
+                idx = stridx(metname,self.mets,false);
             end
+            self.media_amt(idx) = value;
         end
         
         %rename setInitialMedia for simplicity
