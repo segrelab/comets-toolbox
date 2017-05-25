@@ -34,10 +34,10 @@ classdef CometsLayout
     end
     
     methods
-        function obj=CometsLayout()
+        function obj = CometsLayout()
         end
         
-        function self=addModel(self,model)
+        function self = addModel(self,model)
             self.models = [self.models model];
             
             %if the model contains any external metabolites, add them to this mets list
@@ -81,14 +81,14 @@ classdef CometsLayout
             diff = length(self.mets) - size(self.static_media,1);
             if diff > 0
                 %self.static_media = [self.static_media; zeros(diff,self.xdim,self.ydim,2)];
-                self.static_media(diff,:,:,:)=0;
+                self.static_media(length(self.mets),:,:,:)=0;
             end
         end
         
         %function self=removeModel(self,model)
         %end
         
-        function self=setParams(self,params)
+        function self = setParams(self,params)
             self.params = params;
         end
         
@@ -236,18 +236,18 @@ classdef CometsLayout
                 case 'double' %this covers single values and arrays of doubles
                     midx = varargin{2};
                 otherwise
-                    error('Metabolites in setDiffusion(layout,mets,values) must be ID''d as a char, cell array of chars, or double');
+                    error('Metabolites in setDiffusion(layout,mets,values) must be ID''d as a char, a cell array of chars, a single index, or an array of indices');
             end
             
             hasValue = false;
-            if nargin > 2 && (varargin{3} || isnumeric(varargin{3}))
+            if nargin > 2 && (varargin{3}(1) || isnumeric(varargin{3}))
                 hasValue = true;
                 vals = varargin{3};
                 if length(vals) == 1
                     vals = repmat(vals,length(midx),1);
                 end
                 if length(vals) ~= length(midx)
-                    error('The third argument in setDiffusion(layout,mets,values) must be empty, false, or of the same length as the list of mets');
+                    error('The third argument in setDiffusion(layout,mets,values) must be empty, false, a single value, or of the same length as the list of mets');
                 end
             end
             
@@ -258,6 +258,113 @@ classdef CometsLayout
                 self.diffusion_constants(midx,1) = 0;
             end
         end
+        
+        %setStaticMedia(layout, x, y, metnames, values)
+        %
+        %Set if the given metabolites in media are static
+        %
+        %'x' and 'y' can be single integers or arrays specifying
+        %coordinates. If exactly one is an array, the single value will
+        %be paired with all members of the array. If both are arrays,
+        %the shorter array will be repeated to match the longer.
+        %
+        %'metnames' can be a single metabolite name, a cell array of
+        %metabolite names, a single metabolite index, or an array of
+        %metabolite indexes
+        %
+        %'values' can be a single value, an array of values, false, or
+        %not given. If false or not given, the metabolites will have their
+        %"set" flag (the first dimension in diffusion_constants) turned
+        %off. If a single value, all input metabolites will get that value
+        %assigned. If an array, there must be one value per metabolite
+        function self = setStaticMedia(varargin)
+            self = varargin{1};
+            
+            x = varargin{2};
+            y = varargin{3};
+            %check coordinate vector dimensions
+            %first, linearize them and put them in the same orientation
+            x = x(1:end);
+            y = y(1:end);
+            [temp,xlen] = size(x);
+            [temp,ylen] = size(y);
+            %if xlen == ylen, do nothing. Otherwise repeat the short one to
+            %match the long one
+            if (xlen < ylen)
+                x = repmat(x,1,ylen);
+                x = x(1:ylen);
+            end
+            if (xlen > ylen)
+                y = repmat(y,1,xlen);
+                y = y(1:xlen);
+            end
+            
+            midx = [];
+            switch class(varargin{4})
+                case 'char'
+                    midx = metIdx(self,varargin{4});
+                case 'cell'
+                    c = varargin{4};
+                    for i=1:length(c)
+                        midx = [midx metIdx(self,c{i})];
+                    end
+                case 'double' %this covers single values and arrays of doubles
+                    midx = varargin{4};
+                otherwise
+                    error('Metabolites in setStaticMedia must be ID''d as a char, a cell array of chars, a single index, or an array of indices');
+            end
+            
+            hasValue = false;
+            if nargin > 4 && (varargin{5}(1) || isnumeric(varargin{5}))
+                hasValue = true;
+                vals = varargin{5};
+                if length(vals) == 1
+                    vals = repmat(vals,length(midx),1);
+                end
+                if length(vals) ~= length(midx)
+                    error('The fifth argument in setStaticMedia must be empty, false, a single value, or of the same length as the list of mets');
+                end
+            end
+            
+            %Don't just apply changes to self.static_media(midx,x,y,:)!
+            %This will change values in every combination of values in x
+            %and y. Instead, iterate over x and y so it's properly done
+            %pairwise.
+            for i = 1:length(x)
+                xi = x(i);
+                yi = y(i);
+                if hasValue
+                    self.static_media(midx,xi,yi,1) = 1;
+                    self.static_media(midx,xi,yi,2) = vals;
+                else
+                    self.static_media(midx,xi,yi,1) = 0;
+                end
+            end
+        end
+        
+        %applyStaticMediaMask(layout,mask,metnames,values)
+        %
+        %Set if the given metabolites in the media are static. Instead of
+        %specifying x-y coordinates, 'mask' is a logical matrix of the
+        %same dimensions as the layout. The static media will be set in
+        %every position where mask(x,y) == true
+        %
+        %'metnames' can be a single metabolite name, a cell array of
+        %metabolite names, a single metabolite index, or an array of
+        %metabolite indexes
+        %
+        %'values' can be a single value, an array of values, false, or
+        %not given. If false or not given, the metabolites will have their
+        %"set" flag (the first dimension in diffusion_constants) turned
+        %off. If a single value, all input metabolites will get that value
+        %assigned. If an array, there must be one value per metabolite
+        function self = applyStaticMediaMask(self, mask, metnames, values)
+            %simply convert the mask to coordinates then pass everything to
+            %setStaticMedia()
+            [x,y] = find(mask);
+            self = setStaticMedia(self,x,y,metnames,values);
+        end
+        
         
     end
     

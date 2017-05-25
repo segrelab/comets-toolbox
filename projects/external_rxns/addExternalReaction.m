@@ -36,7 +36,11 @@ for i = 1:2:length(varargin)
         enzyme = varargin{i+1};
         layout = addMetIfNotPresent(layout,varargin{i+1});
         case 'K'
-        %set kcat/vmax
+        %set kcat/vmax. 'K', 'KCAT', and 'VMAX' are all identical
+        k = varargin{i+1};
+        case 'KCAT'
+        k = varargin{i+1};
+        case 'VMAX'
         k = varargin{i+1};
         case 'KM'
         %set Michaelis constant

@@ -306,12 +306,13 @@ end
 
 for x = 1:s(2)
     for y = 1:s(3)
-        v = layout.static_media(:,x,y);%values
-        i = find(v); %indexes
+        b = layout.static_media(:,x,y,1);%is this medium static?
+        v = layout.static_media(:,x,y,2);%values
+        i = find(b); %indexes
         if any(i)
-            b = zeros(gs(1));
-            b(i) = 1; %is this medium static?
-            sm = [b;full(v)];
+%            b = zeros(1,gs(1));
+%            b(i) = 1; %is this medium static?
+            sm = [b';v'];
             row = sm(1:(2*gs(1)));%pairs of logical/value for each media
             fprintf(fileID,'\t\t%d %d',x-1,y-1);
             for j = 1:length(row)
