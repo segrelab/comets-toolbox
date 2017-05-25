@@ -14,16 +14,32 @@ function [model, failed, failedflag] = normalizeMetNames(model)
 % 
 % See also: List related files here
 
-% $Author: mquintin $	$Date: 2016/10/28 12:59:12 $	$Revision: 0.1 $
+% $Author: mquintin $	$Date: 2016/10/28 12:59:12 $	$Revision: 0.2 $
 % Copyright: Daniel Segrè, Boston University Bioinformatics Program 2016
+
+% Changelog: 
+% 5/23/2017: add compatability with names that denote compartment by using 
+% an underscore
+
+
+%convert names in the form "some_metabolite_c" to "some_metabolite[c]" in
+%order to be compatible with parseMetNames. Note we're not directly
+%modifying parseMetNames because we shouldn't touch Cobra functions
+mets = model.mets;
+for i = 1:length(mets)
+    met = mets{i};
+    if ~isempty(regexp(met,'_'))
+        %Greedy search, so there should only be two tokens
+        %regardless of the number of underscores in the string
+        [tokens,tmp] = regexp(met,'(.+)_(.+)','tokens','match');
+        %Now replace the name in bracketed format
+        mets{i} = [tokens{1}{1} '[' tokens{1}{2} ']'];
+    end
+end
 
 
 %call COBRA to strip the compartment if in the form "metName[c]" or "metName(c)"
-
-%TODO: This script is currently incompatible with compartments in the form
-%"metname_c"
-
-[basemetnames, compsymbols] = parseMetNames(model.mets);
+[basemetnames, compsymbols] = parseMetNames(mets);
 
 newmetnames = cell(length(basemetnames),1);
 failed = cell(length(basemetnames),1);
