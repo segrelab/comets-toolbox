@@ -28,7 +28,7 @@ function [model, failed, failedflag] = normalizeMetNames(model)
 mets = model.mets;
 for i = 1:length(mets)
     met = mets{i};
-    if ~isempty(regexp(met,'_'))
+    if (isempty(regexp(met,'[\[\(]', 'once')) && ~isempty(regexp(met,'_', 'once')))
         %Greedy search, so there should only be two tokens
         %regardless of the number of underscores in the string
         [tokens,tmp] = regexp(met,'(.+)_(.+)','tokens','match');
