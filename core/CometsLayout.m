@@ -365,6 +365,77 @@ classdef CometsLayout
             self = setStaticMedia(self,x,y,metnames,values);
         end
         
+        %setMediaRefresh(layout, x, y, metnames, values)
+        %
+        %Set the amount to adjust media in the specified cells at each
+        %timestep. The concentration in the cell will have the given value 
+        %added, so units of the values should be concentration.
+        %
+        %'x' and 'y' can be single integers or arrays specifying
+        %coordinates. If exactly one is an array, the single value will
+        %be paired with all members of the array. If both are arrays,
+        %the shorter array will be repeated to match the longer.
+        %
+        %'metnames' can be a single metabolite name, a cell array of
+        %metabolite names, a single metabolite index, or an array of
+        %metabolite indexes
+        %
+        %'values' can be a single value, or an array of values If a
+        %single value, all input metabolites will get that value
+        %assigned. If an array, there must be one value per metabolite
+        function self = setMediaRefresh(self, x, y, mets, values)
+            %check coordinate vector dimensions
+            %first, linearize them and put them in the same orientation
+            x = x(1:end);
+            y = y(1:end);
+            [temp,xlen] = size(x);
+            [temp,ylen] = size(y);
+            %if xlen == ylen, do nothing. Otherwise repeat the short one to
+            %match the long one
+            if (xlen < ylen)
+                x = repmat(x,1,ylen);
+                x = x(1:ylen);
+            end
+            if (xlen > ylen)
+                y = repmat(y,1,xlen);
+                y = y(1:xlen);
+            end
+            
+            midx = [];
+            switch class(mets)
+                case 'char'
+                    midx = metIdx(self,mets);
+                case 'cell'
+                    c = varargin{4};
+                    for i=1:length(c)
+                        midx = [midx metIdx(self,c{i})];
+                    end
+                case 'double' %this covers single values and arrays of doubles
+                    midx = mets;
+                otherwise
+                    error('Metabolites in setStaticMedia must be ID''d as a char, a cell array of chars, a single index, or an array of indices');
+            end
+            
+            vals = values;
+            if length(vals) == 1
+                vals = repmat(vals,length(midx),1);
+            end
+            if length(vals) ~= length(midx)
+                error('The fifth argument in setStaticMedia must be a single value or of the same length as the list of mets');
+            end
+            
+            %Don't just apply changes to self.media_refresh(midx,x,y)!
+            %This will change values in every combination of values in x
+            %and y. Instead, iterate over x and y so it's properly done
+            %pairwise.
+            for i = 1:length(x)
+                xi = x(i);
+                yi = y(i);
+                vi = vals(i);
+                self.media_refresh(midx,xi,yi) = vi;
+            end
+        end
+        
         
     end
     
