@@ -27,7 +27,7 @@ if separateParamsFiles
 end
 createScriptFile(directory, layoutFileName, separateParamsFiles);
 
-writeCometsLayout(layout, directory, 'comets_layout.txt', ~separateParamsFiles, true); 
+writeCometsLayout(layout, directory, layoutFileName, ~separateParamsFiles, true); 
     %writeCometsLayout also creates model files
 
 end
