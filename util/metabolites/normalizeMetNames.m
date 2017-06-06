@@ -1,5 +1,5 @@
 function [model, failed, failedflag] = normalizeMetNames(model)
-%NORMALIZEMETS Replace the model.mets with a standardized name and format
+%NORMALIZEMETNAMES Replace the model.mets with a standardized name and format
 % 
 % [OUTPUTARGS] = NORMALIZEMETNAMES(INPUTARGS) 
 %   model: A COBRA model

@@ -182,13 +182,15 @@ fprintf(fileID,'\t//\n');
 %   index_1  diff_const_1 index_2  diff_const_2 index_3  diff_const_3 . . .
 ddiff = layout.params.defaultDiffConst;
 fprintf(fileID,'\tdiffusion_constants %d\n',ddiff);
-for i = 1:length(layout.mets)
-    m = layout.mets{i};
-    idx = layout.metIdx(m);
-    if idx && layout.diffusion_constants(idx,1) %if the diffusion constant is set
-        dc = layout.diffusion_constants(idx,2);
-        if dc ~= ddiff %and the diffusion constant is not equal to the default
-            fprintf(fileID,'\t\t%d %g\n',idx,dc);
+if any(layout.diffusion_constants(:,1))
+    for i = 1:length(layout.mets)
+        m = layout.mets{i};
+        idx = layout.metIdx(m);
+        if idx && layout.diffusion_constants(idx,1) %if the diffusion constant is set
+            dc = layout.diffusion_constants(idx,2);
+            if dc ~= ddiff %and the diffusion constant is not equal to the default
+                fprintf(fileID,'\t\t%d %g\n',idx-1,dc);
+            end
         end
     end
 end
@@ -304,21 +306,23 @@ if length(s) < 3 %don't break the loop if static_media is empty or 1x1
     s(3) = 1;
 end
 
-for x = 1:s(2)
-    for y = 1:s(3)
-        b = layout.static_media(:,x,y,1);%is this medium static?
-        v = layout.static_media(:,x,y,2);%values
-        i = find(b); %indexes
-        if any(i)
-%            b = zeros(1,gs(1));
-%            b(i) = 1; %is this medium static?
-            sm = [b';v'];
-            row = sm(1:(2*gs(1)));%pairs of logical/value for each media
-            fprintf(fileID,'\t\t%d %d',x-1,y-1);
-            for j = 1:length(row)
-                fprintf(fileID,' %d',row(j));
+if any(layout.static_media(:,:,:,1))
+    for x = 1:s(2)
+        for y = 1:s(3)
+            b = layout.static_media(:,x,y,1);%is this medium static?
+            v = layout.static_media(:,x,y,2);%values
+            i = find(b); %indexes
+            if any(i)
+                %            b = zeros(1,gs(1));
+                %            b(i) = 1; %is this medium static?
+                sm = [b';v'];
+                row = sm(1:(2*gs(1)));%pairs of logical/value for each media
+                fprintf(fileID,'\t\t%d %d',x-1,y-1);
+                for j = 1:length(row)
+                    fprintf(fileID,' %d',row(j));
+                end
+                fprintf(fileID,'\n');
             end
-            fprintf(fileID,'\n');
         end
     end
 end
@@ -419,7 +423,7 @@ if ~isempty(layout.external_rxn_mets)
     for i = 1:nrows
         row = mets(i,:);
         rxnidx = stridx(row.rxn{1},reactionnames,false);
-        if row.stoich < 0
+        if row.stoich < 0 %can I remove this check without breaking something?
             metidx = stridx(row.met{1},layout.mets,false);
             sto = -row.stoich;
             k = rxns(rxnidx,:).k;
@@ -460,14 +464,14 @@ if writeModels
     end
 end
 
-function mname = getModelFileName(model)
-name = getModelName(model);
-mname = [name '.txt']; %relative path; file goes in current directory
-end
-function mname = getModelFilePath(model)
-fname = getModelFileName(model);
-mname = fullfile(filedir,fname); %absolute path
-end
+    function mname = getModelFileName(model)
+        name = getModelName(model);
+        mname = [name '.txt']; %relative path; file goes in current directory
+    end
+    function mname = getModelFilePath(model)
+        fname = getModelFileName(model);
+        mname = fullfile(filedir,fname); %absolute path
+    end
 
 end
 

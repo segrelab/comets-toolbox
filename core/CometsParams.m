@@ -43,8 +43,8 @@ classdef CometsParams
             %['Diffusion 2D(Crank-Nicolson)', 'Diffusion 2D(Eight Point)', 'Diffusion 3D']
             %Not yet implemented: ['Convection 2D', 'Convection 3D']
             %Comets versions older than v 2.2.2 should use "Diffusion (Cranck-Nicolson)" or "Diffusion (Eight Point)", ommitting "2D"
-        defaultDiffConst = 1e-6 %The default diffusion constant for extracellular metabolites
-            %logFormat = 'COMETS' %['COMETS', 'Matlab']
+        defaultDiffConst = 1e-6 %Units = cm^2/s. The default diffusion constant for extracellular metabolites
+        %logFormat = 'COMETS' %['COMETS', 'Matlab']
         exchangeStyle = 'Monod Style' %Sets the method used for calculating maximum exchange rates for all extracellular metabolites. Only one of the three strings is an allowed value: ['Standard FBA', 'Monod Style', 'Pseudo-Monod Style']
         flowDiffRate = 0 %cm^2/s. The default biomass diffusion constant for non-growth diffusion 
         growthDiffRate = 0 %cm^2/s. The default biomass diffusion constant for growth

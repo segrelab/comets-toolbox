@@ -8,24 +8,24 @@
   <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
   <meta name="generator" content="m2html &copy; 2005 Guillaume Flandin">
   <meta name="robots" content="index, follow">
-  <link type="text/css" rel="stylesheet" href="../../../m2html.css">
+  <link type="text/css" rel="stylesheet" href="../../../../m2html.css">
   <script type="text/javascript">
-    if (top.frames.length == 0) { top.location = "../../../index.html"; };
+    if (top.frames.length == 0) { top.location = "../../../../index.html"; };
   </script>
 </head>
 <body>
 <a name="_top"></a>
-<!-- # CometsToolbox --><!-- # projects --><!-- menu.html external -->
+<!-- # CometsToolbox --><!-- # projects --><!-- ../menu.html external_rxns --><!-- menu.html deprecated -->
 <h1>enzymeModelFromRxn
 </h1>
 
-<h2><a name="_name"></a>PURPOSE <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+<h2><a name="_name"></a>PURPOSE <a href="#_top"><img alt="^" border="0" src="../../../../up.png"></a></h2>
 <div class="box"><strong>ENZYMEMODELFROMRXN Given a model, a reaction, and the name of an enzyme</strong></div>
 
-<h2><a name="_synopsis"></a>SYNOPSIS <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+<h2><a name="_synopsis"></a>SYNOPSIS <a href="#_top"><img alt="^" border="0" src="../../../../up.png"></a></h2>
 <div class="box"><strong>function pseudo = enzymeModelFromRxn(varargin) </strong></div>
 
-<h2><a name="_description"></a>DESCRIPTION <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+<h2><a name="_description"></a>DESCRIPTION <a href="#_top"><img alt="^" border="0" src="../../../../up.png"></a></h2>
 <div class="fragment"><pre class="comment"> ENZYMEMODELFROMRXN Given a model, a reaction, and the name of an enzyme
  metabolite, create a model for a pseudoorganism that carries out the same
  reaction 
@@ -35,18 +35,18 @@
      in model.mets</pre></div>
 
 <!-- crossreference -->
-<h2><a name="_cross"></a>CROSS-REFERENCE INFORMATION <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+<h2><a name="_cross"></a>CROSS-REFERENCE INFORMATION <a href="#_top"><img alt="^" border="0" src="../../../../up.png"></a></h2>
 This function calls:
-<ul style="list-style-image:url(../../../matlabicon.gif)">
-<li><a href="../../../CometsToolbox/external/m2html/@template/char.html" class="code" title="function s = char(tpl)">char</a>	TEMPLATE Convert a template object in a one line description string</li></ul>
+<ul style="list-style-image:url(../../../../matlabicon.gif)">
+<li><a href="../../../../CometsToolbox/external/m2html/@template/char.html" class="code" title="function s = char(tpl)">char</a>	TEMPLATE Convert a template object in a one line description string</li></ul>
 This function is called by:
-<ul style="list-style-image:url(../../../matlabicon.gif)">
+<ul style="list-style-image:url(../../../../matlabicon.gif)">
 </ul>
 <!-- crossreference -->
 
 
 
-<h2><a name="_source"></a>SOURCE CODE <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+<h2><a name="_source"></a>SOURCE CODE <a href="#_top"><img alt="^" border="0" src="../../../../up.png"></a></h2>
 <div class="fragment"><pre>0001 <a name="_sub0" href="#_subfunctions" class="code">function pseudo = enzymeModelFromRxn(varargin)</a>
 0002 <span class="comment">% ENZYMEMODELFROMRXN Given a model, a reaction, and the name of an enzyme</span>
 0003 <span class="comment">% metabolite, create a model for a pseudoorganism that carries out the same</span>
@@ -64,7 +64,7 @@ This function is called by:
 0015 model = varargin{1};
 0016 
 0017 <span class="keyword">if</span> ischar(varargin{2})
-0018     rxnName = <a href="../../../CometsToolbox/external/m2html/@template/char.html" class="code" title="function s = char(tpl)">char</a>(varargin{2});
+0018     rxnName = <a href="../../../../CometsToolbox/external/m2html/@template/char.html" class="code" title="function s = char(tpl)">char</a>(varargin{2});
 0019     rxnIdx = find(ismember(model.rxns,rxnName));
 0020     <span class="comment">%make sure we get exactly 1 match</span>
 0021     <span class="keyword">if</span> length(rxnIdx) &lt; 1
@@ -76,7 +76,7 @@ This function is called by:
 0027     <span class="keyword">end</span>
 0028 <span class="keyword">elseif</span> isnumeric(varargin{2})
 0029     rxnIdx = varargin{2};
-0030     rxnName = <a href="../../../CometsToolbox/external/m2html/@template/char.html" class="code" title="function s = char(tpl)">char</a>(model.rxns(rxnIdx));
+0030     rxnName = <a href="../../../../CometsToolbox/external/m2html/@template/char.html" class="code" title="function s = char(tpl)">char</a>(model.rxns(rxnIdx));
 0031 <span class="keyword">else</span>
 0032     error([<span class="string">'The second arugment for enzymeModelFromRxn should be the'</span><span class="keyword">...</span>
 0033         <span class="string">' name or index of a reaction in the given model'</span>]);
@@ -131,6 +131,6 @@ This function is called by:
 0082 
 0083 <span class="comment">%optimize the reaction as well as the biomass</span>
 0084 pseudo = changeObjective(pseudo,{rxnName,<span class="string">'biomass'</span>});</pre></div>
-<hr><address>Generated on Wed 03-May-2017 12:42:44 by <strong><a href="http://www.artefact.tk/software/matlab/m2html/" target="_parent">m2html</a></strong> &copy; 2005</address>
+<hr><address>Generated on Tue 06-Jun-2017 15:51:46 by <strong><a href="http://www.artefact.tk/software/matlab/m2html/" target="_parent">m2html</a></strong> &copy; 2005</address>
 </body>
 </html>

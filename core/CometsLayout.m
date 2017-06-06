@@ -19,15 +19,15 @@ classdef CometsLayout
         media_amt = [0];%vector 1/met, default 0. Initial media concentration in every cell
         params = CometsParams();
         %use sparse matrices. Empty elements use default values
-        diffusion_constants = []; %met by 2. If (i,1)=0, met i uses the default diffusion constant. if (i,1)=1, met i's diffusion constant is the value of (i,2)
+        diffusion_constants = []; %met by 2. If (i,1)=0, met i uses the default diffusion constant. if (i,1)=1, met i's diffusion constant is the value of (i,2). Units = cm^2/s
         global_media_refresh = [];%vector 1/met, default 0
-        media_refresh = [0];%[0] %met by x by y, fill with 0
-        global_static_media = [];%met by 2. (met,1) is logical denoting if the corresponding media is held static, (met,2) is the held concentration
+        media_refresh = [0];%[0] %met by x by y, fill with 0. Units = concentration
+        global_static_media = [];%met by 2. (met,1) is logical denoting if the corresponding media is held static, (met,2) is the held concentration. Units = concentration
         static_media = [0];%met by x by y by 2, with the fourth dimension as in global_static_media ****
         initial_media = [0]; %met by x by y by 2. Initial media concentration in the specified cell. Fourth dimension denotes [isThisValueSet?, value]
         %To further explain these last four, if the fourth dimension holds (1,0) the value in the cell is not empty/default; it's set to zero.
         barrier = [0]; %x by y, logical
-        initial_pop = [0];%models by x by y, default 0
+        initial_pop = [0];%models by x by y, default 0. Units = grams.
         external_rxns = table();
         external_rxn_mets = table();
         %TODO: initial_pop modes (rectangle, random...)
@@ -54,8 +54,8 @@ classdef CometsLayout
             self = addMets(self,newnames);
         end
         
-        %Add the metabolites in the cell array newnames to this layout
         function self = addMets(self,newnames)
+            %Add the metabolites in the cell array newnames to this layout
             self.mets = [self.mets; newnames]; %must maintain order, don't use Union
             
             diff = length(self.mets) - length(self.media_amt);
@@ -150,8 +150,8 @@ classdef CometsLayout
             self.initial_media(idx,x,y,2)=value;
         end
         
-        %set the initial amount of the metabolite given by name
         function self = setInitialMedia(self,metname,value)
+            %set the initial amount of the metabolite given by name
             idx = stridx(metname, self.mets, false);
             if isempty(idx) || ~idx
                 warning(['Could not find ' metname ' in the media list. Adding it as a new media component.']);
@@ -161,14 +161,16 @@ classdef CometsLayout
             self.media_amt(idx) = value;
         end
         
-        %rename setInitialMedia for simplicity
         function self = setMedia(self, metname, value)
+            %renamed setInitialMedia for simplicity
             self = setInitialMedia(self, metname, value);
         end
         
-        %sort the list of metabolites alphabetically, and rearrange other
-        %lists accordingly
+        
         function self = sortMetabolites(self)
+            %sort the list of metabolites alphabetically, and rearrange other
+            %lists accordingly
+            %
             %lists to rearrange: mets, media_amt, diffusion_constants, global_media_refresh
             %media_refresh, global_static_media, static_media, initial_media
             nmets = length(self.mets);
@@ -210,18 +212,18 @@ classdef CometsLayout
             end
         end
         
-        %setDiffusion(self, metnames, [values])
-        %set diffusion constants for the given metabolite or list of
-        %metabolites
-        %'metnames' can be a single metabolite name, a cell array of
-        %metabolite names, a single metabolite index, or an array of
-        %metabolite indexes
-        %'values' can be a single value, an array of values, false, or
-        %not given. If false or not given, the metabolites will have their
-        %"set" flag (the first dimension in diffusion_constants) turned
-        %off. If a single value, all input metabolites will get that value
-        %assigned. If an array, there must be one value per metabolite
         function self = setDiffusion(varargin)
+            %setDiffusion(self, metnames, [values])
+            %set diffusion constants for the given metabolite or list of
+            %metabolites
+            %'metnames' can be a single metabolite name, a cell array of
+            %metabolite names, a single metabolite index, or an array of
+            %metabolite indexes
+            %'values' can be a single value, an array of values, false, or
+            %not given. If false or not given, the metabolites will have their
+            %"set" flag (the first dimension in diffusion_constants) turned
+            %off. If a single value, all input metabolites will get that value
+            %assigned. If an array, there must be one value per metabolite
             self = varargin{1};
             
             midx = [];
@@ -251,35 +253,37 @@ classdef CometsLayout
                 end
             end
             
-            if hasValue
-                self.diffusion_constants(midx,1) = 1;
-                self.diffusion_constants(midx,2) = vals;
-            else
-                self.diffusion_constants(midx,1) = 0;
+            for i = 1:length(midx)
+                m = midx(i);
+                if hasValue
+                    self.diffusion_constants(m,1) = 1;
+                    self.diffusion_constants(m,2) = vals(i);
+                else
+                    self.diffusion_constants(m,1) = 0;
+                end
             end
         end
         
-        %setStaticMedia(layout, x, y, metnames, values)
-        %
-        %Set if the given metabolites in media are static
-        %
-        %'x' and 'y' can be single integers or arrays specifying
-        %coordinates. If exactly one is an array, the single value will
-        %be paired with all members of the array. If both are arrays,
-        %the shorter array will be repeated to match the longer.
-        %
-        %'metnames' can be a single metabolite name, a cell array of
-        %metabolite names, a single metabolite index, or an array of
-        %metabolite indexes
-        %
-        %'values' can be a single value, an array of values, false, or
-        %not given. If false or not given, the metabolites will have their
-        %"set" flag (the first dimension in diffusion_constants) turned
-        %off. If a single value, all input metabolites will get that value
-        %assigned. If an array, there must be one value per metabolite
         function self = setStaticMedia(varargin)
+            %setStaticMedia(layout, x, y, metnames, values)
+            %
+            %Set if the given metabolites in media are static
+            %
+            %'x' and 'y' can be single integers or arrays specifying
+            %coordinates. If exactly one is an array, the single value will
+            %be paired with all members of the array. If both are arrays,
+            %the shorter array will be repeated to match the longer.
+            %
+            %'metnames' can be a single metabolite name, a cell array of
+            %metabolite names, a single metabolite index, or an array of
+            %metabolite indexes
+            %
+            %'values' can be a single value, an array of values, false, or
+            %not given. If false or not given, the metabolites will have their
+            %"set" flag (the first dimension in diffusion_constants) turned
+            %off. If a single value, all input metabolites will get that value
+            %assigned. If an array, there must be one value per metabolite
             self = varargin{1};
-            
             x = varargin{2};
             y = varargin{3};
             %check coordinate vector dimensions
@@ -344,21 +348,22 @@ classdef CometsLayout
         
         %applyStaticMediaMask(layout,mask,metnames,values)
         %
-        %Set if the given metabolites in the media are static. Instead of
-        %specifying x-y coordinates, 'mask' is a logical matrix of the
-        %same dimensions as the layout. The static media will be set in
-        %every position where mask(x,y) == true
-        %
-        %'metnames' can be a single metabolite name, a cell array of
-        %metabolite names, a single metabolite index, or an array of
-        %metabolite indexes
-        %
-        %'values' can be a single value, an array of values, false, or
-        %not given. If false or not given, the metabolites will have their
-        %"set" flag (the first dimension in diffusion_constants) turned
-        %off. If a single value, all input metabolites will get that value
-        %assigned. If an array, there must be one value per metabolite
         function self = applyStaticMediaMask(self, mask, metnames, values)
+            %Set if the given metabolites in the media are static. Instead of
+            %specifying x-y coordinates, 'mask' is a logical matrix of the
+            %same dimensions as the layout. The static media will be set in
+            %every position where mask(x,y) == true
+            %
+            %'metnames' can be a single metabolite name, a cell array of
+            %metabolite names, a single metabolite index, or an array of
+            %metabolite indexes
+            %
+            %'values' can be a single value, an array of values, false, or
+            %not given. If false or not given, the metabolites will have their
+            %"set" flag (the first dimension in diffusion_constants) turned
+            %off. If a single value, all input metabolites will get that value
+            %assigned. If an array, there must be one value per metabolite
+            
             %simply convert the mask to coordinates then pass everything to
             %setStaticMedia()
             [x,y] = find(mask);
@@ -366,24 +371,24 @@ classdef CometsLayout
         end
         
         %setMediaRefresh(layout, x, y, metnames, values)
-        %
-        %Set the amount to adjust media in the specified cells at each
-        %timestep. The concentration in the cell will have the given value 
-        %added, so units of the values should be concentration.
-        %
-        %'x' and 'y' can be single integers or arrays specifying
-        %coordinates. If exactly one is an array, the single value will
-        %be paired with all members of the array. If both are arrays,
-        %the shorter array will be repeated to match the longer.
-        %
-        %'metnames' can be a single metabolite name, a cell array of
-        %metabolite names, a single metabolite index, or an array of
-        %metabolite indexes
-        %
-        %'values' can be a single value, or an array of values If a
-        %single value, all input metabolites will get that value
-        %assigned. If an array, there must be one value per metabolite
         function self = setMediaRefresh(self, x, y, mets, values)
+            %Set the amount to adjust media in the specified cells at each
+            %timestep. The concentration in the cell will have the given value
+            %added, so units of the values should be concentration.
+            %
+            %'x' and 'y' can be single integers or arrays specifying
+            %coordinates. If exactly one is an array, the single value will
+            %be paired with all members of the array. If both are arrays,
+            %the shorter array will be repeated to match the longer.
+            %
+            %'metnames' can be a single metabolite name, a cell array of
+            %metabolite names, a single metabolite index, or an array of
+            %metabolite indexes
+            %
+            %'values' can be a single value, or an array of values If a
+            %single value, all input metabolites will get that value
+            %assigned. If an array, there must be one value per metabolite
+            
             %check coordinate vector dimensions
             %first, linearize them and put them in the same orientation
             x = x(1:end);

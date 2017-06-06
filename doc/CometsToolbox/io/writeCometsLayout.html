@@ -33,7 +33,7 @@ files</pre></div>
 <h2><a name="_cross"></a>CROSS-REFERENCE INFORMATION <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
 This function calls:
 <ul style="list-style-image:url(../../matlabicon.gif)">
-<li><a href="../../CometsToolbox/external/m2html/@template/char.html" class="code" title="function s = char(tpl)">char</a>	TEMPLATE Convert a template object in a one line description string</li><li><a href="writeCometsModel.html" class="code" title="function f = writeCometsModel( input, filename, cometsParams)">writeCometsModel</a>	WRITECOMETSMODEL create a Comets input file for the given model</li><li><a href="../../CometsToolbox/util/getModelName.html" class="code" title="function res = getModelName( model )">getModelName</a>	GETMODELNAME Parse the given COBRA model to return a name to be used in</li></ul>
+<li><a href="../../CometsToolbox/external/m2html/@template/char.html" class="code" title="function s = char(tpl)">char</a>	TEMPLATE Convert a template object in a one line description string</li><li><a href="writeCometsModel.html" class="code" title="function f = writeCometsModel( input, filename, cometsParams)">writeCometsModel</a>	WRITECOMETSMODEL create a Comets input file for the given model</li><li><a href="../../CometsToolbox/util/getModelName.html" class="code" title="function res = getModelName( model )">getModelName</a>	GETMODELNAME Parse the given COBRA model to return a name to be used in</li><li><a href="../../CometsToolbox/util/stridx.html" class="code" title="function [idx] = stridx(query, list, allowSubstr)">stridx</a>	STRIDX(str, {str}, [true]) Get the indexes of the query string in the given cell array.</li></ul>
 This function is called by:
 <ul style="list-style-image:url(../../matlabicon.gif)">
 <li><a href="../../CometsToolbox/core/run/createCometsFiles.html" class="code" title="function [ output_args ] = createCometsFiles(layout, directory, layoutFileName, separateParamsFiles)">createCometsFiles</a>	CREATECOMETSFILES(layout, [directory], [layoutFileName], [separateParamsFiles])</li><li><a href="../../CometsToolbox/sample/demo62.html" class="code" title="">demo62</a>	Import from SBML</li><li><a href="../../CometsToolbox/test/testSetInitialPop.html" class="code" title="">testSetInitialPop</a>	TESTSETINITIALPOP Confirm that the setInitialPop function works as</li></ul>
@@ -228,251 +228,299 @@ This function is called by:
 0182 <span class="comment">%   index_1  diff_const_1 index_2  diff_const_2 index_3  diff_const_3 . . .</span>
 0183 ddiff = layout.params.defaultDiffConst;
 0184 fprintf(fileID,<span class="string">'\tdiffusion_constants %d\n'</span>,ddiff);
-0185 <span class="keyword">for</span> i = 1:length(layout.mets)
-0186     m = layout.mets{i};
-0187     idx = layout.metIdx(m);
-0188     <span class="keyword">if</span> idx &amp; layout.diffusion_constants(idx,1) <span class="comment">%if the diffusion constant is set</span>
-0189         dc = layout.diffusion_constants(idx,2);
-0190         <span class="keyword">if</span> dc ~= ddiff <span class="comment">%and the diffusion constant is not equal to the default</span>
-0191             fprintf(fileID,<span class="string">'\t\t%d %g\n'</span>,idx,dc);
-0192         <span class="keyword">end</span>
-0193     <span class="keyword">end</span>
-0194 <span class="keyword">end</span>
-0195 fprintf(fileID,<span class="string">'\t//\n'</span>);
-0196 
-0197 <span class="comment">% // Media</span>
-0198 <span class="comment">% TODO: This section should handle specification of media on a cell-by-cell</span>
-0199 <span class="comment">% basis.</span>
-0200 fprintf(fileID,<span class="string">'\tmedia\n'</span>);
-0201 
-0202 ms = size(layout.initial_media);
-0203 <span class="comment">%s = [# metabolites in media, x, y]</span>
-0204 
-0205 <span class="keyword">if</span> length(ms) &lt; 3 <span class="comment">%don't break the loop if static_media is empty or 1x1</span>
-0206     ms(3) = 1;
-0207 <span class="keyword">end</span>
-0208 
-0209 <span class="keyword">for</span> x = 1:ms(2) <span class="comment">%for each x coordinate</span>
-0210     <span class="keyword">for</span> y = 1:ms(3) <span class="comment">%and each y coordinate</span>
-0211         v = layout.initial_media(:,x,y,1);<span class="comment">%is it set?</span>
-0212         <span class="keyword">if</span> length(v) &lt; length(layout.mets)<span class="comment">%must include a value for all media</span>
-0213             v(length(layout.mets)) = 0;
-0214         <span class="keyword">end</span>
-0215         <span class="keyword">if</span> any(v)
-0216             fprintf(fileID,<span class="string">'\t\t%d %d'</span>,x-1,y-1);
-0217             <span class="keyword">for</span> j = 1:length(v)
-0218                 <span class="keyword">if</span> v(j) <span class="comment">%this medium is set</span>
-0219                     fprintf(fileID,<span class="string">' %d'</span>, layout.initial_media(j,x,y,2));
-0220                 <span class="keyword">else</span> <span class="comment">%use the global value</span>
-0221                     fprintf(fileID,<span class="string">' %d'</span>, layout.media_amt(j));
-0222                 <span class="keyword">end</span>
-0223             <span class="keyword">end</span>
-0224             fprintf(fileID,<span class="string">'\n'</span>);
-0225         <span class="keyword">end</span>
-0226     <span class="keyword">end</span>
-0227 <span class="keyword">end</span>
-0228 fprintf(fileID,<span class="string">'\t//\n'</span>);
-0229 
-0230 <span class="comment">% // 2d. Media Refresh</span>
-0231 <span class="comment">%</span>
-0232 <span class="comment">% This block describes how much each medium component should be refreshed</span>
-0233 <span class="comment">% on each simulation cycle in any given grid space. The opening line</span>
-0234 <span class="comment">% contains global refresh values for each medium component, in the same</span>
-0235 <span class="comment">% order as presented in the world media block.</span>
-0236 <span class="comment">%</span>
-0237 <span class="comment">% Each proceeding row contains the amount of media to refresh for each grid</span>
-0238 <span class="comment">% space where there is a nonzero refresh value. That is, the only rows that</span>
-0239 <span class="comment">% should be present in this block should contain some amount of medium to</span>
-0240 <span class="comment">% be refreshed.</span>
-0241 <span class="comment">%</span>
-0242 <span class="comment">% media_refresh  global_amt_1  global_amt_2  ...  global_amt_N</span>
-0243 <span class="comment">%   row_1  col_1  amt_1  amt_2  amt_3  ...  amt_N row_2  col_2  amt_1 amt_2</span>
-0244 <span class="comment">%   amt_3  ...  amt_N row_3  col_3  amt_1  amt_2  amt_3  ...  amt_N . . .</span>
-0245 <span class="comment">%   row_M  col_M  amt_1  amt_2  amt_3  ...  amt_N</span>
-0246 fprintf(fileID,<span class="string">'\tmedia_refresh'</span>);
-0247 fprintf(fileID,<span class="string">' %d'</span>,layout.global_media_refresh);
-0248 fprintf(fileID,<span class="string">'\n'</span>);
-0249 s = size(layout.media_refresh);
-0250 
-0251 <span class="keyword">if</span> length(s) &lt; 3 <span class="comment">%don't break the loop if media_refresh is empty or 1x1</span>
-0252     s(3) = 1;
-0253 <span class="keyword">end</span>
-0254 <span class="keyword">for</span> x = 1:s(2)
-0255     <span class="keyword">for</span> y = 1:s(3)
-0256         row = layout.media_refresh(:,x,y);
-0257         <span class="keyword">if</span> any(row)
-0258             fprintf(fileID,<span class="string">'\t\t%d %d %g\n'</span>,x-1,y-1,row);
-0259         <span class="keyword">end</span>
-0260     <span class="keyword">end</span>
-0261 <span class="keyword">end</span>
-0262 fprintf(fileID,<span class="string">'\t//\n'</span>);
-0263 
-0264 <span class="comment">% // 2e. Static Media</span>
-0265 <span class="comment">%</span>
-0266 <span class="comment">% Like the media refresh block, this describes how the media in each space</span>
-0267 <span class="comment">% in the grid should be altered during the simulation. However, this block</span>
-0268 <span class="comment">% describes which media components should remain at a static value. That</span>
-0269 <span class="comment">% is, those media whose quantities should not change due to the effects of</span>
-0270 <span class="comment">% the simulation. This might represent a constant sink or source of a</span>
-0271 <span class="comment">% number of metabolites.</span>
-0272 <span class="comment">%</span>
-0273 <span class="comment">% This block contains pairs of data elements. Each pair starts with a</span>
-0274 <span class="comment">% binary (0 or 1) element, denoting whether or not to use that pair as a</span>
-0275 <span class="comment">% static element, and a quantity to keep that element static at. This lets</span>
-0276 <span class="comment">% one build a static media set where only a few medium elements are</span>
-0277 <span class="comment">% maintained as static, while keeping the file structure similar to the</span>
-0278 <span class="comment">% media refresh block above.</span>
-0279 <span class="comment">%</span>
-0280 <span class="comment">% For example:</span>
+0185 <span class="keyword">if</span> any(layout.diffusion_constants(:,1))
+0186     <span class="keyword">for</span> i = 1:length(layout.mets)
+0187         m = layout.mets{i};
+0188         idx = layout.metIdx(m);
+0189         <span class="keyword">if</span> idx &amp;&amp; layout.diffusion_constants(idx,1) <span class="comment">%if the diffusion constant is set</span>
+0190             dc = layout.diffusion_constants(idx,2);
+0191             <span class="keyword">if</span> dc ~= ddiff <span class="comment">%and the diffusion constant is not equal to the default</span>
+0192                 fprintf(fileID,<span class="string">'\t\t%d %g\n'</span>,idx-1,dc);
+0193             <span class="keyword">end</span>
+0194         <span class="keyword">end</span>
+0195     <span class="keyword">end</span>
+0196 <span class="keyword">end</span>
+0197 fprintf(fileID,<span class="string">'\t//\n'</span>);
+0198 
+0199 <span class="comment">% // Media</span>
+0200 <span class="comment">% TODO: This section should handle specification of media on a cell-by-cell</span>
+0201 <span class="comment">% basis.</span>
+0202 fprintf(fileID,<span class="string">'\tmedia\n'</span>);
+0203 
+0204 ms = size(layout.initial_media);
+0205 <span class="comment">%s = [# metabolites in media, x, y]</span>
+0206 
+0207 <span class="keyword">if</span> length(ms) &lt; 3 <span class="comment">%don't break the loop if static_media is empty or 1x1</span>
+0208     ms(3) = 1;
+0209 <span class="keyword">end</span>
+0210 
+0211 <span class="keyword">for</span> x = 1:ms(2) <span class="comment">%for each x coordinate</span>
+0212     <span class="keyword">for</span> y = 1:ms(3) <span class="comment">%and each y coordinate</span>
+0213         v = layout.initial_media(:,x,y,1);<span class="comment">%is it set?</span>
+0214         <span class="keyword">if</span> length(v) &lt; length(layout.mets)<span class="comment">%must include a value for all media</span>
+0215             v(length(layout.mets)) = 0;
+0216         <span class="keyword">end</span>
+0217         <span class="keyword">if</span> any(v)
+0218             fprintf(fileID,<span class="string">'\t\t%d %d'</span>,x-1,y-1);
+0219             <span class="keyword">for</span> j = 1:length(v)
+0220                 <span class="keyword">if</span> v(j) <span class="comment">%this medium is set</span>
+0221                     fprintf(fileID,<span class="string">' %d'</span>, layout.initial_media(j,x,y,2));
+0222                 <span class="keyword">else</span> <span class="comment">%use the global value</span>
+0223                     fprintf(fileID,<span class="string">' %d'</span>, layout.media_amt(j));
+0224                 <span class="keyword">end</span>
+0225             <span class="keyword">end</span>
+0226             fprintf(fileID,<span class="string">'\n'</span>);
+0227         <span class="keyword">end</span>
+0228     <span class="keyword">end</span>
+0229 <span class="keyword">end</span>
+0230 fprintf(fileID,<span class="string">'\t//\n'</span>);
+0231 
+0232 <span class="comment">% // 2d. Media Refresh</span>
+0233 <span class="comment">%</span>
+0234 <span class="comment">% This block describes how much each medium component should be refreshed</span>
+0235 <span class="comment">% on each simulation cycle in any given grid space. The opening line</span>
+0236 <span class="comment">% contains global refresh values for each medium component, in the same</span>
+0237 <span class="comment">% order as presented in the world media block.</span>
+0238 <span class="comment">%</span>
+0239 <span class="comment">% Each proceeding row contains the amount of media to refresh for each grid</span>
+0240 <span class="comment">% space where there is a nonzero refresh value. That is, the only rows that</span>
+0241 <span class="comment">% should be present in this block should contain some amount of medium to</span>
+0242 <span class="comment">% be refreshed.</span>
+0243 <span class="comment">%</span>
+0244 <span class="comment">% media_refresh  global_amt_1  global_amt_2  ...  global_amt_N</span>
+0245 <span class="comment">%   row_1  col_1  amt_1  amt_2  amt_3  ...  amt_N row_2  col_2  amt_1 amt_2</span>
+0246 <span class="comment">%   amt_3  ...  amt_N row_3  col_3  amt_1  amt_2  amt_3  ...  amt_N . . .</span>
+0247 <span class="comment">%   row_M  col_M  amt_1  amt_2  amt_3  ...  amt_N</span>
+0248 fprintf(fileID,<span class="string">'\tmedia_refresh'</span>);
+0249 fprintf(fileID,<span class="string">' %d'</span>,layout.global_media_refresh);
+0250 fprintf(fileID,<span class="string">'\n'</span>);
+0251 s = size(layout.media_refresh);
+0252 
+0253 <span class="keyword">if</span> length(s) &lt; 3 <span class="comment">%don't break the loop if media_refresh is empty or 1x1</span>
+0254     s(3) = 1;
+0255 <span class="keyword">end</span>
+0256 <span class="keyword">for</span> x = 1:s(2)
+0257     <span class="keyword">for</span> y = 1:s(3)
+0258         row = layout.media_refresh(:,x,y);
+0259         <span class="keyword">if</span> any(row)
+0260             fprintf(fileID,<span class="string">'\t\t%d %d %g\n'</span>,x-1,y-1,row);
+0261         <span class="keyword">end</span>
+0262     <span class="keyword">end</span>
+0263 <span class="keyword">end</span>
+0264 fprintf(fileID,<span class="string">'\t//\n'</span>);
+0265 
+0266 <span class="comment">% // 2e. Static Media</span>
+0267 <span class="comment">%</span>
+0268 <span class="comment">% Like the media refresh block, this describes how the media in each space</span>
+0269 <span class="comment">% in the grid should be altered during the simulation. However, this block</span>
+0270 <span class="comment">% describes which media components should remain at a static value. That</span>
+0271 <span class="comment">% is, those media whose quantities should not change due to the effects of</span>
+0272 <span class="comment">% the simulation. This might represent a constant sink or source of a</span>
+0273 <span class="comment">% number of metabolites.</span>
+0274 <span class="comment">%</span>
+0275 <span class="comment">% This block contains pairs of data elements. Each pair starts with a</span>
+0276 <span class="comment">% binary (0 or 1) element, denoting whether or not to use that pair as a</span>
+0277 <span class="comment">% static element, and a quantity to keep that element static at. This lets</span>
+0278 <span class="comment">% one build a static media set where only a few medium elements are</span>
+0279 <span class="comment">% maintained as static, while keeping the file structure similar to the</span>
+0280 <span class="comment">% media refresh block above.</span>
 0281 <span class="comment">%</span>
-0282 <span class="comment">% static_media  0  0  1  0  1  2  0  0 // Breaks into 4 pairs [0 0], [1 0],</span>
-0283 <span class="comment">% [1 2], [0 0]. Only components 2 and 3 have a 1 as their first element, so</span>
-0284 <span class="comment">% those medium components are kept static. Component 2 remains at 0, while</span>
-0285 <span class="comment">% component 3 stays at 2. Note that in this example, there are no</span>
-0286 <span class="comment">% exceptions, so this applies throughout the simulation. In general, it is</span>
-0287 <span class="comment">% done like this:</span>
-0288 <span class="comment">%</span>
-0289 <span class="comment">% static_media  use_1  amt_1  use_2  amt_2  use_3  amt_3  ...  use_N  amt_N</span>
-0290 <span class="comment">%   row_1  col_1  use_1  amt_1  use_2  amt_2  ...  use_N  amt_N row_2 col_2</span>
-0291 <span class="comment">%   use_1  amt_1  use_2  amt_2  ...  use_N  amt_N row_3  col_3 use_1  amt_1</span>
-0292 <span class="comment">%   use_2  amt_2  ...  use_N  amt_N . . . row_M  col_M  use_1 amt_1  use_2</span>
-0293 <span class="comment">%   amt_2  ...  use_N  amt_N</span>
-0294 fprintf(fileID,<span class="string">'\tstatic_media'</span>);
-0295 gs = size(layout.global_static_media);
-0296 <span class="keyword">for</span> row = 1:gs(1)
-0297     fprintf(fileID,<span class="string">' %g'</span>,layout.global_static_media(row,:));
-0298 <span class="keyword">end</span>
-0299 fprintf(fileID,<span class="string">'\n'</span>);
-0300 
-0301 s = size(layout.static_media);
+0282 <span class="comment">% For example:</span>
+0283 <span class="comment">%</span>
+0284 <span class="comment">% static_media  0  0  1  0  1  2  0  0 // Breaks into 4 pairs [0 0], [1 0],</span>
+0285 <span class="comment">% [1 2], [0 0]. Only components 2 and 3 have a 1 as their first element, so</span>
+0286 <span class="comment">% those medium components are kept static. Component 2 remains at 0, while</span>
+0287 <span class="comment">% component 3 stays at 2. Note that in this example, there are no</span>
+0288 <span class="comment">% exceptions, so this applies throughout the simulation. In general, it is</span>
+0289 <span class="comment">% done like this:</span>
+0290 <span class="comment">%</span>
+0291 <span class="comment">% static_media  use_1  amt_1  use_2  amt_2  use_3  amt_3  ...  use_N  amt_N</span>
+0292 <span class="comment">%   row_1  col_1  use_1  amt_1  use_2  amt_2  ...  use_N  amt_N row_2 col_2</span>
+0293 <span class="comment">%   use_1  amt_1  use_2  amt_2  ...  use_N  amt_N row_3  col_3 use_1  amt_1</span>
+0294 <span class="comment">%   use_2  amt_2  ...  use_N  amt_N . . . row_M  col_M  use_1 amt_1  use_2</span>
+0295 <span class="comment">%   amt_2  ...  use_N  amt_N</span>
+0296 fprintf(fileID,<span class="string">'\tstatic_media'</span>);
+0297 gs = size(layout.global_static_media);
+0298 <span class="keyword">for</span> row = 1:gs(1)
+0299     fprintf(fileID,<span class="string">' %g'</span>,layout.global_static_media(row,:));
+0300 <span class="keyword">end</span>
+0301 fprintf(fileID,<span class="string">'\n'</span>);
 0302 
-0303 <span class="keyword">if</span> length(s) &lt; 3 <span class="comment">%don't break the loop if static_media is empty or 1x1</span>
-0304     s(3) = 1;
-0305 <span class="keyword">end</span>
-0306 
-0307 <span class="keyword">for</span> x = 1:s(2)
-0308     <span class="keyword">for</span> y = 1:s(3)
-0309         v = layout.static_media(:,x,y);<span class="comment">%values</span>
-0310         i = find(v); <span class="comment">%indexes</span>
-0311         <span class="keyword">if</span> any(i)
-0312             b = zeros(gs(1));
-0313             b(i) = 1; <span class="comment">%is this medium static?</span>
-0314             sm = [b;full(v)];
-0315             row = sm(1:(2*gs(1)));<span class="comment">%pairs of logical/value for each media</span>
-0316             fprintf(fileID,<span class="string">'\t\t%d %d'</span>,x-1,y-1);
-0317             <span class="keyword">for</span> j = 1:length(row)
-0318                 fprintf(fileID,<span class="string">' %d'</span>,row(j));
-0319             <span class="keyword">end</span>
-0320             fprintf(fileID,<span class="string">'\n'</span>);
-0321         <span class="keyword">end</span>
-0322     <span class="keyword">end</span>
-0323 <span class="keyword">end</span>
-0324 fprintf(fileID,<span class="string">'\t//\n'</span>);
-0325 
-0326 <span class="comment">% // 2f. Barrier Coordinates</span>
-0327 <span class="comment">%</span>
-0328 <span class="comment">% Simple enough, this block describes those grid coordinates that contain</span>
-0329 <span class="comment">% barriers (i.e., no media, biomass, or diffusion can occur here).</span>
-0330 <span class="comment">%</span>
-0331 <span class="comment">% barrier</span>
-0332 <span class="comment">%   row_1  col_1 row_2  col_2 row_3  col_3 . . . row_N  col_N</span>
-0333 fprintf(fileID,<span class="string">'\tbarrier\n'</span>);
-0334 s = size(layout.barrier);
-0335 <span class="keyword">for</span> x = 1:s(1)
-0336     <span class="keyword">for</span> y = 1:s(2)
-0337         <span class="keyword">if</span> layout.barrier(x,y)
-0338             fprintf(fileID,<span class="string">'\t\t%d %d\n'</span>,x-1,y-1);
-0339         <span class="keyword">end</span>
-0340     <span class="keyword">end</span>
-0341 <span class="keyword">end</span>
-0342 
-0343 fprintf(fileID,<span class="string">'\t//\n//\n'</span>);
-0344 <span class="comment">% // 3. Initial Biomass Population</span>
-0345 <span class="comment">%</span>
-0346 <span class="comment">% This final block describes the initial biomass population in the layout,</span>
-0347 <span class="comment">% and has many options.</span>
-0348 <span class="comment">%</span>
-0349 <span class="comment">% In the default biomass layout style, there is just initial_pop left alone</span>
-0350 <span class="comment">% as the header, followed by one row for each grid space containing</span>
-0351 <span class="comment">% biomass. There must be one quantity for each metabolic model in the</span>
-0352 <span class="comment">% system.</span>
+0303 s = size(layout.static_media);
+0304 
+0305 <span class="keyword">if</span> length(s) &lt; 3 <span class="comment">%don't break the loop if static_media is empty or 1x1</span>
+0306     s(3) = 1;
+0307 <span class="keyword">end</span>
+0308 
+0309 <span class="keyword">if</span> any(layout.static_media(:,:,:,1))
+0310     <span class="keyword">for</span> x = 1:s(2)
+0311         <span class="keyword">for</span> y = 1:s(3)
+0312             b = layout.static_media(:,x,y,1);<span class="comment">%is this medium static?</span>
+0313             v = layout.static_media(:,x,y,2);<span class="comment">%values</span>
+0314             i = find(b); <span class="comment">%indexes</span>
+0315             <span class="keyword">if</span> any(i)
+0316                 <span class="comment">%            b = zeros(1,gs(1));</span>
+0317                 <span class="comment">%            b(i) = 1; %is this medium static?</span>
+0318                 sm = [b';v'];
+0319                 row = sm(1:(2*gs(1)));<span class="comment">%pairs of logical/value for each media</span>
+0320                 fprintf(fileID,<span class="string">'\t\t%d %d'</span>,x-1,y-1);
+0321                 <span class="keyword">for</span> j = 1:length(row)
+0322                     fprintf(fileID,<span class="string">' %d'</span>,row(j));
+0323                 <span class="keyword">end</span>
+0324                 fprintf(fileID,<span class="string">'\n'</span>);
+0325             <span class="keyword">end</span>
+0326         <span class="keyword">end</span>
+0327     <span class="keyword">end</span>
+0328 <span class="keyword">end</span>
+0329 fprintf(fileID,<span class="string">'\t//\n'</span>);
+0330 
+0331 <span class="comment">% // 2f. Barrier Coordinates</span>
+0332 <span class="comment">%</span>
+0333 <span class="comment">% Simple enough, this block describes those grid coordinates that contain</span>
+0334 <span class="comment">% barriers (i.e., no media, biomass, or diffusion can occur here).</span>
+0335 <span class="comment">%</span>
+0336 <span class="comment">% barrier</span>
+0337 <span class="comment">%   row_1  col_1 row_2  col_2 row_3  col_3 . . . row_N  col_N</span>
+0338 fprintf(fileID,<span class="string">'\tbarrier\n'</span>);
+0339 s = size(layout.barrier);
+0340 <span class="keyword">for</span> x = 1:s(1)
+0341     <span class="keyword">for</span> y = 1:s(2)
+0342         <span class="keyword">if</span> layout.barrier(x,y)
+0343             fprintf(fileID,<span class="string">'\t\t%d %d\n'</span>,x-1,y-1);
+0344         <span class="keyword">end</span>
+0345     <span class="keyword">end</span>
+0346 <span class="keyword">end</span>
+0347 
+0348 fprintf(fileID,<span class="string">'\t//\n//\n'</span>);
+0349 <span class="comment">% // 3. Initial Biomass Population</span>
+0350 <span class="comment">%</span>
+0351 <span class="comment">% This final block describes the initial biomass population in the layout,</span>
+0352 <span class="comment">% and has many options.</span>
 0353 <span class="comment">%</span>
-0354 <span class="comment">% initial_pop</span>
-0355 <span class="comment">%   row_1  col_1  biomass_1  biomass_2  ...  biomass_N row_2  col_2</span>
-0356 <span class="comment">%   biomass_1  biomass_2  ...  biomass_N row_3  col_3  biomass_1  biomass_2</span>
-0357 <span class="comment">%   ...  biomass_N . . . row_M  col_M  biomass_1  biomass_2  ...  biomass_N</span>
-0358 <span class="comment">% // The next set of options modify the initial_pop line itself, and</span>
-0359 <span class="comment">% contain no rows in the block, though the // on the line below must be</span>
-0360 <span class="comment">% present.</span>
-0361 <span class="comment">% NOTE: all coordinates here are 0-indexed!</span>
-0362 <span class="comment">%</span>
-0363 <span class="comment">% initial_pop  random  N1  biomass_1  N2  biomass_2 ... // This will</span>
-0364 <span class="comment">% randomly assign Ni spaces to have biomass_i amount of biomass from model</span>
-0365 <span class="comment">% i. If biomass from different species is allowed to overlap, then that is</span>
-0366 <span class="comment">% allowed to happen in this case, but if different species is not allowed</span>
-0367 <span class="comment">% to overlap, then that rule is upheld.</span>
-0368 <span class="comment">%</span>
-0369 <span class="comment">% initial_pop  random_rect  X  Y  W  H  N1  biomass_1  N2  biomass_2 ... //</span>
-0370 <span class="comment">% As above, but the randomly assigned biomass spots are confined to a</span>
-0371 <span class="comment">% rectangle with its upper-left corner at grid space (X,Y), with W grid</span>
-0372 <span class="comment">% spaces wide, and H spaces tall.</span>
+0354 <span class="comment">% In the default biomass layout style, there is just initial_pop left alone</span>
+0355 <span class="comment">% as the header, followed by one row for each grid space containing</span>
+0356 <span class="comment">% biomass. There must be one quantity for each metabolic model in the</span>
+0357 <span class="comment">% system.</span>
+0358 <span class="comment">%</span>
+0359 <span class="comment">% initial_pop</span>
+0360 <span class="comment">%   row_1  col_1  biomass_1  biomass_2  ...  biomass_N row_2  col_2</span>
+0361 <span class="comment">%   biomass_1  biomass_2  ...  biomass_N row_3  col_3  biomass_1  biomass_2</span>
+0362 <span class="comment">%   ...  biomass_N . . . row_M  col_M  biomass_1  biomass_2  ...  biomass_N</span>
+0363 <span class="comment">% // The next set of options modify the initial_pop line itself, and</span>
+0364 <span class="comment">% contain no rows in the block, though the // on the line below must be</span>
+0365 <span class="comment">% present.</span>
+0366 <span class="comment">% NOTE: all coordinates here are 0-indexed!</span>
+0367 <span class="comment">%</span>
+0368 <span class="comment">% initial_pop  random  N1  biomass_1  N2  biomass_2 ... // This will</span>
+0369 <span class="comment">% randomly assign Ni spaces to have biomass_i amount of biomass from model</span>
+0370 <span class="comment">% i. If biomass from different species is allowed to overlap, then that is</span>
+0371 <span class="comment">% allowed to happen in this case, but if different species is not allowed</span>
+0372 <span class="comment">% to overlap, then that rule is upheld.</span>
 0373 <span class="comment">%</span>
-0374 <span class="comment">% initial_pop  filled  biomass_1  biomass_2 ... // This will completely</span>
-0375 <span class="comment">% fill the grid with the given amount of biomass from each species.</span>
-0376 <span class="comment">%</span>
-0377 <span class="comment">% initial_pop  filled_rect  X  Y  W  H  biomass_1  biomass_2 ... // This</span>
-0378 <span class="comment">% will completely fill the rectangle (see above) with biomass from each</span>
-0379 <span class="comment">% species.</span>
-0380 <span class="comment">%</span>
-0381 <span class="comment">% initial_pop  square  N1  biomass_1  N2  biomass_2 ... // This will fill</span>
-0382 <span class="comment">% squares with radius Ni at the center of the grid with biomass_i from</span>
-0383 <span class="comment">% species i.</span>
-0384 <span class="keyword">if</span> sum(sum(any(layout.initial_pop))) &gt; 0 <span class="comment">%some initial pop is set</span>
-0385     fprintf(fileID,<span class="string">'initial_pop\n'</span>);
-0386     s = size(layout.initial_pop);
-0387     <span class="keyword">if</span> length(s) &lt; 3 <span class="comment">%don't break the loop if initial_pop is empty or 1x1</span>
-0388         s(3) = 1;
-0389     <span class="keyword">end</span>
-0390     <span class="keyword">for</span> x = 1:s(2)
-0391         <span class="keyword">for</span> y = 1:s(3)
-0392             v = layout.initial_pop(:,x,y);
-0393             <span class="keyword">if</span> any(v)
-0394                 <span class="comment">%x y pop1 pop2 pop3...</span>
-0395                 fprintf(fileID,[<span class="string">'\t%d %d'</span> sprintf(<span class="string">' %d'</span>,v) <span class="string">'\n'</span>],x-1,y-1);
-0396             <span class="keyword">end</span>
-0397         <span class="keyword">end</span>
-0398     <span class="keyword">end</span>
-0399     fprintf(fileID,<span class="string">'//\n'</span>);
-0400 <span class="keyword">else</span> <span class="comment">%no initial pop is set</span>
-0401     fprintf(fileID,<span class="string">'initial_pop filled'</span>);
-0402     <span class="keyword">for</span> i=1:length(layout.models)
-0403         fprintf(fileID,<span class="string">' 1E-7'</span>);
-0404     <span class="keyword">end</span>
-0405     fprintf(fileID,<span class="string">'\n'</span>);
-0406     fprintf(fileID,<span class="string">'//\n'</span>);
-0407 <span class="keyword">end</span>
-0408 
-0409 fclose(fileID);
-0410 
-0411 <span class="comment">%write the model files</span>
-0412 <span class="keyword">if</span> writeModels
-0413     <span class="keyword">for</span> i = 1:length(layout.models)
-0414         m = layout.models{i};
-0415         <a href="writeCometsModel.html" class="code" title="function f = writeCometsModel( input, filename, cometsParams)">writeCometsModel</a>(m,<a href="#_sub2" class="code" title="subfunction mname = getModelFilePath(model)">getModelFilePath</a>(m),layout.params);
-0416     <span class="keyword">end</span>
-0417 <span class="keyword">end</span>
-0418 
-0419     <a name="_sub1" href="#_subfunctions" class="code">function mname = getModelFileName(model)</a>
-0420         name = <a href="../../CometsToolbox/util/getModelName.html" class="code" title="function res = getModelName( model )">getModelName</a>(model);
-0421         mname = [name <span class="string">'.txt'</span>]; <span class="comment">%relative path; file goes in current directory</span>
-0422     <span class="keyword">end</span>
-0423     <a name="_sub2" href="#_subfunctions" class="code">function mname = getModelFilePath(model)</a>
-0424         fname = <a href="#_sub1" class="code" title="subfunction mname = getModelFileName(model)">getModelFileName</a>(model);
-0425         mname = fullfile(filedir,fname); <span class="comment">%absolute path</span>
-0426     <span class="keyword">end</span>
-0427 
-0428 <span class="keyword">end</span>
-0429</pre></div>
-<hr><address>Generated on Wed 03-May-2017 12:42:44 by <strong><a href="http://www.artefact.tk/software/matlab/m2html/" target="_parent">m2html</a></strong> &copy; 2005</address>
+0374 <span class="comment">% initial_pop  random_rect  X  Y  W  H  N1  biomass_1  N2  biomass_2 ... //</span>
+0375 <span class="comment">% As above, but the randomly assigned biomass spots are confined to a</span>
+0376 <span class="comment">% rectangle with its upper-left corner at grid space (X,Y), with W grid</span>
+0377 <span class="comment">% spaces wide, and H spaces tall.</span>
+0378 <span class="comment">%</span>
+0379 <span class="comment">% initial_pop  filled  biomass_1  biomass_2 ... // This will completely</span>
+0380 <span class="comment">% fill the grid with the given amount of biomass from each species.</span>
+0381 <span class="comment">%</span>
+0382 <span class="comment">% initial_pop  filled_rect  X  Y  W  H  biomass_1  biomass_2 ... // This</span>
+0383 <span class="comment">% will completely fill the rectangle (see above) with biomass from each</span>
+0384 <span class="comment">% species.</span>
+0385 <span class="comment">%</span>
+0386 <span class="comment">% initial_pop  square  N1  biomass_1  N2  biomass_2 ... // This will fill</span>
+0387 <span class="comment">% squares with radius Ni at the center of the grid with biomass_i from</span>
+0388 <span class="comment">% species i.</span>
+0389 <span class="keyword">if</span> sum(sum(any(layout.initial_pop))) &gt; 0 <span class="comment">%some initial pop is set</span>
+0390     fprintf(fileID,<span class="string">'initial_pop\n'</span>);
+0391     s = size(layout.initial_pop);
+0392     <span class="keyword">if</span> length(s) &lt; 3 <span class="comment">%don't break the loop if initial_pop is empty or 1x1</span>
+0393         s(3) = 1;
+0394     <span class="keyword">end</span>
+0395     <span class="keyword">for</span> x = 1:s(2)
+0396         <span class="keyword">for</span> y = 1:s(3)
+0397             v = layout.initial_pop(:,x,y);
+0398             <span class="keyword">if</span> any(v)
+0399                 <span class="comment">%x y pop1 pop2 pop3...</span>
+0400                 fprintf(fileID,[<span class="string">'\t%d %d'</span> sprintf(<span class="string">' %d'</span>,v) <span class="string">'\n'</span>],x-1,y-1);
+0401             <span class="keyword">end</span>
+0402         <span class="keyword">end</span>
+0403     <span class="keyword">end</span>
+0404     fprintf(fileID,<span class="string">'//\n'</span>);
+0405 <span class="keyword">else</span> <span class="comment">%no initial pop is set</span>
+0406     fprintf(fileID,<span class="string">'initial_pop filled'</span>);
+0407     <span class="keyword">for</span> i=1:length(layout.models)
+0408         fprintf(fileID,<span class="string">' 1E-7'</span>);
+0409     <span class="keyword">end</span>
+0410     fprintf(fileID,<span class="string">'\n'</span>);
+0411     fprintf(fileID,<span class="string">'//\n'</span>);
+0412 <span class="keyword">end</span>
+0413 
+0414 <span class="comment">%if external reactions are set, print the relevent block</span>
+0415 <span class="keyword">if</span> ~isempty(layout.external_rxn_mets)
+0416     fprintf(fileID,<span class="string">'reactions\n'</span>);
+0417     fprintf(fileID,<span class="string">'\treactants\n'</span>);
+0418     mets = layout.external_rxn_mets;
+0419     rxns = layout.external_rxns;
+0420     metdims = size(mets);
+0421     nrows = metdims(1);
+0422     reactionnames = rxns.name;
+0423     <span class="keyword">for</span> i = 1:nrows
+0424         row = mets(i,:);
+0425         rxnidx = <a href="../../CometsToolbox/util/stridx.html" class="code" title="function [idx] = stridx(query, list, allowSubstr)">stridx</a>(row.rxn{1},reactionnames,false);
+0426         <span class="keyword">if</span> row.stoich &lt; 0 <span class="comment">%can I remove this check without breaking something?</span>
+0427             metidx = <a href="../../CometsToolbox/util/stridx.html" class="code" title="function [idx] = stridx(query, list, allowSubstr)">stridx</a>(row.met{1},layout.mets,false);
+0428             sto = -row.stoich;
+0429             k = rxns(rxnidx,:).k;
+0430             fprintf(fileID,<span class="string">'\t\t%d %d %d %d\n'</span>, rxnidx, metidx, sto, k);
+0431         <span class="keyword">end</span>
+0432     <span class="keyword">end</span>
+0433     fprintf(fileID,<span class="string">'\tenzymes\n'</span>);
+0434     rxndims = size(rxns);
+0435     nrows = rxndims(1);
+0436     <span class="keyword">for</span> i = 1:nrows
+0437         row = rxns(i,:);
+0438         <span class="keyword">if</span> ~strcmp(row.enzyme{1},<span class="string">''</span>)
+0439             enzidx = <a href="../../CometsToolbox/util/stridx.html" class="code" title="function [idx] = stridx(query, list, allowSubstr)">stridx</a>(row.enzyme{1},layout.mets,false);
+0440             fprintf(fileID,<span class="string">'\t\t%d %d %d\n'</span>, i, enzidx, row.km);
+0441         <span class="keyword">end</span>
+0442     <span class="keyword">end</span>
+0443     fprintf(fileID,<span class="string">'\tproducts\n'</span>);
+0444     nrows = metdims(1);
+0445     <span class="keyword">for</span> i = 1:nrows
+0446         row = mets(i,:);
+0447         rxnidx = <a href="../../CometsToolbox/util/stridx.html" class="code" title="function [idx] = stridx(query, list, allowSubstr)">stridx</a>(row.rxn{1},reactionnames,false);
+0448         <span class="keyword">if</span> row.stoich &gt; 0
+0449             metidx = <a href="../../CometsToolbox/util/stridx.html" class="code" title="function [idx] = stridx(query, list, allowSubstr)">stridx</a>(row.met{1},layout.mets,false);
+0450             sto = row.stoich;
+0451             fprintf(fileID,<span class="string">'\t\t%d %d %d\n'</span>, rxnidx, metidx, sto);
+0452         <span class="keyword">end</span>
+0453     <span class="keyword">end</span>
+0454     fprintf(fileID,<span class="string">'//\n'</span>);
+0455 <span class="keyword">end</span>
+0456 
+0457 fclose(fileID);
+0458 
+0459 <span class="comment">%write the model files</span>
+0460 <span class="keyword">if</span> writeModels
+0461     <span class="keyword">for</span> i = 1:length(layout.models)
+0462         m = layout.models{i};
+0463         <a href="writeCometsModel.html" class="code" title="function f = writeCometsModel( input, filename, cometsParams)">writeCometsModel</a>(m,<a href="#_sub2" class="code" title="subfunction mname = getModelFilePath(model)">getModelFilePath</a>(m),layout.params);
+0464     <span class="keyword">end</span>
+0465 <span class="keyword">end</span>
+0466 
+0467     <a name="_sub1" href="#_subfunctions" class="code">function mname = getModelFileName(model)</a>
+0468         name = <a href="../../CometsToolbox/util/getModelName.html" class="code" title="function res = getModelName( model )">getModelName</a>(model);
+0469         mname = [name <span class="string">'.txt'</span>]; <span class="comment">%relative path; file goes in current directory</span>
+0470     <span class="keyword">end</span>
+0471     <a name="_sub2" href="#_subfunctions" class="code">function mname = getModelFilePath(model)</a>
+0472         fname = <a href="#_sub1" class="code" title="subfunction mname = getModelFileName(model)">getModelFileName</a>(model);
+0473         mname = fullfile(filedir,fname); <span class="comment">%absolute path</span>
+0474     <span class="keyword">end</span>
+0475 
+0476 <span class="keyword">end</span>
+0477</pre></div>
+<hr><address>Generated on Tue 06-Jun-2017 15:51:46 by <strong><a href="http://www.artefact.tk/software/matlab/m2html/" target="_parent">m2html</a></strong> &copy; 2005</address>
 </body>
 </html>

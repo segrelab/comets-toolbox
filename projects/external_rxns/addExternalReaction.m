@@ -17,7 +17,7 @@ t.mets = layout.external_rxn_mets;
 % % %     t.mets = cell2table({'TEMP_INIT_REACTION','TEMP_MET',0});
 % % %     t.mets.Properties.VariableNames = {'rxn','met','stoich'};
 % % % end
-% % % 
+% % %
 % % % %check that the reaction doesn't already exist
 % % % if any(stridx(rxnName,t.rxns.name))
 % % %     error(['The reaction "' rxnName '" already exists.']);
@@ -32,19 +32,19 @@ km = layout.params.defaultKm;
 for i = 1:2:length(varargin)
     switch upper(varargin{i})
         case 'ENZYME'
-        %add an enzyme to the reaction
-        enzyme = varargin{i+1};
-        layout = addMetIfNotPresent(layout,varargin{i+1});
+            %add an enzyme to the reaction
+            enzyme = varargin{i+1};
+            layout = addMetIfNotPresent(layout,varargin{i+1});
         case 'K'
-        %set kcat/vmax. 'K', 'KCAT', and 'VMAX' are all identical
-        k = varargin{i+1};
+            %set kcat/vmax. 'K', 'KCAT', and 'VMAX' are all identical
+            k = varargin{i+1};
         case 'KCAT'
-        k = varargin{i+1};
+            k = varargin{i+1};
         case 'VMAX'
-        k = varargin{i+1};
+            k = varargin{i+1};
         case 'KM'
-        %set Michaelis constant
-        km = varargin{i+1};
+            %set Michaelis constant
+            km = varargin{i+1};
     end
 end
 
@@ -54,16 +54,18 @@ t.rxns = [t.rxns; rxnrow];
 
 %add the metabolites to the table
 if iscell(metabolites)
+    %mets should always be a vertical array
+    metabolites = verticalize(metabolites);
+    layout = addMetIfNotPresent(layout,metabolites);
     for i = 1:length(metabolites)
         s = stoichiometries(i);
         metrow = {rxnName, metabolites{i}, s};
         t.mets = [t.mets; metrow];
-        layout = addMetIfNotPresent(layout,metabolites{i});
     end
 elseif ischar(metabolites)
+    layout = addMetIfNotPresent(layout,{metabolites});
     metrow = {rxnName, metabolites, stoichiometries(1)};
     t.mets = [t.mets; metrow];
-    layout = addMetIfNotPresent(layout,metabolites);
 end
 
 %make sure the column names are set correctly
@@ -84,11 +86,19 @@ layout.external_rxns = t.rxns;
 layout.external_rxn_mets = t.mets;
 
 
-function layout = addMetIfNotPresent(layout, metname)
-    ispresent = cellfun(@(arr) ~isempty(strfind(metname, arr)), layout.mets);
-    if ~ispresent
-        layout = addMets(layout,{metname});
+    function layout = addMetIfNotPresent(layout, metnames)
+        diff = setdiff(metnames,layout.mets);
+        if ~isempty(diff)
+            layout = addMets(layout,diff);
+        end
     end
-end
 
+    function arr = verticalize(arr)
+        %layout.mets should always be a column vector
+        [h,w] = size(arr);
+        if w > 1
+            arr = arr';
+            arr = arr(1:end);
+        end
+    end
 end

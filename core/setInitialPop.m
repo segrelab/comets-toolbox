@@ -7,7 +7,7 @@ function layout = setInitialPop(layout, format, pop, resize)
 %   format : optional string denoting the layout scheme to use. default
 %   'colonies'
 %   [pop] : optional array of doubles denoting population of each model.
-%   default 10^-5
+%   default 10^-5. Units = grams.
 %   resize : is the script allowed to resize the layout? default true
 %
 %   The format string should be one of ['1x1' 'colonies'] 

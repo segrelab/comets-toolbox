@@ -29,7 +29,7 @@
 <div class="fragment"><pre class="comment"> PARSEMEDIALOG load the Comets media log at the given path into a Table
 
  $Author: mquintin $    $Date: 3/24/2017 $    $Revision: 0.1 $
- Last edit: mquintin 3/24/2017
+ Last edit: mquintin 6/1/2017
  Copyright: Daniel Segrè, Boston University Bioinformatics Program 2017</pre></div>
 
 <!-- crossreference -->
@@ -49,7 +49,7 @@ This function is called by:
 0002 <span class="comment">% PARSEMEDIALOG load the Comets media log at the given path into a Table</span>
 0003 <span class="comment">%</span>
 0004 <span class="comment">% $Author: mquintin $    $Date: 3/24/2017 $    $Revision: 0.1 $</span>
-0005 <span class="comment">% Last edit: mquintin 3/24/2017</span>
+0005 <span class="comment">% Last edit: mquintin 6/1/2017</span>
 0006 <span class="comment">% Copyright: Daniel Segrè, Boston University Bioinformatics Program 2017</span>
 0007 
 0008 <span class="keyword">if</span> nargin &lt; 1
@@ -79,23 +79,41 @@ This function is called by:
 0032             splitstr = regexp(mname,<span class="string">'_'</span>,<span class="string">'split'</span>);
 0033             cycle = str2num(splitstr{2}) + 1; <span class="comment">%logs start at media_0</span>
 0034             m = eval(mname);
-0035             m = full([m{1:end}]);
+0035             <span class="comment">%m = full([m{1:end}]);</span>
 0036             <span class="comment">%media(cycle,1:length(m)) = m;</span>
 0037                         
-0038             <span class="keyword">for</span> j = 1:length(m)
-0039                 tab = [tab; {cycle, j, m(j)}];
-0040             <span class="keyword">end</span>
+0038             <span class="comment">%for j = 1:length(m)</span>
+0039             <span class="comment">%    tab = [tab; {cycle, j, m(j), media_names(j)}];</span>
+0040             <span class="comment">%end</span>
 0041             
-0042         <span class="keyword">end</span>
-0043     <span class="keyword">end</span>
-0044     
-0045     clear -regexp ^media_\d+$;
-0046 <span class="keyword">end</span>
-0047 
-0048 tab.Properties.VariableNames = {<span class="string">'t'</span> <span class="string">'met'</span> <span class="string">'amt'</span>};
-0049 tab = sortrows(tab,<span class="string">'t'</span>);
-0050 
-0051 <span class="keyword">end</span></pre></div>
-<hr><address>Generated on Wed 03-May-2017 12:42:44 by <strong><a href="http://www.artefact.tk/software/matlab/m2html/" target="_parent">m2html</a></strong> &copy; 2005</address>
+0042             <span class="comment">%TODO: Fill out this table with entries where the concentration</span>
+0043             <span class="comment">%is 0.</span>
+0044             <span class="keyword">for</span> n = 1:length(media_names)
+0045                 metname = media_names{n};
+0046                 vals = m{n};
+0047                 [xdim,ydim] = size(vals);
+0048                 subtable = table(0,0,0,0,0,{<span class="string">'_'</span>});
+0049                 subtable(xdim*ydim,:) = subtable(1,:); <span class="comment">%initialize all the rows</span>
+0050                 rowidx = 1;
+0051                 <span class="keyword">for</span> x = 1:xdim
+0052                     <span class="keyword">for</span> y = 1:ydim
+0053                         subtable(rowidx,:) = {cycle, x, y, n, vals(x,y), metname};
+0054                         <span class="comment">%tab = [tab; {cycle, x, y, n, vals(x,y), metname}];</span>
+0055                         rowidx = rowidx + 1;
+0056                     <span class="keyword">end</span>
+0057                 <span class="keyword">end</span>
+0058                 tab = [tab; subtable];
+0059             <span class="keyword">end</span>
+0060         <span class="keyword">end</span>
+0061     <span class="keyword">end</span>
+0062     
+0063     clear -regexp ^media_\d+$;
+0064 <span class="keyword">end</span>
+0065 
+0066 tab.Properties.VariableNames = {<span class="string">'t'</span> <span class="string">'x'</span> <span class="string">'y'</span> <span class="string">'met'</span> <span class="string">'amt'</span> <span class="string">'metname'</span>};
+0067 tab = sortrows(tab,1:4);
+0068 
+0069 <span class="keyword">end</span></pre></div>
+<hr><address>Generated on Tue 06-Jun-2017 15:51:46 by <strong><a href="http://www.artefact.tk/software/matlab/m2html/" target="_parent">m2html</a></strong> &copy; 2005</address>
 </body>
 </html>
