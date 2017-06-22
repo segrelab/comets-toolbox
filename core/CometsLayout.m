@@ -21,7 +21,7 @@ classdef CometsLayout
         %use sparse matrices. Empty elements use default values
         diffusion_constants = []; %met by 2. If (i,1)=0, met i uses the default diffusion constant. if (i,1)=1, met i's diffusion constant is the value of (i,2). Units = cm^2/s
         global_media_refresh = [];%vector 1/met, default 0
-        media_refresh = [0];%[0] %met by x by y, fill with 0. Units = concentration
+        media_refresh = [];%[0] %met by x by y, fill with 0. Units = concentration
         global_static_media = [];%met by 2. (met,1) is logical denoting if the corresponding media is held static, (met,2) is the held concentration. Units = concentration
         static_media = [0];%met by x by y by 2, with the fourth dimension as in global_static_media ****
         initial_media = [0]; %met by x by y by 2. Initial media concentration in the specified cell. Fourth dimension denotes [isThisValueSet?, value]
@@ -71,6 +71,11 @@ classdef CometsLayout
             diff = length(self.mets) - length(self.global_media_refresh);
             if diff > 0
                 self.global_media_refresh = [self.global_media_refresh; zeros(diff,1)];
+            end
+            
+            diff = length(self.mets) - size(self.media_refresh,1);
+            if diff > 0
+                self.media_refresh(length(self.mets),:,:)=0;
             end
             
             diff = length(self.mets) - size(self.global_static_media,1);
@@ -189,7 +194,7 @@ classdef CometsLayout
             if any(self.media_refresh(:))
                 s = size(self.media_refresh);
                 if s(1) < nmets
-                    self.media_refresh(nmets,z,y) = 0;
+                    self.media_refresh(nmets,x,y) = 0;
                 end
                 self.media_refresh = self.media_refresh(map,:,:);
             end
@@ -310,7 +315,12 @@ classdef CometsLayout
                 case 'cell'
                     c = varargin{4};
                     for i=1:length(c)
-                        midx = [midx metIdx(self,c{i})];
+                        idx = metIdx(self,c{i});
+                        if isempty(idx)
+                            self = self.addMets(c(i));
+                            idx = metIdx(self,c{i});
+                        end
+                        midx = [midx idx];
                     end
                 case 'double' %this covers single values and arrays of doubles
                     midx = varargin{4};
@@ -411,14 +421,13 @@ classdef CometsLayout
                 case 'char'
                     midx = metIdx(self,mets);
                 case 'cell'
-                    c = varargin{4};
-                    for i=1:length(c)
-                        midx = [midx metIdx(self,c{i})];
+                    for i=1:length(mets)
+                        midx = [midx metIdx(self,mets{i})];
                     end
                 case 'double' %this covers single values and arrays of doubles
                     midx = mets;
                 otherwise
-                    error('Metabolites in setStaticMedia must be ID''d as a char, a cell array of chars, a single index, or an array of indices');
+                    error('Metabolites in setMediaRefresh must be ID''d as a char, a cell array of chars, a single index, or an array of indices');
             end
             
             vals = values;
@@ -426,7 +435,7 @@ classdef CometsLayout
                 vals = repmat(vals,length(midx),1);
             end
             if length(vals) ~= length(midx)
-                error('The fifth argument in setStaticMedia must be a single value or of the same length as the list of mets');
+                error('The fifth argument in setMediaRefresh must be a single value or of the same length as the list of mets');
             end
             
             %Don't just apply changes to self.media_refresh(midx,x,y)!

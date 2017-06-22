@@ -248,16 +248,18 @@ fprintf(fileID,'\t//\n');
 fprintf(fileID,'\tmedia_refresh');
 fprintf(fileID,' %d',layout.global_media_refresh);
 fprintf(fileID,'\n');
-s = size(layout.media_refresh);
 
-if length(s) < 3 %don't break the loop if media_refresh is empty or 1x1
-    s(3) = 1;
-end
-for x = 1:s(2)
-    for y = 1:s(3)
-        row = layout.media_refresh(:,x,y);
+[mdim,xdim,ydim] = size(layout.media_refresh);
+for x = 1:xdim
+    for y = 1:ydim
+        row = layout.media_refresh(1:mdim,x,y);
         if any(row)
-            fprintf(fileID,'\t\t%d %d %g\n',x-1,y-1,row);
+            %fprintf(fileID,'\t\t%d %d %g\n',x-1,y-1,row);
+            fprintf(fileID,'\t\t%d %d ',x-1,y-1);
+            for i = 1:length(row)
+                fprintf(fileID,'%d ',row(i));
+            end
+            fprintf(fileID,'\n');
         end
     end
 end
@@ -422,12 +424,18 @@ if ~isempty(layout.external_rxn_mets)
     reactionnames = rxns.name;
     for i = 1:nrows
         row = mets(i,:);
-        rxnidx = stridx(row.rxn{1},reactionnames,false);
-        if row.stoich < 0 %can I remove this check without breaking something?
+        if row.stoich < 0 %only write reactants here
             metidx = stridx(row.met{1},layout.mets,false);
-            sto = -row.stoich;
-            k = rxns(rxnidx,:).k;
-            fprintf(fileID,'\t\t%d %d %d %d\n', rxnidx, metidx, sto, k);
+            rxnidx = stridx(row.rxn{1},reactionnames,false);
+            rxnrow = rxns(rxnidx,:);
+            if isempty(rxnrow.enzyme{1}) %no enzyme
+                sto = -row.stoich;
+                k = rxnrow.k;
+                fprintf(fileID,'\t\t%d %d %d %d\n', rxnidx, metidx, sto, k);
+            else %enzyme catalyzed
+                km = rxnrow.km;
+                fprintf(fileID,'\t\t%d %d %d\n', rxnidx, metidx, km);
+            end
         end
     end
     fprintf(fileID,'\tenzymes\n');
@@ -435,9 +443,9 @@ if ~isempty(layout.external_rxn_mets)
     nrows = rxndims(1);
     for i = 1:nrows
         row = rxns(i,:);
-        if ~strcmp(row.enzyme{1},'')
+        if ~isempty(row.enzyme{1})
             enzidx = stridx(row.enzyme{1},layout.mets,false);
-            fprintf(fileID,'\t\t%d %d %d\n', i, enzidx, row.km);
+            fprintf(fileID,'\t\t%d %d %d\n', i, enzidx, row.k);
         end
     end
     fprintf(fileID,'\tproducts\n');

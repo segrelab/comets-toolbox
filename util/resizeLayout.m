@@ -44,7 +44,7 @@ if dim<1 || newDim<1
     errordlg('Please input positive, nonzero values','Error');
 else
     len=size(matrix);
-    x=length(dim);
+    x=length(len);
     if newDim<x % reducing size of matrix
         if dim==1 % for changing first dimensi   on
             if x==1

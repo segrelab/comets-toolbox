@@ -12,7 +12,7 @@ end
 %The log is a script that loads a struct named "fluxes"
 run(logFilePath)
 if ~exist('fluxes','var')
-    error(['Fauled to load the log file ' logFilePath]);
+    error(['Failed to load the log file ' logFilePath]);
 end
 
 %Dimensions of the fluxes struct are {Timestep}, {X}, {Y}, {Model}, (Rxn)
