@@ -1,0 +1,19 @@
+metnames.db is a SQLite database containing two Tables and a single View
+
+SQL for defining these was as follows:
+
+CREATE TABLE "METABOLITE" ( `ID` INTEGER PRIMARY KEY AUTOINCREMENT, `name` TEXT )
+
+CREATE TABLE "NAME" ( `ID` INTEGER PRIMARY KEY AUTOINCREMENT, `name` TEXT, `metabolite` INTEGER, `source` TEXT, `sourcetype` TEXT, FOREIGN KEY(`metabolite`) REFERENCES METABOLITE(`ID`) )
+
+CREATE VIEW PSEUDONYM as select metabolite.name as official, name.name as pseudonym from metabolite join name on metabolite.ID = name.metabolite
+
+
+The Table "METABOLITE" stores a unique ID for each molecule, and the cannonical NAME.
+
+The Table "NAME" stores a unique ID for each NAME a compound is given in any of the sources that were used to populate the DB. The foreign key NAME.METABOLITE ties multiple names to a single molecule. The SOURCE field gives the name of the source where the name was pulled from, and the SOURCETYPE identifies the type of field in the original source ('Descriptive Name' or 'KEGG Compound' for example)
+
+The PSEUDONYM View joins the two tables in such a way that each NAME.NAME appears as PSEUDONYM.PSEUDONYM, with a PSEUDONYM.OFFICIAL to correspond. OFFICIAL is the string which should be used as the metabolite name in COMETS layouts and models.
+
+
+The OFFICIAL names are set to the molecules' KBase abbreviations. This is an arbitrary decision which we can change if there are any strong opinions on the matter.
