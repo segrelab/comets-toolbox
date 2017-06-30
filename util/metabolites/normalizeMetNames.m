@@ -8,12 +8,13 @@ function [model, failed, failedflag] = normalizeMetNames(model)
 %   failedflag: logical array denoting for each met wether it did not have
 %   a match in the alias DB (1 = no match found)
 % 
-% Examples: 
+% This script searches the SQLite database metnames.db for a cannonical
+% name matching the names in model.mets.
+% If any metabolite doesn't return a match, the db is searched using the 
+% corresponding value in model.metNames.
+% If neither returns a match, the original value in model.mets is used and
+% the metabolite is marked as 'failed'
 % 
-% Provide sample usage code here
-% 
-% See also: List related files here
-
 % $Author: mquintin $	$Date: 2016/10/28 12:59:12 $	$Revision: 0.2 $
 % Copyright: Daniel Segrè, Boston University Bioinformatics Program 2016
 
