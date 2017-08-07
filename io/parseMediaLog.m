@@ -42,7 +42,7 @@ if exist(logFilePath,'file') %the log file exists
             %TODO: Fill out this table with entries where the concentration
             %is 0.
             for n = 1:length(media_names)
-                metname = media_names{n};
+                metname = media_names(n);
                 vals = m{n};
                 [xdim,ydim] = size(vals);
                 subtable = table(0,0,0,0,0,{'_'});
