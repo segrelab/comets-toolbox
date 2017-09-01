@@ -86,14 +86,16 @@ fprintf(fileID,'//\n');
 
 %Print the Biomass reaction, if there are any true values in
 %model.biomassRxn
-if isfield(model,'biomassRxn') && any(model.biomassRxn)
-    fprintf(fileID,'BIOMASS\n');
-    fprintf(fileID,'    ');
-    idx = find(model.biomassRxn);
-    for i=1:length(idx)
-        fprintf(fileID,' %d',idx(i));
+if isfield(model,'biomassRxn') 
+    if any(model.biomassRxn)
+        fprintf(fileID,'BIOMASS\n');
+        fprintf(fileID,'    ');
+        idx = find(model.biomassRxn);
+        for i=1:length(idx)
+            fprintf(fileID,' %d',idx(i));
+        end
+        fprintf(fileID,'\n//\n');
     end
-    fprintf(fileID,'\n//\n');
 end
 
 %Print metabolite names
