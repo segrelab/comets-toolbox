@@ -79,9 +79,26 @@ for i=1:length(model.c)
         objective=i;
     end
 end
+
+%find the objective reaction or reactions
+%The absolute value of model.c should denote priority, with 1 being highest
+%A negative number denotes that the reaction should be minimized
+%Ex: if c = [0 0 3 0 -2 1], maximize r6, then minimize r5, then maximize r3
+%   so the output line should be: "   6 -5 3"
+objIdxs = find(model.c);
+[objPriority, map] = sort(abs(model.c(objIdxs)));
+objLine = '   ';
+for i = 1:length(objPriority)
+    idx = objIdxs(map(i));
+    if (model.c(idx) < 0) 
+        idx = -1 * idx;
+    end
+    objLine = [objLine ' ' num2str(idx)];
+end
+objLine = [objLine '\n'];
 %Print the objective reaction
 fprintf(fileID,'OBJECTIVE\n');
-   fprintf(fileID,'    %d\n',objective); 
+   fprintf(fileID,objLine); 
 fprintf(fileID,'//\n');
 
 %Print the Biomass reaction, if there are any true values in
