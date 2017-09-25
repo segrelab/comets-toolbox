@@ -33,7 +33,7 @@ end
 clear exchange_rxnsIndex;
 %exchange_rxnsIndex(1)=1; %not sure what case this is preventing... 
                           %reenable after debugging
-exc_logical=findExcRxns(model);%COBRA function returning a logical vector.
+exc_logical=findExcRxns(model, 1);%COBRA function returning a logical vector.
 exchange_rxnsIndex=find(exc_logical);
 
 S=full(model.S);
