@@ -22,6 +22,7 @@ classdef CometsParams
         simulateActivation = false %if true, the models are activated with the set activationRate
         timeStep = 0.01 %hours. time for each simulation step
         toroidalWorld = false %If true, edge cells are considered adjacent to the cell on the opposite edge
+        objectiveStyle = 'MAX_OBJECTIVE_MIN_TOTAL' %replace with 'default' to use the Comets package default
         
         %Graphical & output global params
         colorRelative = true %if true, colors each space relative to the space with the highest value.

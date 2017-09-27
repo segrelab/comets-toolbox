@@ -173,6 +173,12 @@ if isfield(model,'vmax') && any(model.vmax)
     fprintf(fileID,'//\n');
 end
 
+%Objective Style
+if ~strcmpi(cometsParams.objectiveStyle,'default')
+    fprintf(fileID,'OBJECTIVE_STYLE\n');
+    fprintf(fileID,'\t%s\n//\n',cometsParams.objectiveStyle);
+end
+
 fclose(fileID);
 end
 

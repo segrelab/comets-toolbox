@@ -86,7 +86,7 @@ if includeParams
     fprintf(fileID,'\tparameters\n');
     
     pfields = fieldnames(layout.params);
-    dontPrint = {'defaultReactionLower','defaultReactionUpper','defaultDiffConst'};
+    dontPrint = {'defaultReactionLower','defaultReactionUpper','defaultDiffConst','objectiveStyle'};
     for i = 1:length(pfields)
         p = pfields{i};
         if ~ismember(p,dontPrint)
