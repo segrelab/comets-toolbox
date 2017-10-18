@@ -22,6 +22,8 @@ function [model, failed, failedflag] = normalizeMetNames(model)
 % 5/23/2017: add compatability with names that denote compartment by using 
 % an underscore
 
+%To do:
+%Add warning/fail when the number of unique metIDs is changed
 
 %convert names in the form "some_metabolite_c" to "some_metabolite[c]" in
 %order to be compatible with parseMetNames. Note we're not directly

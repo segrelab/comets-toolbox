@@ -3,6 +3,10 @@ function f = writeCometsModel( input, filename, cometsParams)
 %   The third argument is optional, and can be used to override the default
 %kinetic parameters declared in the CometsParams class
 
+%Change how exchange reactions are defined:
+% 1: by the S matrix
+% 2: by name
+exchangeMode = 1;
 
 if isa(input,'string')
     strct=load(input);
@@ -31,10 +35,17 @@ end
         
 
 clear exchange_rxnsIndex;
-%exchange_rxnsIndex(1)=1; %not sure what case this is preventing... 
-                          %reenable after debugging
-exc_logical=findExcRxns(model, 1);%COBRA function returning a logical vector.
-exchange_rxnsIndex=find(exc_logical);
+%exc_logical=findExcRxns(model, 1);%COBRA function returning a logical vector.
+%NOTE: We don't use findExcRxns any more because of the 'inclObjFlag'
+%argument, when either puts the objective into the list or leaves it out,
+%regardless of whether it satisfies the conditions that define an exchange
+%reaction
+if exchangeMode == 1 %find by the S matrix
+    exc_logical = findExcByS(model);
+    exchange_rxnsIndex=find(exc_logical);
+else %find by name
+    exchange_rxnsIndex = stridx('EX_',model.rxns,true);
+end
 
 S=full(model.S);
 
@@ -182,3 +193,11 @@ end
 fclose(fileID);
 end
 
+%determine if the reactions are exchanges or not by checking if there's
+%only one reactant in the S matrix
+function s = findExcByS(model)
+    s = model.S;
+    s = s ~= 0; %convert to logical: is there a value?
+    s = sum(s,1); %collapse columns
+    s = s == 1; %did each column have one member?
+end
