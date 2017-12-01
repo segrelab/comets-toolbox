@@ -60,6 +60,7 @@ classdef CometsParams
         defaultReactionUpper = 1000
         defaultVmax = 10 %moles/g/s. The default Vmax value for Monod-style exchange
         defaultW = 10 %The default W coefficient (plateau) for the Pseudo-Monod style exchange
+        numExRxnSubsteps = 10
         
         %Logging package params
         writeFluxLog = false %If true, writes fluxes out to a log file
