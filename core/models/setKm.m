@@ -50,7 +50,7 @@ end
 
 %initialize or grow the KM vector if necessary
 if ~isfield(model,'km')
-    model.km = NaN(1,length(model.rxns));
+    model.km = NaN(length(model.rxns),1);
 elseif length(model.km) < length(model.rxns)
     model.km(length(model.km)+1:length(model.rxns)) = NaN;
 end

@@ -50,7 +50,7 @@ end
 
 %initialize or grow the Vmax vector if necessary
 if ~isfield(model,'vmax')
-    model.vmax = NaN(1,length(model.rxns));
+    model.vmax = NaN(length(model.rxns),1);
 elseif length(model.vmax) < length(model.rxns)
     model.vmax(length(model.vmax)+1:length(model.rxns)) = NaN;
 end
