@@ -87,12 +87,16 @@ if includeParams
     
     pfields = fieldnames(layout.params);
     dontPrint = {'defaultReactionLower','defaultReactionUpper','defaultDiffConst','objectiveStyle'};
+    logicalFields = {'writeBiomassLog','writeFluxLog','writeMediaLog','writeTotalBiomassLog',...
+        'useLogNameTimeStamp','showCycleTime','showCycleCount','saveslideshow',...
+        'slideshowColorRelative','simulateActivation','randomOrder','pauseOnStep','allowCellOverlap',...
+        'toroidalWorld','colorRelative','slideshowColorRelative'};
     for i = 1:length(pfields)
         p = pfields{i};
         if ~ismember(p,dontPrint)
             c = char(p);
             val = getfield(layout.params,c);
-            if islogical(val)
+            if islogical(val) | ismember(c,logicalFields)
                 if val
                     val = 'true';
                 else
