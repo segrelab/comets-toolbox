@@ -32,6 +32,8 @@ while ischar(tline)
     
 end
 
+fclose(f);
+
 arr = horzcat(T',X',Y',ModelId',Biomass');
 out = array2table(arr);
 out.Properties.VariableNames = {'t','x','y','model','biomass'};
