@@ -79,9 +79,14 @@ switch lower(format)
                 newpop(1,ceil(x/3),ceil(y/2)) = pop(1); %left-center
                 newpop(2,ceil(2*x/3),ceil(y/2)) = pop(2); %right-center
             case 3
-                newpop(1,ceil(x/2),ceil(y/3)) = pop(1); %center-top
-                newpop(2,ceil(x/3),ceil(2*y/3)) = pop(2); %left-bottom
-                newpop(3,ceil(2*x/3),ceil(2*y/3)) = pop(3); %right-bottom
+                %place the colonies on an equilateral triangle
+                dist = ciel(x/3); %distance between any 2 colonies
+                ydiff = sqrt((dist^2) - ((dist/2)^2)); %height of the triangle 
+                ytop = floor((y/2) - (ydiff/2));
+                ybottom = ciel((y/2) + (ydiff/2));
+                newpop(1,ceil(x/2),ytop) = pop(1); %center-top
+                newpop(2,ceil(x/3),ybottom) = pop(2); %left-bottom
+                newpop(3,ceil(2*x/3),ybottom) = pop(3); %right-bottom
             case 4
                 newpop(1,ceil(x/3),ceil(y/3)) = pop(1); %left-top
                 newpop(2,ceil(2*x/3),ceil(y/3)) = pop(2); %right-top
