@@ -16,7 +16,7 @@ newstoich = [];
 if iscell(mets)
     tstoich = stoich;
     if length(stoich) == 1
-        tstoich(1:length) = stoich(1);
+        tstoich(1:length(mets)) = stoich(1);
     end
     for i = 1:length(mets)
         if ~any(strcmp(model.mets,mets{i}))
@@ -37,7 +37,7 @@ if isnumeric(rxnname)
     rxnidx = rxnname;
     rxnname = model.rxns(rxnname);
 elseif ischar(rxnname)
-    rxnidx = model.rxns(find(strcmp(model.rxns,rxnname),1));
+    rxnidx = find(strcmp(model.rxns,rxnname),1);
 end
 
 
