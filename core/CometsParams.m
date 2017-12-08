@@ -12,7 +12,7 @@ classdef CometsParams
         % COMETS global params with defaults:
         activateRate = 0.001 %probability of a model activating (from 0 to 1)
         allowCellOverlap = true %if true, allows different species to occupy the same space
-        deathRate = 0.0 %from 0 to 1. fraction of biomass which dies on each timestep
+        deathRate = 0.0 %from 0 to 1. fraction of biomass which dies each HOUR
         maxCycles = 200 %the maximum number of simulation steps to run. If set to -1, this is unlimited.
         maxSpaceBiomass = 2.2E-4 %grams. maximum allowed biomass in a space
         minSpaceBiomass = 0.25e-10 %grams. minimum allowed biomass in a space (setting to a small value > 0 might avoid some numerical errors)
