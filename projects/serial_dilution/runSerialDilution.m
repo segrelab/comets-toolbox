@@ -11,6 +11,18 @@ function [biomass,t,media] = runSerialDilution(layout,varargin)
 %   biomass: matrix of model biomasses at each timepoint
 %   t: time in hours for each timepoint
 %   media: matrix of media concentration at each timepoint
+%
+%Example Use:
+% load('iJO1366.mat');
+% layout = createLayout();
+% layout = addModel(layout,iJO1366);
+% layout = addModel(layout,iJO1366);%2 copies of the model
+% layout.media_amt(1:end) = 1;
+% layout = setInitialPop(layout,'1x1',[1e-5 2e-5]);
+% 
+% [biomass,t,media] = runSerialDilution(layout,5,0.5,true,pwd);
+% 
+% plot(t,biomass(:,1),t,biomass(:,2))
 
 %Defaults
 defaultNCycles = 5;
