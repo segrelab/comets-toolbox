@@ -2,7 +2,12 @@ function [biomass,t,media] = runSerialDilution(layout,varargin)
 %runSerialDilution(layout,nCycles,dilutionFactor,includeSpentMedia,directory)
 %   Executes the given layout multiple times, diluting the results between
 %   cycles.
-% Optional Arguments:
+%Required Argument:
+%   layout: a 1x1 CometsLayout object. Media should be included in the
+%   media_amt field as opposed to the initial_media field (on the
+%   assumption that initial_media is only used when there are spatially
+%   distinct media regions)
+%Optional Arguments:
 %   nCycles: Number of growth steps to perform
 %   dilutionFactor: if > 1, the -fold dilution performed between cycles. If < 1, the percent of biomass that gets transfered to the next cycle
 %   includeSpentMedia: if true (default), a portion of the media at the end of a cycle will be combined with the media at the start of the next cycle. This is equivalent to pipetting media directly from one stage into the next. If false, only the biomass will be transferred and the media at the start of each cycle will be identical.
@@ -51,6 +56,13 @@ if (layout.xdim ~= 1 || layout.ydim ~= 1)
     error('runSerialDilution requires the given Layout''s dimensions to be 1x1.');
 end
 
+%Warn if media is set in layout.initial_media instead of layout.media_amt
+if (logical(nnz(layout.initial_media))) %if any values are nonzero
+    warning(['The 1x1 layout in runSerialDilution should have its media recipe '...
+        'set in the media_amt field. The initial_media should be reserved for '...
+        'defining regions with distinct media composition. Media may not be'...
+        'properly transferred between cycles.']);
+end
 
 %allow dilution factor to be given as a fraction or as the fold dilution
 %eg if the user says 20X dilution, convert 20 -> 0.05
