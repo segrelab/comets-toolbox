@@ -126,8 +126,9 @@ while (cc < cycles)
     end
     
     %update the time vector
-    nt = step:step:(step * nrows);
-    nt = nt + (cc * ts * layout.params.maxCycles);
+    nt = 0:step:(step * nrows)-step;
+    nt = nt + (elapsedTime);
+    elapsedTime = nt(end);
     t = [t nt];
     
     cc = cc+ 1;
