@@ -52,7 +52,7 @@ This function calls:
 <li><a href="../../CometsToolbox/util/resizeLayout.html" class="code" title="function newLayout=resizeLayout(layout, newX, newY)">resizeLayout</a>	</li></ul>
 This function is called by:
 <ul style="list-style-image:url(../../matlabicon.gif)">
-<li><a href="../../CometsToolbox/test/testSetInitialPop.html" class="code" title="">testSetInitialPop</a>	TESTSETINITIALPOP Confirm that the setInitialPop function works as</li></ul>
+<li><a href="../../CometsToolbox/test/testSerialDilution.html" class="code" title="">testSerialDilution</a>	A script to test out the serial dilution functions</li><li><a href="../../CometsToolbox/test/testSetInitialPop.html" class="code" title="">testSetInitialPop</a>	TESTSETINITIALPOP Confirm that the setInitialPop function works as</li></ul>
 <!-- crossreference -->
 
 
@@ -139,25 +139,30 @@ This function is called by:
 0079                 newpop(1,ceil(x/3),ceil(y/2)) = pop(1); <span class="comment">%left-center</span>
 0080                 newpop(2,ceil(2*x/3),ceil(y/2)) = pop(2); <span class="comment">%right-center</span>
 0081             <span class="keyword">case</span> 3
-0082                 newpop(1,ceil(x/2),ceil(y/3)) = pop(1); <span class="comment">%center-top</span>
-0083                 newpop(2,ceil(x/3),ceil(2*y/3)) = pop(2); <span class="comment">%left-bottom</span>
-0084                 newpop(3,ceil(2*x/3),ceil(2*y/3)) = pop(3); <span class="comment">%right-bottom</span>
-0085             <span class="keyword">case</span> 4
-0086                 newpop(1,ceil(x/3),ceil(y/3)) = pop(1); <span class="comment">%left-top</span>
-0087                 newpop(2,ceil(2*x/3),ceil(y/3)) = pop(2); <span class="comment">%right-top</span>
-0088                 newpop(3,ceil(x/3),ceil(2*y/3)) = pop(3); <span class="comment">%left-bottom</span>
-0089                 newpop(4,ceil(2*x/3),ceil(2*y/3)) = pop(4); <span class="comment">%right-bottom</span>
-0090             <span class="keyword">otherwise</span>
-0091                 error([<span class="string">'setInitialPop is currently capable of handling '</span><span class="keyword">...</span>
-0092                     <span class="string">'only up to four models in a ''colonies'' layout.'</span>]);
-0093         <span class="keyword">end</span>
-0094     <span class="keyword">otherwise</span>
-0095         error([<span class="string">'The format in the second argument of setInitialPop '</span><span class="keyword">...</span>
-0096             <span class="string">'should be one of: '</span> formatstrs]);
-0097 <span class="keyword">end</span>
-0098 layout.initial_pop = newpop;
-0099 
-0100 <span class="keyword">end</span></pre></div>
-<hr><address>Generated on Fri 30-Jun-2017 17:16:47 by <strong><a href="http://www.artefact.tk/software/matlab/m2html/" target="_parent">m2html</a></strong> &copy; 2005</address>
+0082                 <span class="comment">%place the colonies on an equilateral triangle</span>
+0083                 dist = ciel(x/3); <span class="comment">%distance between any 2 colonies</span>
+0084                 ydiff = sqrt((dist^2) - ((dist/2)^2)); <span class="comment">%height of the triangle</span>
+0085                 ytop = floor((y/2) - (ydiff/2));
+0086                 ybottom = ciel((y/2) + (ydiff/2));
+0087                 newpop(1,ceil(x/2),ytop) = pop(1); <span class="comment">%center-top</span>
+0088                 newpop(2,ceil(x/3),ybottom) = pop(2); <span class="comment">%left-bottom</span>
+0089                 newpop(3,ceil(2*x/3),ybottom) = pop(3); <span class="comment">%right-bottom</span>
+0090             <span class="keyword">case</span> 4
+0091                 newpop(1,ceil(x/3),ceil(y/3)) = pop(1); <span class="comment">%left-top</span>
+0092                 newpop(2,ceil(2*x/3),ceil(y/3)) = pop(2); <span class="comment">%right-top</span>
+0093                 newpop(3,ceil(x/3),ceil(2*y/3)) = pop(3); <span class="comment">%left-bottom</span>
+0094                 newpop(4,ceil(2*x/3),ceil(2*y/3)) = pop(4); <span class="comment">%right-bottom</span>
+0095             <span class="keyword">otherwise</span>
+0096                 error([<span class="string">'setInitialPop is currently capable of handling '</span><span class="keyword">...</span>
+0097                     <span class="string">'only up to four models in a ''colonies'' layout.'</span>]);
+0098         <span class="keyword">end</span>
+0099     <span class="keyword">otherwise</span>
+0100         error([<span class="string">'The format in the second argument of setInitialPop '</span><span class="keyword">...</span>
+0101             <span class="string">'should be one of: '</span> formatstrs]);
+0102 <span class="keyword">end</span>
+0103 layout.initial_pop = newpop;
+0104 
+0105 <span class="keyword">end</span></pre></div>
+<hr><address>Generated on Tue 12-Dec-2017 12:31:16 by <strong><a href="http://www.artefact.tk/software/matlab/m2html/" target="_parent">m2html</a></strong> &copy; 2005</address>
 </body>
 </html>

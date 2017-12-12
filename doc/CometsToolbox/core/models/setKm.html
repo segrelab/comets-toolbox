@@ -109,7 +109,7 @@ This function is called by:
 0050 
 0051 <span class="comment">%initialize or grow the KM vector if necessary</span>
 0052 <span class="keyword">if</span> ~isfield(model,<span class="string">'km'</span>)
-0053     model.km = NaN(1,length(model.rxns));
+0053     model.km = NaN(length(model.rxns),1);
 0054 <span class="keyword">elseif</span> length(model.km) &lt; length(model.rxns)
 0055     model.km(length(model.km)+1:length(model.rxns)) = NaN;
 0056 <span class="keyword">end</span>
@@ -122,6 +122,6 @@ This function is called by:
 0063 
 0064 <span class="keyword">end</span>
 0065</pre></div>
-<hr><address>Generated on Fri 30-Jun-2017 17:16:47 by <strong><a href="http://www.artefact.tk/software/matlab/m2html/" target="_parent">m2html</a></strong> &copy; 2005</address>
+<hr><address>Generated on Tue 12-Dec-2017 12:31:16 by <strong><a href="http://www.artefact.tk/software/matlab/m2html/" target="_parent">m2html</a></strong> &copy; 2005</address>
 </body>
 </html>

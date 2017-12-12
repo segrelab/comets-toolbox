@@ -1,0 +1,173 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+                "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+<head>
+  <title>Description of runSerialDilution</title>
+  <meta name="keywords" content="runSerialDilution">
+  <meta name="description" content="runSerialDilution(layout,nCycles,dilutionFactor,includeSpentMedia,directory)">
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <meta name="generator" content="m2html &copy; 2005 Guillaume Flandin">
+  <meta name="robots" content="index, follow">
+  <link type="text/css" rel="stylesheet" href="../../../m2html.css">
+  <script type="text/javascript">
+    if (top.frames.length == 0) { top.location = "../../../index.html"; };
+  </script>
+</head>
+<body>
+<a name="_top"></a>
+<!-- # CometsToolbox --><!-- # projects --><!-- menu.html serial_dilution -->
+<h1>runSerialDilution
+</h1>
+
+<h2><a name="_name"></a>PURPOSE <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+<div class="box"><strong>runSerialDilution(layout,nCycles,dilutionFactor,includeSpentMedia,directory)</strong></div>
+
+<h2><a name="_synopsis"></a>SYNOPSIS <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+<div class="box"><strong>function [biomass,t,media] = runSerialDilution(layout,varargin) </strong></div>
+
+<h2><a name="_description"></a>DESCRIPTION <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+<div class="fragment"><pre class="comment">runSerialDilution(layout,nCycles,dilutionFactor,includeSpentMedia,directory)
+   Executes the given layout multiple times, diluting the results between
+   cycles.
+ Optional Arguments:
+   nCycles: Number of growth steps to perform
+   dilutionFactor: if &gt; 1, the -fold dilution performed between cycles. If &lt; 1, the percent of biomass that gets transfered to the next cycle
+   includeSpentMedia: if true (default), a portion of the media at the end of a cycle will be combined with the media at the start of the next cycle. This is equivalent to pipetting media directly from one stage into the next. If false, only the biomass will be transferred and the media at the start of each cycle will be identical.
+   directory: location to store log files and the COMETS .bat script
+Returns:
+   biomass: matrix of model biomasses at each timepoint
+   t: time in hours for each timepoint
+   media: matrix of media concentration at each timepoint</pre></div>
+
+<!-- crossreference -->
+<h2><a name="_cross"></a>CROSS-REFERENCE INFORMATION <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+This function calls:
+<ul style="list-style-image:url(../../../matlabicon.gif)">
+<li><a href="../../../CometsToolbox/core/run/runComets.html" class="code" title="function cometsOutput = runComets( layout, directory )">runComets</a>	RUNCOMETS create the files necessary for a COMETS run, and execute it from</li><li><a href="../../../CometsToolbox/external/m2html/@template/parse.html" class="code" title="function [tpl, str] = parse(tpl,target,handle,append)">parse</a>	TEMPLATE/PARSE Fill in replacement fields with the class properties</li><li><a href="../../../CometsToolbox/io/parseBiomassLog.html" class="code" title="function out = parseBiomassLog(biomassFile)">parseBiomassLog</a>	parseBiomassCometsOutput:</li><li><a href="../../../CometsToolbox/io/parseMediaLog.html" class="code" title="function tab = parseMediaLog(varargin)">parseMediaLog</a>	PARSEMEDIALOG(logFilePath, [metNames]) load the Comets media log at the</li></ul>
+This function is called by:
+<ul style="list-style-image:url(../../../matlabicon.gif)">
+<li><a href="../../../CometsToolbox/test/testSerialDilution.html" class="code" title="">testSerialDilution</a>	A script to test out the serial dilution functions</li></ul>
+<!-- crossreference -->
+
+
+
+<h2><a name="_source"></a>SOURCE CODE <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+<div class="fragment"><pre>0001 <a name="_sub0" href="#_subfunctions" class="code">function [biomass,t,media] = runSerialDilution(layout,varargin)</a>
+0002 <span class="comment">%runSerialDilution(layout,nCycles,dilutionFactor,includeSpentMedia,directory)</span>
+0003 <span class="comment">%   Executes the given layout multiple times, diluting the results between</span>
+0004 <span class="comment">%   cycles.</span>
+0005 <span class="comment">% Optional Arguments:</span>
+0006 <span class="comment">%   nCycles: Number of growth steps to perform</span>
+0007 <span class="comment">%   dilutionFactor: if &gt; 1, the -fold dilution performed between cycles. If &lt; 1, the percent of biomass that gets transfered to the next cycle</span>
+0008 <span class="comment">%   includeSpentMedia: if true (default), a portion of the media at the end of a cycle will be combined with the media at the start of the next cycle. This is equivalent to pipetting media directly from one stage into the next. If false, only the biomass will be transferred and the media at the start of each cycle will be identical.</span>
+0009 <span class="comment">%   directory: location to store log files and the COMETS .bat script</span>
+0010 <span class="comment">%Returns:</span>
+0011 <span class="comment">%   biomass: matrix of model biomasses at each timepoint</span>
+0012 <span class="comment">%   t: time in hours for each timepoint</span>
+0013 <span class="comment">%   media: matrix of media concentration at each timepoint</span>
+0014 
+0015 <span class="comment">%Defaults</span>
+0016 defaultNCycles = 5;
+0017 defaultDilutionFactor = 0.05;
+0018 defaultIncludeSpentMedia = true;
+0019 defaultDirectory = pwd;
+0020 
+0021 p = inputParser;
+0022 addRequired(p,<span class="string">'layout'</span>,@(x) isa(x,<span class="string">'CometsLayout'</span>));
+0023 addOptional(p,<span class="string">'nCycles'</span>,defaultNCycles,@(x) isa(x,<span class="string">'double'</span>));
+0024 addOptional(p,<span class="string">'dilutionFactor'</span>,defaultDilutionFactor,@(x) isa(x,<span class="string">'double'</span>));
+0025 addOptional(p,<span class="string">'includeSpentMedia'</span>,defaultIncludeSpentMedia);
+0026 addOptional(p,<span class="string">'directory'</span>,defaultDirectory,@(x) exist(x,<span class="string">'dir'</span>));
+0027 <a href="../../../CometsToolbox/external/m2html/@template/parse.html" class="code" title="function [tpl, str] = parse(tpl,target,handle,append)">parse</a>(p,layout,varargin{:});
+0028 
+0029 cycles = p.Results.nCycles;
+0030 df = p.Results.dilutionFactor;
+0031 incspent = p.Results.includeSpentMedia;
+0032 d = p.Results.directory;
+0033 biomass = [];
+0034 media = [];
+0035 t = [];
+0036 
+0037 <span class="comment">%ensure this is being run on a 1x1 layout</span>
+0038 <span class="keyword">if</span> (layout.xdim ~= 1 || layout.ydim ~= 1)
+0039     error(<span class="string">'runSerialDilution requires the given Layout''s dimensions to be 1x1.'</span>);
+0040 <span class="keyword">end</span>
+0041 
+0042 
+0043 <span class="comment">%allow dilution factor to be given as a fraction or as the fold dilution</span>
+0044 <span class="comment">%eg if the user says 20X dilution, convert 20 -&gt; 0.05</span>
+0045 <span class="comment">%always treat it as a fraction from here out</span>
+0046 <span class="keyword">if</span> (df &gt; 1)
+0047     df = 1/df;
+0048 <span class="keyword">end</span>
+0049 
+0050 <span class="comment">%set up the necessary logs</span>
+0051 layout.params.writeBiomassLog = true;
+0052 biolog = layout.params.biomassLogName;
+0053 <span class="keyword">if</span> (incspent == true)
+0054     layout.params.writeMediaLog = true;
+0055     medialog = layout.params.mediaLogName;
+0056 <span class="keyword">end</span>
+0057 
+0058 curdir = pwd;
+0059 cd(d);
+0060 ts = layout.params.timeStep;
+0061 lograte = layout.params.biomassLogRate;
+0062 layout.params.mediaLogRate = lograte;
+0063 step = ts * lograte;
+0064 
+0065 cc = 0; <span class="comment">%current cycle</span>
+0066 elapsedTime = 0;
+0067 <span class="keyword">while</span> (cc &lt; cycles)
+0068     <span class="comment">%run a simulation</span>
+0069     <a href="../../../CometsToolbox/core/run/runComets.html" class="code" title="function cometsOutput = runComets( layout, directory )">runComets</a>(layout);
+0070     
+0071     <span class="comment">%get the biomass</span>
+0072     b = <a href="../../../CometsToolbox/io/parseBiomassLog.html" class="code" title="function out = parseBiomassLog(biomassFile)">parseBiomassLog</a>(biolog);
+0073     nmodels = max(b.model + 1);
+0074     nrows = length(unique(b.t)); <span class="comment">%number of timesteps</span>
+0075     bt = zeros(nrows,nmodels);
+0076     <span class="keyword">for</span> (i = 1:nmodels)
+0077         modelbio = b.biomass(b.model == i-1);
+0078         bt(:,i) = modelbio;
+0079     <span class="keyword">end</span>
+0080     biomass = [biomass;bt];
+0081     
+0082     <span class="comment">%get the media</span>
+0083     m = <a href="../../../CometsToolbox/io/parseMediaLog.html" class="code" title="function tab = parseMediaLog(varargin)">parseMediaLog</a>(medialog);
+0084     nmets = max(m.met);
+0085     mt = zeros(length(unique(m.t)),nmets);
+0086     <span class="keyword">for</span> (i = 1:nmets)
+0087         metcon = m.amt(m.met == i);
+0088         <span class="keyword">if</span> (metcon)
+0089             mt(:,i) = metcon;
+0090         <span class="keyword">end</span>
+0091     <span class="keyword">end</span>
+0092     media = [media;mt];
+0093     
+0094     <span class="comment">%apply the biomass for the next iteration</span>
+0095     finalbio = biomass(<span class="keyword">end</span>,:)';
+0096     layout.initial_pop = finalbio * df;
+0097     
+0098     <span class="comment">%apply the media for the next iteration</span>
+0099     <span class="keyword">if</span> (incspent)
+0100         finalmets = media(<span class="keyword">end</span>,:);
+0101         layout.media_amt = (layout.media_amt * (1-df)) + (finalmets * df);
+0102     <span class="keyword">end</span>
+0103     
+0104     <span class="comment">%update the time vector</span>
+0105     nt = step:step:(step * nrows);
+0106     nt = nt + (cc * ts * layout.params.maxCycles);
+0107     t = [t nt];
+0108     
+0109     cc = cc+ 1;
+0110 <span class="keyword">end</span>
+0111 <span class="comment">%shift the whole time vector back one step so it starts at 10 instead of t1</span>
+0112 t = t - step;
+0113 
+0114 cd(curdir);
+0115 <span class="keyword">end</span>
+0116</pre></div>
+<hr><address>Generated on Tue 12-Dec-2017 12:31:16 by <strong><a href="http://www.artefact.tk/software/matlab/m2html/" target="_parent">m2html</a></strong> &copy; 2005</address>
+</body>
+</html>
