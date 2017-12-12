@@ -7,6 +7,10 @@ function [biomass,t,media] = runSerialDilution(layout,varargin)
 %   dilutionFactor: if > 1, the -fold dilution performed between cycles. If < 1, the percent of biomass that gets transfered to the next cycle
 %   includeSpentMedia: if true (default), a portion of the media at the end of a cycle will be combined with the media at the start of the next cycle. This is equivalent to pipetting media directly from one stage into the next. If false, only the biomass will be transferred and the media at the start of each cycle will be identical.
 %   directory: location to store log files and the COMETS .bat script
+%Returns:
+%   biomass: matrix of model biomasses at each timepoint
+%   t: time in hours for each timepoint
+%   media: matrix of media concentration at each timepoint
 
 %Defaults
 defaultNCycles = 5;
@@ -76,18 +80,16 @@ while (cc < cycles)
     biomass = [biomass;bt];
     
     %get the media
-    if (incspent)
-        m = parseMediaLog(medialog);
-        nmets = max(m.met);
-        mt = zeros(length(unique(m.t)),nmets);
-        for (i = 1:nmets)
-            metcon = m.amt(m.met == i);
-            if (metcon)
-                mt(:,i) = metcon;
-            end
+    m = parseMediaLog(medialog);
+    nmets = max(m.met);
+    mt = zeros(length(unique(m.t)),nmets);
+    for (i = 1:nmets)
+        metcon = m.amt(m.met == i);
+        if (metcon)
+            mt(:,i) = metcon;
         end
-        media = [media;mt];
     end
+    media = [media;mt];
     
     %apply the biomass for the next iteration
     finalbio = biomass(end,:)';
@@ -96,7 +98,7 @@ while (cc < cycles)
     %apply the media for the next iteration
     if (incspent)
         finalmets = media(end,:);
-        layout.media_amt = (layout.media_amt * (1-df)) + (finalmets * df); 
+        layout.media_amt = (layout.media_amt * (1-df)) + (finalmets * df);
     end
     
     %update the time vector
