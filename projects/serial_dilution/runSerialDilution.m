@@ -133,8 +133,6 @@ while (cc < cycles)
     
     cc = cc+ 1;
 end
-%shift the whole time vector back one step so it starts at 10 instead of t1
-t = t - step;
 
 cd(curdir);
 end
