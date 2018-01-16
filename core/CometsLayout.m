@@ -56,6 +56,14 @@ classdef CometsLayout
         
         function self = addMets(self,newnames)
             %Add the metabolites in the cell array newnames to this layout
+            newnames = setdiff(newnames, self.mets);
+            
+            %make sure the newnames array is vertical
+            [w,h] = size(newnames);
+            if h > w
+                newnames = newnames';
+            end
+            
             self.mets = [self.mets; newnames]; %must maintain order, don't use Union
             
             diff = length(self.mets) - length(self.media_amt);

@@ -33,7 +33,7 @@ end
 
 nmodels = length(layout.models);
 if nmodels < 1
-    error('No models included in the given layout.');
+    warning('No models included in the given layout. Initial population cannot be set.');
 end
 
 %set size of colonies within populated grid cells

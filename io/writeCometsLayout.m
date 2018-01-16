@@ -409,10 +409,11 @@ if sum(sum(any(layout.initial_pop))) > 0 %some initial pop is set
     end
     fprintf(fileID,'//\n');
 else %no initial pop is set
-    fprintf(fileID,'initial_pop filled');
-    for i=1:length(layout.models)
-        fprintf(fileID,' 1E-7');
-    end
+%     fprintf(fileID,'initial_pop filled');
+%     for i=1:length(layout.models)
+%         fprintf(fileID,' 1E-7');
+%     end
+    fprintf(fileID,'initial_pop');
     fprintf(fileID,'\n');
     fprintf(fileID,'//\n');
 end

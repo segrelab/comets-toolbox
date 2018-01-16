@@ -24,12 +24,11 @@ end
 
 %assert that the model is a well-structured COBRA model
 %check for these fields: metNames, rxns, S, lb, ub, c, mets
-for cf={'mets' 'metNames' 'rxns' 'S' 'lb' 'ub' 'c'}
+for cf={'mets' 'rxns' 'S' 'lb' 'ub' 'c'}
     if ~isfield(model,cf)
         error(['Invalid argument in writeCometsModel(' class(input)...
             ', ' class(filename) '): The input model requires the '...
-            'following fields: [mets, metNames, metFormulas, rxns, '...
-            'S, lb, ub, c]. Identified fields are ' char(fieldnames(model))]);
+            'following fields: [mets, rxns, S, lb, ub, c].']);% Identified fields are ' [fieldnames(model)]']);
     end
 end
         
@@ -56,9 +55,13 @@ end
 fileID = fopen(filename,'w');
 
 %Print the S matrix 
-fprintf(fileID,'SMATRIX  %d  %d\n',length(model.S(:,1)),length(model.S(1,:)));
-for i=1:length(S(:,1))
-    for j=1:length(S(1,:))
+[sx, sy] = size(model.S);
+if (sx + sy < 1)
+    error('There must be at least one row in the Stoichiometrix Matrix');
+end
+fprintf(fileID,'SMATRIX  %d  %d\n',sx,sy);
+for i=1:sx
+    for j=1:sy
         if S(i,j)~=0
             fprintf(fileID,'    %d   %d   %f\n',i,j,S(i,j));
         end
