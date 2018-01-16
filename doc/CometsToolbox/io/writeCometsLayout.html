@@ -455,84 +455,85 @@ This function is called by:
 0409     <span class="keyword">end</span>
 0410     fprintf(fileID,<span class="string">'//\n'</span>);
 0411 <span class="keyword">else</span> <span class="comment">%no initial pop is set</span>
-0412     fprintf(fileID,<span class="string">'initial_pop filled'</span>);
-0413     <span class="keyword">for</span> i=1:length(layout.models)
-0414         fprintf(fileID,<span class="string">' 1E-7'</span>);
-0415     <span class="keyword">end</span>
-0416     fprintf(fileID,<span class="string">'\n'</span>);
-0417     fprintf(fileID,<span class="string">'//\n'</span>);
-0418 <span class="keyword">end</span>
-0419 
-0420 <span class="comment">%if external reactions are set, print the relevent block</span>
-0421 <span class="keyword">if</span> ~isempty(layout.external_rxn_mets)
-0422     fprintf(fileID,<span class="string">'reactions\n'</span>);
-0423     fprintf(fileID,<span class="string">'\treactants\n'</span>);
-0424     mets = layout.external_rxn_mets;
-0425     rxns = layout.external_rxns;
-0426     metdims = size(mets);
-0427     nrows = metdims(1);
-0428     reactionnames = rxns.name;
-0429     <span class="keyword">for</span> i = 1:nrows
-0430         row = mets(i,:);
-0431         <span class="keyword">if</span> row.stoich &lt; 0 <span class="comment">%only write reactants here</span>
-0432             metidx = <a href="../../CometsToolbox/util/stridx.html" class="code" title="function [idx] = stridx(query, list, allowSubstr)">stridx</a>(row.met{1},layout.mets,false);
-0433             rxnidx = <a href="../../CometsToolbox/util/stridx.html" class="code" title="function [idx] = stridx(query, list, allowSubstr)">stridx</a>(row.rxn{1},reactionnames,false);
-0434             rxnrow = rxns(rxnidx,:);
-0435             <span class="keyword">if</span> isempty(rxnrow.enzyme{1}) <span class="comment">%no enzyme</span>
-0436                 sto = -row.stoich;
-0437                 k = rxnrow.k;
-0438                 fprintf(fileID,<span class="string">'\t\t%d %d %d %d\n'</span>, rxnidx, metidx, sto, k);
-0439             <span class="keyword">else</span> <span class="comment">%enzyme catalyzed</span>
-0440                 km = rxnrow.km;
-0441                 fprintf(fileID,<span class="string">'\t\t%d %d %d\n'</span>, rxnidx, metidx, km);
-0442             <span class="keyword">end</span>
-0443         <span class="keyword">end</span>
-0444     <span class="keyword">end</span>
-0445     fprintf(fileID,<span class="string">'\tenzymes\n'</span>);
-0446     rxndims = size(rxns);
-0447     nrows = rxndims(1);
-0448     <span class="keyword">for</span> i = 1:nrows
-0449         row = rxns(i,:);
-0450         <span class="keyword">if</span> ~isempty(row.enzyme{1})
-0451             enzidx = <a href="../../CometsToolbox/util/stridx.html" class="code" title="function [idx] = stridx(query, list, allowSubstr)">stridx</a>(row.enzyme{1},layout.mets,false);
-0452             fprintf(fileID,<span class="string">'\t\t%d %d %d\n'</span>, i, enzidx, row.k);
-0453         <span class="keyword">end</span>
-0454     <span class="keyword">end</span>
-0455     fprintf(fileID,<span class="string">'\tproducts\n'</span>);
-0456     nrows = metdims(1);
-0457     <span class="keyword">for</span> i = 1:nrows
-0458         row = mets(i,:);
-0459         rxnidx = <a href="../../CometsToolbox/util/stridx.html" class="code" title="function [idx] = stridx(query, list, allowSubstr)">stridx</a>(row.rxn{1},reactionnames,false);
-0460         <span class="keyword">if</span> row.stoich &gt; 0
-0461             metidx = <a href="../../CometsToolbox/util/stridx.html" class="code" title="function [idx] = stridx(query, list, allowSubstr)">stridx</a>(row.met{1},layout.mets,false);
-0462             sto = row.stoich;
-0463             fprintf(fileID,<span class="string">'\t\t%d %d %d\n'</span>, rxnidx, metidx, sto);
-0464         <span class="keyword">end</span>
-0465     <span class="keyword">end</span>
-0466     fprintf(fileID,<span class="string">'//\n'</span>);
-0467 <span class="keyword">end</span>
-0468 
-0469 fclose(fileID);
-0470 
-0471 <span class="comment">%write the model files</span>
-0472 <span class="keyword">if</span> writeModels
-0473     <span class="keyword">for</span> i = 1:length(layout.models)
-0474         m = layout.models{i};
-0475         <a href="writeCometsModel.html" class="code" title="function f = writeCometsModel( input, filename, cometsParams)">writeCometsModel</a>(m,<a href="#_sub2" class="code" title="subfunction mname = getModelFilePath(model)">getModelFilePath</a>(m),layout.params);
-0476     <span class="keyword">end</span>
-0477 <span class="keyword">end</span>
-0478 
-0479     <a name="_sub1" href="#_subfunctions" class="code">function mname = getModelFileName(model)</a>
-0480         name = <a href="../../CometsToolbox/util/getModelName.html" class="code" title="function res = getModelName( model )">getModelName</a>(model);
-0481         mname = [name <span class="string">'.txt'</span>]; <span class="comment">%relative path; file goes in current directory</span>
-0482     <span class="keyword">end</span>
-0483     <a name="_sub2" href="#_subfunctions" class="code">function mname = getModelFilePath(model)</a>
-0484         fname = <a href="#_sub1" class="code" title="subfunction mname = getModelFileName(model)">getModelFileName</a>(model);
-0485         mname = fullfile(filedir,fname); <span class="comment">%absolute path</span>
-0486     <span class="keyword">end</span>
-0487 
-0488 <span class="keyword">end</span>
-0489</pre></div>
-<hr><address>Generated on Tue 12-Dec-2017 12:31:16 by <strong><a href="http://www.artefact.tk/software/matlab/m2html/" target="_parent">m2html</a></strong> &copy; 2005</address>
+0412 <span class="comment">%     fprintf(fileID,'initial_pop filled');</span>
+0413 <span class="comment">%     for i=1:length(layout.models)</span>
+0414 <span class="comment">%         fprintf(fileID,' 1E-7');</span>
+0415 <span class="comment">%     end</span>
+0416     fprintf(fileID,<span class="string">'initial_pop'</span>);
+0417     fprintf(fileID,<span class="string">'\n'</span>);
+0418     fprintf(fileID,<span class="string">'//\n'</span>);
+0419 <span class="keyword">end</span>
+0420 
+0421 <span class="comment">%if external reactions are set, print the relevent block</span>
+0422 <span class="keyword">if</span> ~isempty(layout.external_rxn_mets)
+0423     fprintf(fileID,<span class="string">'reactions\n'</span>);
+0424     fprintf(fileID,<span class="string">'\treactants\n'</span>);
+0425     mets = layout.external_rxn_mets;
+0426     rxns = layout.external_rxns;
+0427     metdims = size(mets);
+0428     nrows = metdims(1);
+0429     reactionnames = rxns.name;
+0430     <span class="keyword">for</span> i = 1:nrows
+0431         row = mets(i,:);
+0432         <span class="keyword">if</span> row.stoich &lt; 0 <span class="comment">%only write reactants here</span>
+0433             metidx = <a href="../../CometsToolbox/util/stridx.html" class="code" title="function [idx] = stridx(query, list, allowSubstr)">stridx</a>(row.met{1},layout.mets,false);
+0434             rxnidx = <a href="../../CometsToolbox/util/stridx.html" class="code" title="function [idx] = stridx(query, list, allowSubstr)">stridx</a>(row.rxn{1},reactionnames,false);
+0435             rxnrow = rxns(rxnidx,:);
+0436             <span class="keyword">if</span> isempty(rxnrow.enzyme{1}) <span class="comment">%no enzyme</span>
+0437                 sto = -row.stoich;
+0438                 k = rxnrow.k;
+0439                 fprintf(fileID,<span class="string">'\t\t%d %d %d %d\n'</span>, rxnidx, metidx, sto, k);
+0440             <span class="keyword">else</span> <span class="comment">%enzyme catalyzed</span>
+0441                 km = rxnrow.km;
+0442                 fprintf(fileID,<span class="string">'\t\t%d %d %d\n'</span>, rxnidx, metidx, km);
+0443             <span class="keyword">end</span>
+0444         <span class="keyword">end</span>
+0445     <span class="keyword">end</span>
+0446     fprintf(fileID,<span class="string">'\tenzymes\n'</span>);
+0447     rxndims = size(rxns);
+0448     nrows = rxndims(1);
+0449     <span class="keyword">for</span> i = 1:nrows
+0450         row = rxns(i,:);
+0451         <span class="keyword">if</span> ~isempty(row.enzyme{1})
+0452             enzidx = <a href="../../CometsToolbox/util/stridx.html" class="code" title="function [idx] = stridx(query, list, allowSubstr)">stridx</a>(row.enzyme{1},layout.mets,false);
+0453             fprintf(fileID,<span class="string">'\t\t%d %d %d\n'</span>, i, enzidx, row.k);
+0454         <span class="keyword">end</span>
+0455     <span class="keyword">end</span>
+0456     fprintf(fileID,<span class="string">'\tproducts\n'</span>);
+0457     nrows = metdims(1);
+0458     <span class="keyword">for</span> i = 1:nrows
+0459         row = mets(i,:);
+0460         rxnidx = <a href="../../CometsToolbox/util/stridx.html" class="code" title="function [idx] = stridx(query, list, allowSubstr)">stridx</a>(row.rxn{1},reactionnames,false);
+0461         <span class="keyword">if</span> row.stoich &gt; 0
+0462             metidx = <a href="../../CometsToolbox/util/stridx.html" class="code" title="function [idx] = stridx(query, list, allowSubstr)">stridx</a>(row.met{1},layout.mets,false);
+0463             sto = row.stoich;
+0464             fprintf(fileID,<span class="string">'\t\t%d %d %d\n'</span>, rxnidx, metidx, sto);
+0465         <span class="keyword">end</span>
+0466     <span class="keyword">end</span>
+0467     fprintf(fileID,<span class="string">'//\n'</span>);
+0468 <span class="keyword">end</span>
+0469 
+0470 fclose(fileID);
+0471 
+0472 <span class="comment">%write the model files</span>
+0473 <span class="keyword">if</span> writeModels
+0474     <span class="keyword">for</span> i = 1:length(layout.models)
+0475         m = layout.models{i};
+0476         <a href="writeCometsModel.html" class="code" title="function f = writeCometsModel( input, filename, cometsParams)">writeCometsModel</a>(m,<a href="#_sub2" class="code" title="subfunction mname = getModelFilePath(model)">getModelFilePath</a>(m),layout.params);
+0477     <span class="keyword">end</span>
+0478 <span class="keyword">end</span>
+0479 
+0480     <a name="_sub1" href="#_subfunctions" class="code">function mname = getModelFileName(model)</a>
+0481         name = <a href="../../CometsToolbox/util/getModelName.html" class="code" title="function res = getModelName( model )">getModelName</a>(model);
+0482         mname = [name <span class="string">'.txt'</span>]; <span class="comment">%relative path; file goes in current directory</span>
+0483     <span class="keyword">end</span>
+0484     <a name="_sub2" href="#_subfunctions" class="code">function mname = getModelFilePath(model)</a>
+0485         fname = <a href="#_sub1" class="code" title="subfunction mname = getModelFileName(model)">getModelFileName</a>(model);
+0486         mname = fullfile(filedir,fname); <span class="comment">%absolute path</span>
+0487     <span class="keyword">end</span>
+0488 
+0489 <span class="keyword">end</span>
+0490</pre></div>
+<hr><address>Generated on Tue 16-Jan-2018 15:15:17 by <strong><a href="http://www.artefact.tk/software/matlab/m2html/" target="_parent">m2html</a></strong> &copy; 2005</address>
 </body>
 </html>

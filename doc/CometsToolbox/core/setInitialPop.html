@@ -52,7 +52,7 @@ This function calls:
 <li><a href="../../CometsToolbox/util/resizeLayout.html" class="code" title="function newLayout=resizeLayout(layout, newX, newY)">resizeLayout</a>	</li></ul>
 This function is called by:
 <ul style="list-style-image:url(../../matlabicon.gif)">
-<li><a href="../../CometsToolbox/test/testSerialDilution.html" class="code" title="">testSerialDilution</a>	A script to test out the serial dilution functions</li><li><a href="../../CometsToolbox/test/testSetInitialPop.html" class="code" title="">testSetInitialPop</a>	TESTSETINITIALPOP Confirm that the setInitialPop function works as</li></ul>
+<li><a href="../../CometsToolbox/projects/bioreactors/makeChemostat.html" class="code" title="function layout = makeChemostat(layout,varargin)">makeChemostat</a>	MAKECHEMOSTAT makeChemostat(layout, dilution{mL/h}, cellVolume)</li><li><a href="../../CometsToolbox/test/testSerialDilution.html" class="code" title="">testSerialDilution</a>	A script to test out the serial dilution functions</li><li><a href="../../CometsToolbox/test/testSetInitialPop.html" class="code" title="">testSetInitialPop</a>	TESTSETINITIALPOP Confirm that the setInitialPop function works as</li></ul>
 <!-- crossreference -->
 
 
@@ -93,7 +93,7 @@ This function is called by:
 0033 
 0034 nmodels = length(layout.models);
 0035 <span class="keyword">if</span> nmodels &lt; 1
-0036     error(<span class="string">'No models included in the given layout.'</span>);
+0036     warning(<span class="string">'No models included in the given layout. Initial population cannot be set.'</span>);
 0037 <span class="keyword">end</span>
 0038 
 0039 <span class="comment">%set size of colonies within populated grid cells</span>
@@ -163,6 +163,6 @@ This function is called by:
 0103 layout.initial_pop = newpop;
 0104 
 0105 <span class="keyword">end</span></pre></div>
-<hr><address>Generated on Tue 12-Dec-2017 12:31:16 by <strong><a href="http://www.artefact.tk/software/matlab/m2html/" target="_parent">m2html</a></strong> &copy; 2005</address>
+<hr><address>Generated on Tue 16-Jan-2018 15:15:17 by <strong><a href="http://www.artefact.tk/software/matlab/m2html/" target="_parent">m2html</a></strong> &copy; 2005</address>
 </body>
 </html>
