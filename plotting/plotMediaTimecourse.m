@@ -1,7 +1,10 @@
-function p = plotMediaTimecourse(table,metnames)
-%PLOTMEDIATIMECOURSE(table,{metnames}) create a line plot of the total 
+function p = plotMediaTimecourse(table,metnames,logscale)
+%PLOTMEDIATIMECOURSE(table,{metnames},[logscale]) create a line plot of the total 
 %amount of the specified metabolites. 
-%The first argument should be a data table loaded through
+%The first argument should be a data table loaded through parseMediaLog.m
+if nargin < 3
+    logscale = false;
+end
 
 if ischar(metnames) %if given one metabolite to plot
     metnames = {metnames};
@@ -22,8 +25,12 @@ for i = 1:length(metnames)
     y(:,i) = amt;
 end
 
+if logscale
+    y = log10(y);
+end
+
 p = plot(x,y);
-legend(metnames,'location','best');
+legend(metnames,'location','best','Interpreter', 'none');
 
 end
 
