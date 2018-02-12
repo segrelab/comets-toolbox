@@ -1,16 +1,16 @@
 classdef CometsLayout
-    %CometsLayout Defines the COMETS world and contains COBRA models.
-    %
-    %     Constructor: CometsLayout()
-    %
-    %     Standard workflow should be as follows: 1) Create an empty layout
-    %         world = CometsLayout()
-    %     2) Set global and model-level defaults in the contained CometsParams
-    %         world.params.DefaultVmax = 10
-    %     3) Add COBRA models
-    %
-    %     See also CometsParams
-    %
+%CometsLayout Defines the COMETS world and contains COBRA models.
+%
+%     Constructor: CometsLayout()
+%
+%     Standard workflow should be as follows: 1) Create an empty layout
+%         world = CometsLayout()
+%     2) Set global and model-level defaults in the contained CometsParams
+%         world.params.DefaultVmax = 10
+%     3) Add COBRA models
+%
+%     See also CometsParams
+%
     properties
         models = {};
         xdim = 1;
@@ -164,14 +164,24 @@ classdef CometsLayout
         end
         
         function self = setInitialMedia(self,metname,value)
-            %set the initial amount of the metabolite given by name
-            idx = stridx(metname, self.mets, false);
-            if isempty(idx) || ~idx
-                warning(['Could not find ' metname ' in the media list. Adding it as a new media component.']);
-                self = addMets(self,{metname});
-                idx = stridx(metname,self.mets,false);
+            %split up cell array values of metname
+            if iscell(metname)
+                len = length(metname);
+                v = repmat(value,1,len); %in case a single value was given
+                for i = 1:len
+                    mn = metname{i};
+                    self = setInitialMedia(self,mn,v(i));
+                end
+            else %metname is char
+                %set the initial amount of the metabolite given by name
+                idx = stridx(metname, self.mets, false);
+                if isempty(idx) || ~idx
+                    warning(['Could not find ' metname ' in the media list. Adding it as a new media component.']);
+                    self = addMets(self,{metname});
+                    idx = stridx(metname,self.mets,false);
+                end
+                self.media_amt(idx) = value;
             end
-            self.media_amt(idx) = value;
         end
         
         function self = setMedia(self, metname, value)

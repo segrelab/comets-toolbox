@@ -44,18 +44,18 @@ This function is called by:
 
 <h2><a name="_source"></a>SOURCE CODE <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
 <div class="fragment"><pre>0001 classdef <a href="CometsLayout.html" class="code" title="">CometsLayout</a>
-0002     <span class="comment">%CometsLayout Defines the COMETS world and contains COBRA models.</span>
-0003     <span class="comment">%</span>
-0004     <span class="comment">%     Constructor: CometsLayout()</span>
-0005     <span class="comment">%</span>
-0006     <span class="comment">%     Standard workflow should be as follows: 1) Create an empty layout</span>
-0007     <span class="comment">%         world = CometsLayout()</span>
-0008     <span class="comment">%     2) Set global and model-level defaults in the contained CometsParams</span>
-0009     <span class="comment">%         world.params.DefaultVmax = 10</span>
-0010     <span class="comment">%     3) Add COBRA models</span>
-0011     <span class="comment">%</span>
-0012     <span class="comment">%     See also CometsParams</span>
-0013     <span class="comment">%</span>
+0002 <span class="comment">%CometsLayout Defines the COMETS world and contains COBRA models.</span>
+0003 <span class="comment">%</span>
+0004 <span class="comment">%     Constructor: CometsLayout()</span>
+0005 <span class="comment">%</span>
+0006 <span class="comment">%     Standard workflow should be as follows: 1) Create an empty layout</span>
+0007 <span class="comment">%         world = CometsLayout()</span>
+0008 <span class="comment">%     2) Set global and model-level defaults in the contained CometsParams</span>
+0009 <span class="comment">%         world.params.DefaultVmax = 10</span>
+0010 <span class="comment">%     3) Add COBRA models</span>
+0011 <span class="comment">%</span>
+0012 <span class="comment">%     See also CometsParams</span>
+0013 <span class="comment">%</span>
 0014     properties
 0015         models = {};
 0016         xdim = 1;
@@ -209,305 +209,315 @@ This function is called by:
 0164         <span class="keyword">end</span>
 0165         
 0166         <a name="_sub9" href="#_subfunctions" class="code">function self = setInitialMedia(self,metname,value)</a>
-0167             <span class="comment">%set the initial amount of the metabolite given by name</span>
-0168             idx = <a href="../../CometsToolbox/util/stridx.html" class="code" title="function [idx] = stridx(query, list, allowSubstr)">stridx</a>(metname, self.mets, false);
-0169             <span class="keyword">if</span> isempty(idx) || ~idx
-0170                 warning([<span class="string">'Could not find '</span> metname <span class="string">' in the media list. Adding it as a new media component.'</span>]);
-0171                 self = <a href="#_sub3" class="code" title="subfunction self = addMets(self,newnames)">addMets</a>(self,{metname});
-0172                 idx = <a href="../../CometsToolbox/util/stridx.html" class="code" title="function [idx] = stridx(query, list, allowSubstr)">stridx</a>(metname,self.mets,false);
-0173             <span class="keyword">end</span>
-0174             self.media_amt(idx) = value;
-0175         <span class="keyword">end</span>
-0176         
-0177         <a name="_sub10" href="#_subfunctions" class="code">function self = setMedia(self, metname, value)</a>
-0178             <span class="comment">%renamed setInitialMedia for simplicity</span>
-0179             self = <a href="#_sub10" class="code" title="subfunction self = setInitialMedia(self,metname,value)">setInitialMedia</a>(self, metname, value);
-0180         <span class="keyword">end</span>
-0181         
-0182         
-0183         <a name="_sub11" href="#_subfunctions" class="code">function self = sortMetabolites(self)</a>
-0184             <span class="comment">%sort the list of metabolites alphabetically, and rearrange other</span>
-0185             <span class="comment">%lists accordingly</span>
-0186             <span class="comment">%</span>
-0187             <span class="comment">%lists to rearrange: mets, media_amt, diffusion_constants, global_media_refresh</span>
-0188             <span class="comment">%media_refresh, global_static_media, static_media, initial_media</span>
-0189             nmets = length(self.mets);
-0190             x = self.xdim;
-0191             y = self.ydim;
-0192             [self.mets, map] = sort(self.mets);
-0193             <span class="keyword">if</span> any(self.media_amt)
-0194                 self.media_amt = self.media_amt(map);
-0195             <span class="keyword">end</span>
-0196             <span class="keyword">if</span> any(self.diffusion_constants)
-0197                 self.diffusion_constants = self.diffusion_constants(map,1:2);
-0198             <span class="keyword">end</span>
-0199             <span class="keyword">if</span> any(self.global_media_refresh)
-0200                 self.global_media_refresh = self.global_media_refresh(map);
-0201             <span class="keyword">end</span>
-0202             <span class="keyword">if</span> any(self.media_refresh(:))
-0203                 s = size(self.media_refresh);
-0204                 <span class="keyword">if</span> s(1) &lt; nmets
-0205                     self.media_refresh(nmets,x,y) = 0;
-0206                 <span class="keyword">end</span>
-0207                 self.media_refresh = self.media_refresh(map,:,:);
+0167             <span class="comment">%split up cell array values of metname</span>
+0168             <span class="keyword">if</span> iscell(metname)
+0169                 len = length(metname);
+0170                 v = repmat(value,1,len); <span class="comment">%in case a single value was given</span>
+0171                 <span class="keyword">for</span> i = 1:len
+0172                     mn = metname{i};
+0173                     self = <a href="#_sub10" class="code" title="subfunction self = setInitialMedia(self,metname,value)">setInitialMedia</a>(self,mn,v(i));
+0174                 <span class="keyword">end</span>
+0175             <span class="keyword">else</span> <span class="comment">%metname is char</span>
+0176                 <span class="comment">%set the initial amount of the metabolite given by name</span>
+0177                 idx = <a href="../../CometsToolbox/util/stridx.html" class="code" title="function [idx] = stridx(query, list, allowSubstr)">stridx</a>(metname, self.mets, false);
+0178                 <span class="keyword">if</span> isempty(idx) || ~idx
+0179                     warning([<span class="string">'Could not find '</span> metname <span class="string">' in the media list. Adding it as a new media component.'</span>]);
+0180                     self = <a href="#_sub3" class="code" title="subfunction self = addMets(self,newnames)">addMets</a>(self,{metname});
+0181                     idx = <a href="../../CometsToolbox/util/stridx.html" class="code" title="function [idx] = stridx(query, list, allowSubstr)">stridx</a>(metname,self.mets,false);
+0182                 <span class="keyword">end</span>
+0183                 self.media_amt(idx) = value;
+0184             <span class="keyword">end</span>
+0185         <span class="keyword">end</span>
+0186         
+0187         <a name="_sub10" href="#_subfunctions" class="code">function self = setMedia(self, metname, value)</a>
+0188             <span class="comment">%renamed setInitialMedia for simplicity</span>
+0189             self = <a href="#_sub10" class="code" title="subfunction self = setInitialMedia(self,metname,value)">setInitialMedia</a>(self, metname, value);
+0190         <span class="keyword">end</span>
+0191         
+0192         
+0193         <a name="_sub11" href="#_subfunctions" class="code">function self = sortMetabolites(self)</a>
+0194             <span class="comment">%sort the list of metabolites alphabetically, and rearrange other</span>
+0195             <span class="comment">%lists accordingly</span>
+0196             <span class="comment">%</span>
+0197             <span class="comment">%lists to rearrange: mets, media_amt, diffusion_constants, global_media_refresh</span>
+0198             <span class="comment">%media_refresh, global_static_media, static_media, initial_media</span>
+0199             nmets = length(self.mets);
+0200             x = self.xdim;
+0201             y = self.ydim;
+0202             [self.mets, map] = sort(self.mets);
+0203             <span class="keyword">if</span> any(self.media_amt)
+0204                 self.media_amt = self.media_amt(map);
+0205             <span class="keyword">end</span>
+0206             <span class="keyword">if</span> any(self.diffusion_constants)
+0207                 self.diffusion_constants = self.diffusion_constants(map,1:2);
 0208             <span class="keyword">end</span>
-0209             <span class="keyword">if</span> any(self.global_static_media(:))
-0210                 self.global_static_media = self.global_static_media(map,:);
+0209             <span class="keyword">if</span> any(self.global_media_refresh)
+0210                 self.global_media_refresh = self.global_media_refresh(map);
 0211             <span class="keyword">end</span>
-0212             <span class="keyword">if</span> any(self.static_media(:))
-0213                 s = size(self.static_media);
+0212             <span class="keyword">if</span> any(self.media_refresh(:))
+0213                 s = size(self.media_refresh);
 0214                 <span class="keyword">if</span> s(1) &lt; nmets
-0215                     self.static_media(nmets,x,y,2) = 0;
+0215                     self.media_refresh(nmets,x,y) = 0;
 0216                 <span class="keyword">end</span>
-0217                 self.static_media = self.static_media(map,:,:,:);
+0217                 self.media_refresh = self.media_refresh(map,:,:);
 0218             <span class="keyword">end</span>
-0219             <span class="keyword">if</span> any(self.initial_media(:))
-0220                 s = size(self.initial_media);
-0221                 <span class="keyword">if</span> s(1) &lt; nmets
-0222                     self.initial_media(nmets,x,y,2) = 0;
-0223                 <span class="keyword">end</span>
-0224                 self.initial_media = self.initial_media(map,:,:,:);
-0225             <span class="keyword">end</span>
-0226         <span class="keyword">end</span>
-0227         
-0228         <a name="_sub12" href="#_subfunctions" class="code">function self = setDiffusion(varargin)</a>
-0229             <span class="comment">%setDiffusion(self, metnames, [values])</span>
-0230             <span class="comment">%set diffusion constants for the given metabolite or list of</span>
-0231             <span class="comment">%metabolites</span>
-0232             <span class="comment">%'metnames' can be a single metabolite name, a cell array of</span>
-0233             <span class="comment">%metabolite names, a single metabolite index, or an array of</span>
-0234             <span class="comment">%metabolite indexes</span>
-0235             <span class="comment">%'values' can be a single value, an array of values, false, or</span>
-0236             <span class="comment">%not given. If false or not given, the metabolites will have their</span>
-0237             <span class="comment">%&quot;set&quot; flag (the first dimension in diffusion_constants) turned</span>
-0238             <span class="comment">%off. If a single value, all input metabolites will get that value</span>
-0239             <span class="comment">%assigned. If an array, there must be one value per metabolite</span>
-0240             self = varargin{1};
-0241             
-0242             midx = [];
-0243             <span class="keyword">switch</span> class(varargin{2})
-0244                 <span class="keyword">case</span> <span class="string">'char'</span>
-0245                     midx = <a href="#_sub5" class="code" title="subfunction idx=metIdx(self,name)">metIdx</a>(self,varargin{2});
-0246                 <span class="keyword">case</span> <span class="string">'cell'</span>
-0247                     c = varargin{2};
-0248                     <span class="keyword">for</span> i=1:length(c)
-0249                         midx = [midx <a href="#_sub5" class="code" title="subfunction idx=metIdx(self,name)">metIdx</a>(self,c{i})];
-0250                     <span class="keyword">end</span>
-0251                 <span class="keyword">case</span> <span class="string">'double'</span> <span class="comment">%this covers single values and arrays of doubles</span>
-0252                     midx = varargin{2};
-0253                 <span class="keyword">otherwise</span>
-0254                     error(<span class="string">'Metabolites in setDiffusion(layout,mets,values) must be ID''d as a char, a cell array of chars, a single index, or an array of indices'</span>);
-0255             <span class="keyword">end</span>
-0256             
-0257             hasValue = false;
-0258             <span class="keyword">if</span> nargin &gt; 2 &amp;&amp; (varargin{3}(1) || isnumeric(varargin{3}))
-0259                 hasValue = true;
-0260                 vals = varargin{3};
-0261                 <span class="keyword">if</span> length(vals) == 1
-0262                     vals = repmat(vals,length(midx),1);
-0263                 <span class="keyword">end</span>
-0264                 <span class="keyword">if</span> length(vals) ~= length(midx)
-0265                     error(<span class="string">'The third argument in setDiffusion(layout,mets,values) must be empty, false, a single value, or of the same length as the list of mets'</span>);
-0266                 <span class="keyword">end</span>
-0267             <span class="keyword">end</span>
-0268             
-0269             <span class="keyword">for</span> i = 1:length(midx)
-0270                 m = midx(i);
-0271                 <span class="keyword">if</span> hasValue
-0272                     self.diffusion_constants(m,1) = 1;
-0273                     self.diffusion_constants(m,2) = vals(i);
-0274                 <span class="keyword">else</span>
-0275                     self.diffusion_constants(m,1) = 0;
+0219             <span class="keyword">if</span> any(self.global_static_media(:))
+0220                 self.global_static_media = self.global_static_media(map,:);
+0221             <span class="keyword">end</span>
+0222             <span class="keyword">if</span> any(self.static_media(:))
+0223                 s = size(self.static_media);
+0224                 <span class="keyword">if</span> s(1) &lt; nmets
+0225                     self.static_media(nmets,x,y,2) = 0;
+0226                 <span class="keyword">end</span>
+0227                 self.static_media = self.static_media(map,:,:,:);
+0228             <span class="keyword">end</span>
+0229             <span class="keyword">if</span> any(self.initial_media(:))
+0230                 s = size(self.initial_media);
+0231                 <span class="keyword">if</span> s(1) &lt; nmets
+0232                     self.initial_media(nmets,x,y,2) = 0;
+0233                 <span class="keyword">end</span>
+0234                 self.initial_media = self.initial_media(map,:,:,:);
+0235             <span class="keyword">end</span>
+0236         <span class="keyword">end</span>
+0237         
+0238         <a name="_sub12" href="#_subfunctions" class="code">function self = setDiffusion(varargin)</a>
+0239             <span class="comment">%setDiffusion(self, metnames, [values])</span>
+0240             <span class="comment">%set diffusion constants for the given metabolite or list of</span>
+0241             <span class="comment">%metabolites</span>
+0242             <span class="comment">%'metnames' can be a single metabolite name, a cell array of</span>
+0243             <span class="comment">%metabolite names, a single metabolite index, or an array of</span>
+0244             <span class="comment">%metabolite indexes</span>
+0245             <span class="comment">%'values' can be a single value, an array of values, false, or</span>
+0246             <span class="comment">%not given. If false or not given, the metabolites will have their</span>
+0247             <span class="comment">%&quot;set&quot; flag (the first dimension in diffusion_constants) turned</span>
+0248             <span class="comment">%off. If a single value, all input metabolites will get that value</span>
+0249             <span class="comment">%assigned. If an array, there must be one value per metabolite</span>
+0250             self = varargin{1};
+0251             
+0252             midx = [];
+0253             <span class="keyword">switch</span> class(varargin{2})
+0254                 <span class="keyword">case</span> <span class="string">'char'</span>
+0255                     midx = <a href="#_sub5" class="code" title="subfunction idx=metIdx(self,name)">metIdx</a>(self,varargin{2});
+0256                 <span class="keyword">case</span> <span class="string">'cell'</span>
+0257                     c = varargin{2};
+0258                     <span class="keyword">for</span> i=1:length(c)
+0259                         midx = [midx <a href="#_sub5" class="code" title="subfunction idx=metIdx(self,name)">metIdx</a>(self,c{i})];
+0260                     <span class="keyword">end</span>
+0261                 <span class="keyword">case</span> <span class="string">'double'</span> <span class="comment">%this covers single values and arrays of doubles</span>
+0262                     midx = varargin{2};
+0263                 <span class="keyword">otherwise</span>
+0264                     error(<span class="string">'Metabolites in setDiffusion(layout,mets,values) must be ID''d as a char, a cell array of chars, a single index, or an array of indices'</span>);
+0265             <span class="keyword">end</span>
+0266             
+0267             hasValue = false;
+0268             <span class="keyword">if</span> nargin &gt; 2 &amp;&amp; (varargin{3}(1) || isnumeric(varargin{3}))
+0269                 hasValue = true;
+0270                 vals = varargin{3};
+0271                 <span class="keyword">if</span> length(vals) == 1
+0272                     vals = repmat(vals,length(midx),1);
+0273                 <span class="keyword">end</span>
+0274                 <span class="keyword">if</span> length(vals) ~= length(midx)
+0275                     error(<span class="string">'The third argument in setDiffusion(layout,mets,values) must be empty, false, a single value, or of the same length as the list of mets'</span>);
 0276                 <span class="keyword">end</span>
 0277             <span class="keyword">end</span>
-0278         <span class="keyword">end</span>
-0279         
-0280         <a name="_sub13" href="#_subfunctions" class="code">function self = setStaticMedia(varargin)</a>
-0281             <span class="comment">%setStaticMedia(layout, x, y, metnames, values)</span>
-0282             <span class="comment">%</span>
-0283             <span class="comment">%Set if the given metabolites in media are static</span>
-0284             <span class="comment">%</span>
-0285             <span class="comment">%'x' and 'y' can be single integers or arrays specifying</span>
-0286             <span class="comment">%coordinates. If exactly one is an array, the single value will</span>
-0287             <span class="comment">%be paired with all members of the array. If both are arrays,</span>
-0288             <span class="comment">%the shorter array will be repeated to match the longer.</span>
-0289             <span class="comment">%</span>
-0290             <span class="comment">%'metnames' can be a single metabolite name, a cell array of</span>
-0291             <span class="comment">%metabolite names, a single metabolite index, or an array of</span>
-0292             <span class="comment">%metabolite indexes</span>
-0293             <span class="comment">%</span>
-0294             <span class="comment">%'values' can be a single value, an array of values, false, or</span>
-0295             <span class="comment">%not given. If false or not given, the metabolites will have their</span>
-0296             <span class="comment">%&quot;set&quot; flag (the first dimension in diffusion_constants) turned</span>
-0297             <span class="comment">%off. If a single value, all input metabolites will get that value</span>
-0298             <span class="comment">%assigned. If an array, there must be one value per metabolite</span>
-0299             self = varargin{1};
-0300             x = varargin{2};
-0301             y = varargin{3};
-0302             <span class="comment">%check coordinate vector dimensions</span>
-0303             <span class="comment">%first, linearize them and put them in the same orientation</span>
-0304             x = x(1:end);
-0305             y = y(1:end);
-0306             [temp,xlen] = size(x);
-0307             [temp,ylen] = size(y);
-0308             <span class="comment">%if xlen == ylen, do nothing. Otherwise repeat the short one to</span>
-0309             <span class="comment">%match the long one</span>
-0310             <span class="keyword">if</span> (xlen &lt; ylen)
-0311                 x = repmat(x,1,ylen);
-0312                 x = x(1:ylen);
-0313             <span class="keyword">end</span>
-0314             <span class="keyword">if</span> (xlen &gt; ylen)
-0315                 y = repmat(y,1,xlen);
-0316                 y = y(1:xlen);
-0317             <span class="keyword">end</span>
-0318             
-0319             midx = [];
-0320             <span class="keyword">switch</span> class(varargin{4})
-0321                 <span class="keyword">case</span> <span class="string">'char'</span>
-0322                     midx = <a href="#_sub5" class="code" title="subfunction idx=metIdx(self,name)">metIdx</a>(self,varargin{4});
-0323                 <span class="keyword">case</span> <span class="string">'cell'</span>
-0324                     c = varargin{4};
-0325                     <span class="keyword">for</span> i=1:length(c)
-0326                         idx = <a href="#_sub5" class="code" title="subfunction idx=metIdx(self,name)">metIdx</a>(self,c{i});
-0327                         <span class="keyword">if</span> isempty(idx)
-0328                             self = self.addMets(c(i));
-0329                             idx = <a href="#_sub5" class="code" title="subfunction idx=metIdx(self,name)">metIdx</a>(self,c{i});
-0330                         <span class="keyword">end</span>
-0331                         midx = [midx idx];
-0332                     <span class="keyword">end</span>
-0333                 <span class="keyword">case</span> <span class="string">'double'</span> <span class="comment">%this covers single values and arrays of doubles</span>
-0334                     midx = varargin{4};
-0335                 <span class="keyword">otherwise</span>
-0336                     error(<span class="string">'Metabolites in setStaticMedia must be ID''d as a char, a cell array of chars, a single index, or an array of indices'</span>);
-0337             <span class="keyword">end</span>
-0338             
-0339             hasValue = false;
-0340             <span class="keyword">if</span> nargin &gt; 4 &amp;&amp; (varargin{5}(1) || isnumeric(varargin{5}))
-0341                 hasValue = true;
-0342                 vals = varargin{5};
-0343                 <span class="keyword">if</span> length(vals) == 1
-0344                     vals = repmat(vals,length(midx),1);
-0345                 <span class="keyword">end</span>
-0346                 <span class="keyword">if</span> length(vals) ~= length(midx)
-0347                     error(<span class="string">'The fifth argument in setStaticMedia must be empty, false, a single value, or of the same length as the list of mets'</span>);
-0348                 <span class="keyword">end</span>
-0349             <span class="keyword">end</span>
-0350             
-0351             <span class="comment">%Don't just apply changes to self.static_media(midx,x,y,:)!</span>
-0352             <span class="comment">%This will change values in every combination of values in x</span>
-0353             <span class="comment">%and y. Instead, iterate over x and y so it's properly done</span>
-0354             <span class="comment">%pairwise.</span>
-0355             <span class="keyword">for</span> i = 1:length(x)
-0356                 xi = x(i);
-0357                 yi = y(i);
-0358                 <span class="keyword">if</span> hasValue
-0359                     self.static_media(midx,xi,yi,1) = 1;
-0360                     self.static_media(midx,xi,yi,2) = vals;
-0361                 <span class="keyword">else</span>
-0362                     self.static_media(midx,xi,yi,1) = 0;
-0363                 <span class="keyword">end</span>
-0364             <span class="keyword">end</span>
-0365         <span class="keyword">end</span>
-0366         
-0367         <span class="comment">%applyStaticMediaMask(layout,mask,metnames,values)</span>
-0368         <span class="comment">%</span>
-0369         <a name="_sub14" href="#_subfunctions" class="code">function self = applyStaticMediaMask(self, mask, metnames, values)</a>
-0370             <span class="comment">%Set if the given metabolites in the media are static. Instead of</span>
-0371             <span class="comment">%specifying x-y coordinates, 'mask' is a logical matrix of the</span>
-0372             <span class="comment">%same dimensions as the layout. The static media will be set in</span>
-0373             <span class="comment">%every position where mask(x,y) == true</span>
-0374             <span class="comment">%</span>
-0375             <span class="comment">%'metnames' can be a single metabolite name, a cell array of</span>
-0376             <span class="comment">%metabolite names, a single metabolite index, or an array of</span>
-0377             <span class="comment">%metabolite indexes</span>
-0378             <span class="comment">%</span>
-0379             <span class="comment">%'values' can be a single value, an array of values, false, or</span>
-0380             <span class="comment">%not given. If false or not given, the metabolites will have their</span>
-0381             <span class="comment">%&quot;set&quot; flag (the first dimension in diffusion_constants) turned</span>
-0382             <span class="comment">%off. If a single value, all input metabolites will get that value</span>
-0383             <span class="comment">%assigned. If an array, there must be one value per metabolite</span>
-0384             
-0385             <span class="comment">%simply convert the mask to coordinates then pass everything to</span>
-0386             <span class="comment">%setStaticMedia()</span>
-0387             [x,y] = find(mask);
-0388             self = <a href="#_sub14" class="code" title="subfunction self = setStaticMedia(varargin)">setStaticMedia</a>(self,x,y,metnames,values);
-0389         <span class="keyword">end</span>
-0390         
-0391         <span class="comment">%setMediaRefresh(layout, x, y, metnames, values)</span>
-0392         <a name="_sub15" href="#_subfunctions" class="code">function self = setMediaRefresh(self, x, y, mets, values)</a>
-0393             <span class="comment">%Set the amount to adjust media in the specified cells at each</span>
-0394             <span class="comment">%timestep. The concentration in the cell will have the given value</span>
-0395             <span class="comment">%added, so units of the values should be concentration.</span>
-0396             <span class="comment">%</span>
-0397             <span class="comment">%'x' and 'y' can be single integers or arrays specifying</span>
-0398             <span class="comment">%coordinates. If exactly one is an array, the single value will</span>
-0399             <span class="comment">%be paired with all members of the array. If both are arrays,</span>
-0400             <span class="comment">%the shorter array will be repeated to match the longer.</span>
-0401             <span class="comment">%</span>
-0402             <span class="comment">%'metnames' can be a single metabolite name, a cell array of</span>
-0403             <span class="comment">%metabolite names, a single metabolite index, or an array of</span>
-0404             <span class="comment">%metabolite indexes</span>
-0405             <span class="comment">%</span>
-0406             <span class="comment">%'values' can be a single value, or an array of values If a</span>
-0407             <span class="comment">%single value, all input metabolites will get that value</span>
-0408             <span class="comment">%assigned. If an array, there must be one value per metabolite</span>
-0409             
-0410             <span class="comment">%check coordinate vector dimensions</span>
-0411             <span class="comment">%first, linearize them and put them in the same orientation</span>
-0412             x = x(1:end);
-0413             y = y(1:end);
-0414             [temp,xlen] = size(x);
-0415             [temp,ylen] = size(y);
-0416             <span class="comment">%if xlen == ylen, do nothing. Otherwise repeat the short one to</span>
-0417             <span class="comment">%match the long one</span>
-0418             <span class="keyword">if</span> (xlen &lt; ylen)
-0419                 x = repmat(x,1,ylen);
-0420                 x = x(1:ylen);
-0421             <span class="keyword">end</span>
-0422             <span class="keyword">if</span> (xlen &gt; ylen)
-0423                 y = repmat(y,1,xlen);
-0424                 y = y(1:xlen);
-0425             <span class="keyword">end</span>
-0426             
-0427             midx = [];
-0428             <span class="keyword">switch</span> class(mets)
-0429                 <span class="keyword">case</span> <span class="string">'char'</span>
-0430                     midx = <a href="#_sub5" class="code" title="subfunction idx=metIdx(self,name)">metIdx</a>(self,mets);
-0431                 <span class="keyword">case</span> <span class="string">'cell'</span>
-0432                     <span class="keyword">for</span> i=1:length(mets)
-0433                         midx = [midx <a href="#_sub5" class="code" title="subfunction idx=metIdx(self,name)">metIdx</a>(self,mets{i})];
-0434                     <span class="keyword">end</span>
-0435                 <span class="keyword">case</span> <span class="string">'double'</span> <span class="comment">%this covers single values and arrays of doubles</span>
-0436                     midx = mets;
-0437                 <span class="keyword">otherwise</span>
-0438                     error(<span class="string">'Metabolites in setMediaRefresh must be ID''d as a char, a cell array of chars, a single index, or an array of indices'</span>);
-0439             <span class="keyword">end</span>
-0440             
-0441             vals = values;
-0442             <span class="keyword">if</span> length(vals) == 1
-0443                 vals = repmat(vals,length(midx),1);
-0444             <span class="keyword">end</span>
-0445             <span class="keyword">if</span> length(vals) ~= length(midx)
-0446                 error(<span class="string">'The fifth argument in setMediaRefresh must be a single value or of the same length as the list of mets'</span>);
-0447             <span class="keyword">end</span>
-0448             
-0449             <span class="comment">%Don't just apply changes to self.media_refresh(midx,x,y)!</span>
-0450             <span class="comment">%This will change values in every combination of values in x</span>
-0451             <span class="comment">%and y. Instead, iterate over x and y so it's properly done</span>
-0452             <span class="comment">%pairwise.</span>
-0453             <span class="keyword">for</span> i = 1:length(x)
-0454                 xi = x(i);
-0455                 yi = y(i);
-0456                 vi = vals(i);
-0457                 self.media_refresh(midx,xi,yi) = vi;
-0458             <span class="keyword">end</span>
-0459         <span class="keyword">end</span>
-0460         
-0461         
-0462     <span class="keyword">end</span>
-0463     
-0464 <span class="keyword">end</span>
-0465</pre></div>
-<hr><address>Generated on Tue 16-Jan-2018 15:15:17 by <strong><a href="http://www.artefact.tk/software/matlab/m2html/" target="_parent">m2html</a></strong> &copy; 2005</address>
+0278             
+0279             <span class="keyword">for</span> i = 1:length(midx)
+0280                 m = midx(i);
+0281                 <span class="keyword">if</span> hasValue
+0282                     self.diffusion_constants(m,1) = 1;
+0283                     self.diffusion_constants(m,2) = vals(i);
+0284                 <span class="keyword">else</span>
+0285                     self.diffusion_constants(m,1) = 0;
+0286                 <span class="keyword">end</span>
+0287             <span class="keyword">end</span>
+0288         <span class="keyword">end</span>
+0289         
+0290         <a name="_sub13" href="#_subfunctions" class="code">function self = setStaticMedia(varargin)</a>
+0291             <span class="comment">%setStaticMedia(layout, x, y, metnames, values)</span>
+0292             <span class="comment">%</span>
+0293             <span class="comment">%Set if the given metabolites in media are static</span>
+0294             <span class="comment">%</span>
+0295             <span class="comment">%'x' and 'y' can be single integers or arrays specifying</span>
+0296             <span class="comment">%coordinates. If exactly one is an array, the single value will</span>
+0297             <span class="comment">%be paired with all members of the array. If both are arrays,</span>
+0298             <span class="comment">%the shorter array will be repeated to match the longer.</span>
+0299             <span class="comment">%</span>
+0300             <span class="comment">%'metnames' can be a single metabolite name, a cell array of</span>
+0301             <span class="comment">%metabolite names, a single metabolite index, or an array of</span>
+0302             <span class="comment">%metabolite indexes</span>
+0303             <span class="comment">%</span>
+0304             <span class="comment">%'values' can be a single value, an array of values, false, or</span>
+0305             <span class="comment">%not given. If false or not given, the metabolites will have their</span>
+0306             <span class="comment">%&quot;set&quot; flag (the first dimension in diffusion_constants) turned</span>
+0307             <span class="comment">%off. If a single value, all input metabolites will get that value</span>
+0308             <span class="comment">%assigned. If an array, there must be one value per metabolite</span>
+0309             self = varargin{1};
+0310             x = varargin{2};
+0311             y = varargin{3};
+0312             <span class="comment">%check coordinate vector dimensions</span>
+0313             <span class="comment">%first, linearize them and put them in the same orientation</span>
+0314             x = x(1:end);
+0315             y = y(1:end);
+0316             [temp,xlen] = size(x);
+0317             [temp,ylen] = size(y);
+0318             <span class="comment">%if xlen == ylen, do nothing. Otherwise repeat the short one to</span>
+0319             <span class="comment">%match the long one</span>
+0320             <span class="keyword">if</span> (xlen &lt; ylen)
+0321                 x = repmat(x,1,ylen);
+0322                 x = x(1:ylen);
+0323             <span class="keyword">end</span>
+0324             <span class="keyword">if</span> (xlen &gt; ylen)
+0325                 y = repmat(y,1,xlen);
+0326                 y = y(1:xlen);
+0327             <span class="keyword">end</span>
+0328             
+0329             midx = [];
+0330             <span class="keyword">switch</span> class(varargin{4})
+0331                 <span class="keyword">case</span> <span class="string">'char'</span>
+0332                     midx = <a href="#_sub5" class="code" title="subfunction idx=metIdx(self,name)">metIdx</a>(self,varargin{4});
+0333                 <span class="keyword">case</span> <span class="string">'cell'</span>
+0334                     c = varargin{4};
+0335                     <span class="keyword">for</span> i=1:length(c)
+0336                         idx = <a href="#_sub5" class="code" title="subfunction idx=metIdx(self,name)">metIdx</a>(self,c{i});
+0337                         <span class="keyword">if</span> isempty(idx)
+0338                             self = self.addMets(c(i));
+0339                             idx = <a href="#_sub5" class="code" title="subfunction idx=metIdx(self,name)">metIdx</a>(self,c{i});
+0340                         <span class="keyword">end</span>
+0341                         midx = [midx idx];
+0342                     <span class="keyword">end</span>
+0343                 <span class="keyword">case</span> <span class="string">'double'</span> <span class="comment">%this covers single values and arrays of doubles</span>
+0344                     midx = varargin{4};
+0345                 <span class="keyword">otherwise</span>
+0346                     error(<span class="string">'Metabolites in setStaticMedia must be ID''d as a char, a cell array of chars, a single index, or an array of indices'</span>);
+0347             <span class="keyword">end</span>
+0348             
+0349             hasValue = false;
+0350             <span class="keyword">if</span> nargin &gt; 4 &amp;&amp; (varargin{5}(1) || isnumeric(varargin{5}))
+0351                 hasValue = true;
+0352                 vals = varargin{5};
+0353                 <span class="keyword">if</span> length(vals) == 1
+0354                     vals = repmat(vals,length(midx),1);
+0355                 <span class="keyword">end</span>
+0356                 <span class="keyword">if</span> length(vals) ~= length(midx)
+0357                     error(<span class="string">'The fifth argument in setStaticMedia must be empty, false, a single value, or of the same length as the list of mets'</span>);
+0358                 <span class="keyword">end</span>
+0359             <span class="keyword">end</span>
+0360             
+0361             <span class="comment">%Don't just apply changes to self.static_media(midx,x,y,:)!</span>
+0362             <span class="comment">%This will change values in every combination of values in x</span>
+0363             <span class="comment">%and y. Instead, iterate over x and y so it's properly done</span>
+0364             <span class="comment">%pairwise.</span>
+0365             <span class="keyword">for</span> i = 1:length(x)
+0366                 xi = x(i);
+0367                 yi = y(i);
+0368                 <span class="keyword">if</span> hasValue
+0369                     self.static_media(midx,xi,yi,1) = 1;
+0370                     self.static_media(midx,xi,yi,2) = vals;
+0371                 <span class="keyword">else</span>
+0372                     self.static_media(midx,xi,yi,1) = 0;
+0373                 <span class="keyword">end</span>
+0374             <span class="keyword">end</span>
+0375         <span class="keyword">end</span>
+0376         
+0377         <span class="comment">%applyStaticMediaMask(layout,mask,metnames,values)</span>
+0378         <span class="comment">%</span>
+0379         <a name="_sub14" href="#_subfunctions" class="code">function self = applyStaticMediaMask(self, mask, metnames, values)</a>
+0380             <span class="comment">%Set if the given metabolites in the media are static. Instead of</span>
+0381             <span class="comment">%specifying x-y coordinates, 'mask' is a logical matrix of the</span>
+0382             <span class="comment">%same dimensions as the layout. The static media will be set in</span>
+0383             <span class="comment">%every position where mask(x,y) == true</span>
+0384             <span class="comment">%</span>
+0385             <span class="comment">%'metnames' can be a single metabolite name, a cell array of</span>
+0386             <span class="comment">%metabolite names, a single metabolite index, or an array of</span>
+0387             <span class="comment">%metabolite indexes</span>
+0388             <span class="comment">%</span>
+0389             <span class="comment">%'values' can be a single value, an array of values, false, or</span>
+0390             <span class="comment">%not given. If false or not given, the metabolites will have their</span>
+0391             <span class="comment">%&quot;set&quot; flag (the first dimension in diffusion_constants) turned</span>
+0392             <span class="comment">%off. If a single value, all input metabolites will get that value</span>
+0393             <span class="comment">%assigned. If an array, there must be one value per metabolite</span>
+0394             
+0395             <span class="comment">%simply convert the mask to coordinates then pass everything to</span>
+0396             <span class="comment">%setStaticMedia()</span>
+0397             [x,y] = find(mask);
+0398             self = <a href="#_sub14" class="code" title="subfunction self = setStaticMedia(varargin)">setStaticMedia</a>(self,x,y,metnames,values);
+0399         <span class="keyword">end</span>
+0400         
+0401         <span class="comment">%setMediaRefresh(layout, x, y, metnames, values)</span>
+0402         <a name="_sub15" href="#_subfunctions" class="code">function self = setMediaRefresh(self, x, y, mets, values)</a>
+0403             <span class="comment">%Set the amount to adjust media in the specified cells at each</span>
+0404             <span class="comment">%timestep. The concentration in the cell will have the given value</span>
+0405             <span class="comment">%added, so units of the values should be concentration.</span>
+0406             <span class="comment">%</span>
+0407             <span class="comment">%'x' and 'y' can be single integers or arrays specifying</span>
+0408             <span class="comment">%coordinates. If exactly one is an array, the single value will</span>
+0409             <span class="comment">%be paired with all members of the array. If both are arrays,</span>
+0410             <span class="comment">%the shorter array will be repeated to match the longer.</span>
+0411             <span class="comment">%</span>
+0412             <span class="comment">%'metnames' can be a single metabolite name, a cell array of</span>
+0413             <span class="comment">%metabolite names, a single metabolite index, or an array of</span>
+0414             <span class="comment">%metabolite indexes</span>
+0415             <span class="comment">%</span>
+0416             <span class="comment">%'values' can be a single value, or an array of values If a</span>
+0417             <span class="comment">%single value, all input metabolites will get that value</span>
+0418             <span class="comment">%assigned. If an array, there must be one value per metabolite</span>
+0419             
+0420             <span class="comment">%check coordinate vector dimensions</span>
+0421             <span class="comment">%first, linearize them and put them in the same orientation</span>
+0422             x = x(1:end);
+0423             y = y(1:end);
+0424             [temp,xlen] = size(x);
+0425             [temp,ylen] = size(y);
+0426             <span class="comment">%if xlen == ylen, do nothing. Otherwise repeat the short one to</span>
+0427             <span class="comment">%match the long one</span>
+0428             <span class="keyword">if</span> (xlen &lt; ylen)
+0429                 x = repmat(x,1,ylen);
+0430                 x = x(1:ylen);
+0431             <span class="keyword">end</span>
+0432             <span class="keyword">if</span> (xlen &gt; ylen)
+0433                 y = repmat(y,1,xlen);
+0434                 y = y(1:xlen);
+0435             <span class="keyword">end</span>
+0436             
+0437             midx = [];
+0438             <span class="keyword">switch</span> class(mets)
+0439                 <span class="keyword">case</span> <span class="string">'char'</span>
+0440                     midx = <a href="#_sub5" class="code" title="subfunction idx=metIdx(self,name)">metIdx</a>(self,mets);
+0441                 <span class="keyword">case</span> <span class="string">'cell'</span>
+0442                     <span class="keyword">for</span> i=1:length(mets)
+0443                         midx = [midx <a href="#_sub5" class="code" title="subfunction idx=metIdx(self,name)">metIdx</a>(self,mets{i})];
+0444                     <span class="keyword">end</span>
+0445                 <span class="keyword">case</span> <span class="string">'double'</span> <span class="comment">%this covers single values and arrays of doubles</span>
+0446                     midx = mets;
+0447                 <span class="keyword">otherwise</span>
+0448                     error(<span class="string">'Metabolites in setMediaRefresh must be ID''d as a char, a cell array of chars, a single index, or an array of indices'</span>);
+0449             <span class="keyword">end</span>
+0450             
+0451             vals = values;
+0452             <span class="keyword">if</span> length(vals) == 1
+0453                 vals = repmat(vals,length(midx),1);
+0454             <span class="keyword">end</span>
+0455             <span class="keyword">if</span> length(vals) ~= length(midx)
+0456                 error(<span class="string">'The fifth argument in setMediaRefresh must be a single value or of the same length as the list of mets'</span>);
+0457             <span class="keyword">end</span>
+0458             
+0459             <span class="comment">%Don't just apply changes to self.media_refresh(midx,x,y)!</span>
+0460             <span class="comment">%This will change values in every combination of values in x</span>
+0461             <span class="comment">%and y. Instead, iterate over x and y so it's properly done</span>
+0462             <span class="comment">%pairwise.</span>
+0463             <span class="keyword">for</span> i = 1:length(x)
+0464                 xi = x(i);
+0465                 yi = y(i);
+0466                 vi = vals(i);
+0467                 self.media_refresh(midx,xi,yi) = vi;
+0468             <span class="keyword">end</span>
+0469         <span class="keyword">end</span>
+0470         
+0471         
+0472     <span class="keyword">end</span>
+0473     
+0474 <span class="keyword">end</span>
+0475</pre></div>
+<hr><address>Generated on Mon 12-Feb-2018 14:22:16 by <strong><a href="http://www.artefact.tk/software/matlab/m2html/" target="_parent">m2html</a></strong> &copy; 2005</address>
 </body>
 </html>

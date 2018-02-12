@@ -7,7 +7,7 @@ function layout = setInitialPop(layout, format, pop, resize)
 %   format : optional string denoting the layout scheme to use. default
 %   'colonies'
 %   [pop] : optional array of doubles denoting population of each model.
-%   default 10^-5. Units = grams.
+%   default 10^-6. Units = grams.
 %   resize : is the script allowed to resize the layout? default true
 %
 %   The format string should be one of ['1x1' 'colonies'] 
@@ -37,7 +37,7 @@ if nmodels < 1
 end
 
 %set size of colonies within populated grid cells
-dpop = 1e-9; %default population value
+dpop = 1e-6; %default population value
 if nargin < 3
     pop = [];
 end

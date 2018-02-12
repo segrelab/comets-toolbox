@@ -4,7 +4,7 @@
 <head>
   <title>Description of plotMediaTimecourse</title>
   <meta name="keywords" content="plotMediaTimecourse">
-  <meta name="description" content="PLOTMEDIATIMECOURSE(table,{metnames}) create a line plot of the total">
+  <meta name="description" content="PLOTMEDIATIMECOURSE(table,{metnames},[logscale]) create a line plot of the total">
   <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
   <meta name="generator" content="m2html &copy; 2005 Guillaume Flandin">
   <meta name="robots" content="index, follow">
@@ -20,15 +20,15 @@
 </h1>
 
 <h2><a name="_name"></a>PURPOSE <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
-<div class="box"><strong>PLOTMEDIATIMECOURSE(table,{metnames}) create a line plot of the total</strong></div>
+<div class="box"><strong>PLOTMEDIATIMECOURSE(table,{metnames},[logscale]) create a line plot of the total</strong></div>
 
 <h2><a name="_synopsis"></a>SYNOPSIS <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
-<div class="box"><strong>function p = plotMediaTimecourse(table,metnames) </strong></div>
+<div class="box"><strong>function p = plotMediaTimecourse(table,metnames,logscale) </strong></div>
 
 <h2><a name="_description"></a>DESCRIPTION <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
-<div class="fragment"><pre class="comment">PLOTMEDIATIMECOURSE(table,{metnames}) create a line plot of the total 
+<div class="fragment"><pre class="comment">PLOTMEDIATIMECOURSE(table,{metnames},[logscale]) create a line plot of the total 
 amount of the specified metabolites. 
-The first argument should be a data table loaded through</pre></div>
+The first argument should be a data table loaded through parseMediaLog.m</pre></div>
 
 <!-- crossreference -->
 <h2><a name="_cross"></a>CROSS-REFERENCE INFORMATION <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
@@ -43,35 +43,42 @@ This function is called by:
 
 
 <h2><a name="_source"></a>SOURCE CODE <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
-<div class="fragment"><pre>0001 <a name="_sub0" href="#_subfunctions" class="code">function p = plotMediaTimecourse(table,metnames)</a>
-0002 <span class="comment">%PLOTMEDIATIMECOURSE(table,{metnames}) create a line plot of the total</span>
+<div class="fragment"><pre>0001 <a name="_sub0" href="#_subfunctions" class="code">function p = plotMediaTimecourse(table,metnames,logscale)</a>
+0002 <span class="comment">%PLOTMEDIATIMECOURSE(table,{metnames},[logscale]) create a line plot of the total</span>
 0003 <span class="comment">%amount of the specified metabolites.</span>
-0004 <span class="comment">%The first argument should be a data table loaded through</span>
-0005 
-0006 <span class="keyword">if</span> ischar(metnames) <span class="comment">%if given one metabolite to plot</span>
-0007     metnames = {metnames};
-0008 <span class="keyword">end</span>
-0009 
-0010 x = unique(table.t);
-0011 y = zeros(length(x),length(metnames));
+0004 <span class="comment">%The first argument should be a data table loaded through parseMediaLog.m</span>
+0005 <span class="keyword">if</span> nargin &lt; 3
+0006     logscale = false;
+0007 <span class="keyword">end</span>
+0008 
+0009 <span class="keyword">if</span> ischar(metnames) <span class="comment">%if given one metabolite to plot</span>
+0010     metnames = {metnames};
+0011 <span class="keyword">end</span>
 0012 
-0013 ncells = max(table.x) * max(table.y);
-0014 <span class="keyword">for</span> i = 1:length(metnames)
-0015     met = metnames{i};
-0016     st = table(strcmp(met,table.metname),:);
-0017     
-0018     <span class="comment">%sum all cells at the same timepoint</span>
-0019     amt = reshape(st.amt,length(x),ncells);
-0020     amt = sum(amt,2);
-0021     
-0022     y(:,i) = amt;
-0023 <span class="keyword">end</span>
-0024 
-0025 p = plot(x,y);
-0026 legend(metnames,<span class="string">'location'</span>,<span class="string">'best'</span>);
+0013 x = unique(table.t);
+0014 y = zeros(length(x),length(metnames));
+0015 
+0016 ncells = max(table.x) * max(table.y);
+0017 <span class="keyword">for</span> i = 1:length(metnames)
+0018     met = metnames{i};
+0019     st = table(strcmp(met,table.metname),:);
+0020     
+0021     <span class="comment">%sum all cells at the same timepoint</span>
+0022     amt = reshape(st.amt,length(x),ncells);
+0023     amt = sum(amt,2);
+0024     
+0025     y(:,i) = amt;
+0026 <span class="keyword">end</span>
 0027 
-0028 <span class="keyword">end</span>
-0029</pre></div>
-<hr><address>Generated on Tue 16-Jan-2018 15:15:17 by <strong><a href="http://www.artefact.tk/software/matlab/m2html/" target="_parent">m2html</a></strong> &copy; 2005</address>
+0028 <span class="keyword">if</span> logscale
+0029     y = log10(y);
+0030 <span class="keyword">end</span>
+0031 
+0032 p = plot(x,y);
+0033 legend(metnames,<span class="string">'location'</span>,<span class="string">'best'</span>,<span class="string">'Interpreter'</span>, <span class="string">'none'</span>);
+0034 
+0035 <span class="keyword">end</span>
+0036</pre></div>
+<hr><address>Generated on Mon 12-Feb-2018 14:22:16 by <strong><a href="http://www.artefact.tk/software/matlab/m2html/" target="_parent">m2html</a></strong> &copy; 2005</address>
 </body>
 </html>

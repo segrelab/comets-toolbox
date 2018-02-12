@@ -23,7 +23,7 @@ if iscell(mets)
             newmets = [newmets; mets{i}];
             newstoich = [newstoich; tstoich(i)];
         else
-            warn(['Metabolite ' mets{i} ' is already present in reaction ' rxnname]);
+            warning(['Metabolite ' mets{i} ' is already present in reaction ' rxnname]);
         end
     end
 elseif ischar(mets)
