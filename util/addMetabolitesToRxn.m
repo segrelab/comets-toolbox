@@ -10,44 +10,64 @@ function model = addMetabolitesToRxn( model, mets, rxnname, stoich)
 %stoich: an array of stoichiometries corresponding 1:1 to the given metabolites, OR a single value that will be applied to all metabolites
 
 
-%parse the arguments
+%First, check if any mets have to be added to the model
 newmets = {};
-newstoich = [];
 if iscell(mets)
     tstoich = stoich;
     if length(stoich) == 1
-        tstoich(1:length(mets)) = stoich(1);
+        tstoich(1:length(mets)) = stoich(1); %extend the stoich if one value is used for many mets
     end
     for i = 1:length(mets)
         if ~any(strcmp(model.mets,mets{i}))
             newmets = [newmets; mets{i}];
-            newstoich = [newstoich; tstoich(i)];
-        else
-            warning(['Metabolite ' mets{i} ' is already present in reaction ' rxnname]);
         end
     end
 elseif ischar(mets)
     if ~any(strcmp(model.mets,mets))
         newmets = {mets};
-        newstoich = stoich(1);
+    end
+    mets = {mets}; %gurantee it's a cell for downstream
+end
+
+if ~isempty(newmets)
+    for i = 1:length(newmets)
+        warning(['Adding metabolite ' newmets{i} ' to the model ' getModelName(model)]);
+        model = addMetabolite(model,newmets{i});
     end
 end
+
+%identifying the reaction
 rxnidx = 0;
 if isnumeric(rxnname)
     rxnidx = rxnname;
-    rxnname = model.rxns(rxnname);
+    rxnname = model.rxns{rxnidx};
 elseif ischar(rxnname)
-    rxnidx = find(strcmp(model.rxns,rxnname),1);
+    rxnidx = find(strcmp(rxnname,model.rxns),1);
+elseif iscell(rxnname)
+    rxnname = rxnname{1};
+    rxnidx = find(strcmp(rxnname,model.rxns),1);
 end
 
 
 %Do the work
-model = addMetabolite(model,newmets);
+
 rxnmetidxs = findMetsFromRxns(model,rxnname);
 rxnmetnames = model.mets(rxnmetidxs);
 rxnmetstoich = model.S(rxnmetidxs,rxnidx);
-newmetnames = [rxnmetnames; newmets];
-newrxnstoich = [rxnmetstoich; newstoich];
+
+newmetnames = [rxnmetnames; mets];
+newrxnstoich = [rxnmetstoich; stoich];
+
+
+for i = 1:length(rxnmetnames)
+    rxnmetname = rxnmetnames{i};
+    if any(strcmp(rxnmetname,mets)) %this met has a new stoich
+        newrxnstoich(i) = stoich(strcmp(rxnmetname,mets)); %possibly redundant, but leave in case an old met is being given a new stoich
+    end
+end
+    
+
+
 model = changeRxnMets(model,rxnmetnames, newmetnames, rxnname, newrxnstoich);
 
 end
