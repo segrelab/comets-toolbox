@@ -312,7 +312,7 @@ if length(s) < 3 %don't break the loop if static_media is empty or 1x1
     s(3) = 1;
 end
 
-if any(layout.static_media(:,:,:,1))
+if any(find(layout.static_media(:,:,:,1)))
     for x = 1:s(2)
         for y = 1:s(3)
             b = layout.static_media(:,x,y,1);%is this medium static?

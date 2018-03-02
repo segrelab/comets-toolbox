@@ -31,7 +31,7 @@ if isfield(model,'description')
             res = name;
         end
     else
-        warn('Unhandled input: Model.description is not a String or a Struct. Defaulting to generating a name.');
+        warning('Unhandled input: Model.description is not a String or a Struct. Defaulting to generating a name.');
     end
 end
 
