@@ -1,16 +1,16 @@
 classdef CometsLayout
-%CometsLayout Defines the COMETS world and contains COBRA models.
-%
-%     Constructor: CometsLayout()
-%
-%     Standard workflow should be as follows: 1) Create an empty layout
-%         world = CometsLayout()
-%     2) Set global and model-level defaults in the contained CometsParams
-%         world.params.DefaultVmax = 10
-%     3) Add COBRA models
-%
-%     See also CometsParams
-%
+    %CometsLayout Defines the COMETS world and contains COBRA models.
+    %
+    %     Constructor: CometsLayout()
+    %
+    %     Standard workflow should be as follows: 1) Create an empty layout
+    %         world = CometsLayout()
+    %     2) Set global and model-level defaults in the contained CometsParams
+    %         world.params.DefaultVmax = 10
+    %     3) Add COBRA models
+    %
+    %     See also CometsParams
+    %
     properties
         models = {};
         xdim = 1;
@@ -468,7 +468,62 @@ classdef CometsLayout
             end
         end
         
+        function self = applyBarrierMask(self, mask)
+            %applies the given logical 2D matrix as the barriers in this
+            %layout, overriding the previous barriers. If the mask is
+            %larger than the layout, the top-left segment of the mask is
+            %used.
+            mask = mask(1:self.xdim,1:self.ydim);
+            self.barrier = mask;
+        end
         
+        function self = setBarrier(self,x,y)
+            %applies barriers to the layout at the given x and y
+            %coordinates. If X or Y are a single value, it is paired with
+            %every value in the other dimension. Otherwise, x and y should
+            %be the same length.
+            self = applyBarrierValue(self,x,y,1);
+        end
+        
+        function self = removeBarrier(self,x,y)
+            %removes barriers from the layout at the given x and y
+            %coordinates. If x or y are a single value, it is paired with
+            %every value in the other dimension. Otherwise, x and y should
+            %be the same length.
+            self = applyBarrierValue(self,x,y,0);
+        end
+        
+        function self = applyBarrierValue(self,x,y,val)
+            %internal function to perform the logic of setBarrier() and
+            %removeBarrier()
+            
+            xlen = length(x);
+            ylen = length(y);
+            
+            mask = self.barrier;
+            
+            if (xlen == 1)
+                x = repmat(x,size(y));
+                xlen = length(x);
+            end
+            if (ylen == 1)
+                y = repat(y,size(x));
+                ylen = length(y);
+            end
+            
+            if ((xlen > 1) && (ylen > 1))
+                if (xlen ~= ylen)
+                    error('The coordinate lists used to set barriers should be the same length.');
+                else
+                    for i = 1:xlen
+                        mask(x(i),y(i)) = val;
+                    end
+                end
+            end
+            
+            self = applyBarrierMask(self,mask);
+        end
+                
     end
     
 end
