@@ -87,24 +87,28 @@ for i=1:length(model.rxns)
 end
 fprintf(fileID,'//\n');
 
-%find objective reaction
-for i=1:length(model.c)
-    if model.c(i) ~= 0
-        objective=i;
-    end
-end
+% %find objective reaction
+% for i=1:length(model.c)
+%     if model.c(i) ~= 0
+%         objective=i;
+%     end
+% end
 
 %find the objective reaction or reactions
 %The absolute value of model.c should denote priority, with 1 being highest
 %A negative number denotes that the reaction should be minimized
 %Ex: if c = [0 0 3 0 -2 1], maximize r6, then minimize r5, then maximize r3
 %   so the output line should be: "   6 -5 3"
-objIdxs = find(model.c);
-[objPriority, map] = sort(abs(model.c(objIdxs)));
+if ~isfield(model,'objective')
+    model.objective = model.c;
+end
+
+objIdxs = find(model.objective);
+[objPriority, map] = sort(abs(model.objective(objIdxs)));
 objLine = '   ';
 for i = 1:length(objPriority)
     idx = objIdxs(map(i));
-    if (model.c(idx) < 0) 
+    if (model.objective(idx) < 0) 
         idx = -1 * idx;
     end
     objLine = [objLine ' ' num2str(idx)];

@@ -4,8 +4,8 @@ function layout = setInitialPop(layout, format, pop, resize)
 % 
 % [Layout] = SETINITIALPOP(Layout, [string])
 %   layout : a CometsLayout object
-%   format : optional string denoting the layout scheme to use. default
-%   'colonies'
+%   format : optional string denoting the layout scheme to use. 
+%          one of '1x1' or 'colonies'. Default 'colonies'
 %   [pop] : optional array of doubles denoting population of each model.
 %   default 10^-6. Units = grams.
 %   resize : is the script allowed to resize the layout? default true
