@@ -24,12 +24,12 @@ function comets_output = runCometsOnDirectory(run_COMETS_folder)
 %
 
 %% Add COMETS Java Classpath to MATLAB
-[path_status,comets_path] = system('echo %COMETS_HOME%'); % determine COMETS path
-comets_path = strtrim(comets_path); % remove leading and trailing white space
-if path_status ~= 0 || ~isdir(comets_path) % command 'echo %COMETS_HOME%' unsuccessful
-    error('COMETS_HOME environmental variable not set')
+cometshome = getenv('COMETS_HOME');
+if isempty(cometshome)
+   error('COMETS_HOME environmental variable not set')
 end
-javaclasspath(comets_path); % add COMETS classpath to MATLAB
+javaclasspath(cometshome); % add COMETS classpath to MATLAB
+    
 
 %% Set up Working Directory with COMETS Files
 tempscript = 0; %we delete the script after running if it's copied from COMETS_HOME
@@ -41,7 +41,7 @@ if exist([run_COMETS_folder '\comets_w64_scr.bat'],'file') ~= 2 % script bat fil
             error('working directory does not exist')
         elseif exist([run_COMETS_folder '\comets_w64_scr.bat'],'file') ~= 2 % script bat file not found
             %error('comets_w64_scr.bat not found in COMETS path')
-            warning('comets_w64_scr.bat not found in %s or in %COMETS_HOME%. Creating new file...',run_COMETS_folder)
+            warning(['comets_w64_scr.bat not found in %s or in ' cometshome '. Creating new file...'],run_COMETS_folder)
             
             %get the name of the most recently created COMETS jar file in COMETS_HOME
             jars = dir([comets_path '\comets*.jar']);
@@ -49,7 +49,7 @@ if exist([run_COMETS_folder '\comets_w64_scr.bat'],'file') ~= 2 % script bat fil
             jarname = jars(idx(length(idx))).name;
             
             fileid = fopen([run_COMETS_folder '\comets_w64_scr.bat'],'w');
-            fprintf(fileid,'%s%s%s','java -Xmx2048m -classpath %COMETS_HOME%/',jarname,';C:/Users/mquintin/workspace/lib/jmatio.jar;%COMETS_HOME%/lib/jmatio.jar;%COMETS_HOME%/lib/x64/glpk-java.jar;%COMETS_HOME%/lib/jogamp-all-platforms/jar/jogl-all.jar;%COMETS_HOME%/lib/jogamp-all-platforms/jar/gluegen.jar;%COMETS_HOME%/lib/jogamp-all-platforms/jar/gluegen-rt.jar;%COMETS_HOME%/lib/jogamp-all-platforms/jar/gluegen-rt-natives-windows-amd64.jar;%COMETS_HOME%/lib/jogamp-all-platforms/jar/jogl-all-natives-windows-amd64.jar;%GUROBI_HOME%/lib/gurobi.jar -Djava.library.path=%COMETS_HOME%/lib;%COMETS_HOME%/lib/x64;%GUROBI_HOME%;%GUROBI_HOME%/lib/;%GUROBI_HOME%/bin edu.bu.segrelab.comets.Comets -loader edu.bu.segrelab.comets.fba.FBACometsLoader -script comets_script.txt');
+            fprintf(fileid,'%s%s%s',['java -Xmx2048m -classpath ' cometshome '/'],jarname,[';C:/Users/mquintin/workspace/lib/jmatio.jar;' cometshome '/lib/jmatio.jar;' cometshome '/lib/x64/glpk-java.jar;' cometshome '/lib/jogamp-all-platforms/jar/jogl-all.jar;' cometshome '/lib/jogamp-all-platforms/jar/gluegen.jar;' cometshome '/lib/jogamp-all-platforms/jar/gluegen-rt.jar;' cometshome '/lib/jogamp-all-platforms/jar/gluegen-rt-natives-windows-amd64.jar;' cometshome '/lib/jogamp-all-platforms/jar/jogl-all-natives-windows-amd64.jar;%GUROBI_HOME%/lib/gurobi.jar -Djava.library.path=' cometshome '/lib;' cometshome '/lib/x64;%GUROBI_HOME%;%GUROBI_HOME%/lib/;%GUROBI_HOME%/bin edu.bu.segrelab.comets.Comets -loader edu.bu.segrelab.comets.fba.FBACometsLoader -script comets_script.txt']);
             fclose(fileid);
         end
     else
