@@ -44,7 +44,7 @@ if exist([run_COMETS_folder '\comets_w64_scr.bat'],'file') ~= 2 % script bat fil
             warning(['comets_w64_scr.bat not found in %s or in ' cometshome '. Creating new file...'],run_COMETS_folder)
             
             %get the name of the most recently created COMETS jar file in COMETS_HOME
-            jars = dir([comets_path '\comets*.jar']);
+            jars = dir([cometshome '\comets*.jar']);
             [tmp, idx] = sort(datetime({jars.date}));
             jarname = jars(idx(length(idx))).name;
             
