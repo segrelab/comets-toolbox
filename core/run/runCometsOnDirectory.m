@@ -35,7 +35,7 @@ javaclasspath(cometshome); % add COMETS classpath to MATLAB
 tempscript = 0; %we delete the script after running if it's copied from COMETS_HOME
 if exist([run_COMETS_folder '\comets_w64_scr.bat'],'file') ~= 2 % script bat file not in current folder
     %get it from comets_path
-    scr_status = copyfile([comets_path '\comets_w64_scr.bat'],[run_COMETS_folder '\comets_w64_scr.bat']);
+    scr_status = copyfile([cometshome '\comets_w64_scr.bat'],[run_COMETS_folder '\comets_w64_scr.bat']);
     if scr_status == 0 %unable to copy
         if ~isdir(run_COMETS_folder) % working directory does not exist
             error('working directory does not exist')
