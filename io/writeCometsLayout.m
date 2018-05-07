@@ -1,6 +1,11 @@
 function writeCometsLayout( input, filedir, filename, includeParams, writeModels)
-%WRITECOMETSLAYOUT Create a layout file along with the corresponding model
+%WRITECOMETSLAYOUT(input,[filedir],[filename],[includeParams],[writeModels]) Create a layout file along with the corresponding model
 %files
+% Arguments:
+%     input: a CometsLayout struct
+%     filedir: directory in which files should be created. Defaults to the current working directory
+%     includeParams: should a 'parameters' block be included in the start of the file text?
+%     writeModels: should model files be created for each model in the given CometsLayout?
 if nargin == 2
     filename = 'layout.txt';
     %filedir = 'layout';
