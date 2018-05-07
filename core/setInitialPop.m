@@ -2,13 +2,13 @@ function layout = setInitialPop(layout, format, pop, resize)
 %SETINITIALPOP Automatically generates initial population placements for
 %the models in a given Layout.
 % 
-% [Layout] = SETINITIALPOP(Layout, [string])
+% [Layout] = SETINITIALPOP(Layout, {string}, [[population]], [resize])
 %   layout : a CometsLayout object
 %   format : optional string denoting the layout scheme to use. 
 %          one of '1x1' or 'colonies'. Default 'colonies'
 %   [pop] : optional array of doubles denoting population of each model.
 %   default 10^-6. Units = grams.
-%   resize : is the script allowed to resize the layout? default true
+%   resize : is this function allowed to resize the layout? default true
 %
 %   The format string should be one of ['1x1' 'colonies'] 
 % 
