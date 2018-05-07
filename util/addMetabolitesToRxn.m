@@ -51,8 +51,13 @@ end
 
 %Do the work
 
-rxnmetidxs = findMetsFromRxns(model,rxnname);
-rxnmetnames = model.mets(rxnmetidxs);
+% rxnmetidxs = findMetsFromRxns(model,rxnname);
+% rxnmetnames = model.mets(rxnmetidxs);
+rxnmetnames = findMetsFromRxns(model,rxnname);
+rxnmetidxs = zeros(1,length(rxnmetnames));
+for i = 1:length(rxnmetnames)
+    rxnmetidxs(i) = stridx(rxnmetnames{i},model.mets,false);
+end
 rxnmetstoich = model.S(rxnmetidxs,rxnidx);
 
 newmetnames = [rxnmetnames; mets];
