@@ -58,7 +58,7 @@ classdef CometsParams
         defaultKm = 0.01 %millimoles/cm^3. The default Km value for Monod-style exchange
         defaultReactionLower = -1000
         defaultReactionUpper = 1000
-        defaultVmax = 10 %moles/g/s. The default Vmax value for Monod-style exchange
+        defaultVmax = 10 %moles/g/hr. The default Vmax value for Monod-style exchange
         defaultW = 10 %The default W coefficient (plateau) for the Pseudo-Monod style exchange
         numExRxnSubsteps = 10
         
@@ -76,7 +76,8 @@ classdef CometsParams
         totalBiomassLogRate = 1
         totalBiomassLogName = './total_biomass.m'
         useLogNameTimeStamp = false %If true, appends a time stamp to every log file name
-        
+        writeMatFile = false %If true, writes a .mat files of everything
+        MatFileName = './comets_log.mat'
     end
     
     methods
