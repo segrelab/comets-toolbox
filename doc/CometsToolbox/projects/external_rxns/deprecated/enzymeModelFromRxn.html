@@ -1,0 +1,136 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+                "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+<head>
+  <title>Description of enzymeModelFromRxn</title>
+  <meta name="keywords" content="enzymeModelFromRxn">
+  <meta name="description" content="ENZYMEMODELFROMRXN Given a model, a reaction, and the name of an enzyme">
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <meta name="generator" content="m2html &copy; 2005 Guillaume Flandin">
+  <meta name="robots" content="index, follow">
+  <link type="text/css" rel="stylesheet" href="../../../../m2html.css">
+  <script type="text/javascript">
+    if (top.frames.length == 0) { top.location = "../../../../index.html"; };
+  </script>
+</head>
+<body>
+<a name="_top"></a>
+<!-- # CometsToolbox --><!-- # projects --><!-- ../menu.html external_rxns --><!-- menu.html deprecated -->
+<h1>enzymeModelFromRxn
+</h1>
+
+<h2><a name="_name"></a>PURPOSE <a href="#_top"><img alt="^" border="0" src="../../../../up.png"></a></h2>
+<div class="box"><strong>ENZYMEMODELFROMRXN Given a model, a reaction, and the name of an enzyme</strong></div>
+
+<h2><a name="_synopsis"></a>SYNOPSIS <a href="#_top"><img alt="^" border="0" src="../../../../up.png"></a></h2>
+<div class="box"><strong>function pseudo = enzymeModelFromRxn(varargin) </strong></div>
+
+<h2><a name="_description"></a>DESCRIPTION <a href="#_top"><img alt="^" border="0" src="../../../../up.png"></a></h2>
+<div class="fragment"><pre class="comment"> ENZYMEMODELFROMRXN Given a model, a reaction, and the name of an enzyme
+ metabolite, create a model for a pseudoorganism that carries out the same
+ reaction 
+ usage: enzymeModelFromRxn( model, reaction, enzyme )
+     model: a COBRA model reaction: the String name of the base reaction,
+     as in model.rxns enzyme: the String name of the enzyme metabolite, as
+     in model.mets</pre></div>
+
+<!-- crossreference -->
+<h2><a name="_cross"></a>CROSS-REFERENCE INFORMATION <a href="#_top"><img alt="^" border="0" src="../../../../up.png"></a></h2>
+This function calls:
+<ul style="list-style-image:url(../../../../matlabicon.gif)">
+<li><a href="../../../../CometsToolbox/external/m2html/@template/char.html" class="code" title="function s = char(tpl)">char</a>	TEMPLATE Convert a template object in a one line description string</li></ul>
+This function is called by:
+<ul style="list-style-image:url(../../../../matlabicon.gif)">
+</ul>
+<!-- crossreference -->
+
+
+
+<h2><a name="_source"></a>SOURCE CODE <a href="#_top"><img alt="^" border="0" src="../../../../up.png"></a></h2>
+<div class="fragment"><pre>0001 <a name="_sub0" href="#_subfunctions" class="code">function pseudo = enzymeModelFromRxn(varargin)</a>
+0002 <span class="comment">% ENZYMEMODELFROMRXN Given a model, a reaction, and the name of an enzyme</span>
+0003 <span class="comment">% metabolite, create a model for a pseudoorganism that carries out the same</span>
+0004 <span class="comment">% reaction</span>
+0005 <span class="comment">% usage: enzymeModelFromRxn( model, reaction, enzyme )</span>
+0006 <span class="comment">%     model: a COBRA model reaction: the String name of the base reaction,</span>
+0007 <span class="comment">%     as in model.rxns enzyme: the String name of the enzyme metabolite, as</span>
+0008 <span class="comment">%     in model.mets</span>
+0009 
+0010 <span class="keyword">if</span> nargin &lt; 3
+0011     error([<span class="string">'Inputs for enzymeModelFromRxn should be a COBRA model,'</span><span class="keyword">...</span>
+0012         <span class="string">' the name or index of a reaction, and the name of an enzyme metabolite.'</span>]);
+0013 <span class="keyword">end</span>
+0014 
+0015 model = varargin{1};
+0016 
+0017 <span class="keyword">if</span> ischar(varargin{2})
+0018     rxnName = <a href="../../../../CometsToolbox/external/m2html/@template/char.html" class="code" title="function s = char(tpl)">char</a>(varargin{2});
+0019     rxnIdx = find(ismember(model.rxns,rxnName));
+0020     <span class="comment">%make sure we get exactly 1 match</span>
+0021     <span class="keyword">if</span> length(rxnIdx) &lt; 1
+0022         error([<span class="string">'Could not find a reaction called '</span> rxnName <span class="string">' in the'</span><span class="keyword">...</span>
+0023             <span class="string">' given model.'</span>]);
+0024     <span class="keyword">end</span>
+0025     <span class="keyword">if</span> length(rxnIdx) &gt; 1
+0026         error([<span class="string">'Found multiple matches for the reaction name '</span> rxnName]);
+0027     <span class="keyword">end</span>
+0028 <span class="keyword">elseif</span> isnumeric(varargin{2})
+0029     rxnIdx = varargin{2};
+0030     rxnName = <a href="../../../../CometsToolbox/external/m2html/@template/char.html" class="code" title="function s = char(tpl)">char</a>(model.rxns(rxnIdx));
+0031 <span class="keyword">else</span>
+0032     error([<span class="string">'The second arugment for enzymeModelFromRxn should be the'</span><span class="keyword">...</span>
+0033         <span class="string">' name or index of a reaction in the given model'</span>]);
+0034 <span class="keyword">end</span>
+0035 
+0036 enzmet = varargin{3};
+0037 
+0038 <span class="comment">%create the model</span>
+0039 pseudo = createModel();
+0040 pseudo.description = [<span class="string">'Enzyme psuedoorganism '</span> enzmet <span class="string">' ('</span> rxnName <span class="string">')'</span>];
+0041 
+0042 <span class="comment">%copy the relevent reaction details</span>
+0043 s = model.S(:,rxnIdx); <span class="comment">%stoichiometry as a sparse column</span>
+0044 metIdxs = find(s); <span class="comment">%index of involved metabolites</span>
+0045 stoich = s(metIdxs); <span class="comment">%flatten stoichiometry column</span>
+0046 mets = model.mets(metIdxs); <span class="comment">%metabolite names</span>
+0047 rev = model.rev(rxnIdx);
+0048 lb = model.lb(rxnIdx);
+0049 ub = model.ub(rxnIdx);
+0050 rule = model.rules(rxnIdx);
+0051 rxnReference = model.rxnReferences(rxnIdx);
+0052 rxnECNumber = model.rxnECNumbers(rxnIdx);
+0053 grRule = model.grRules(rxnIdx);
+0054 metFormulas = model.metFormulas(metIdxs);
+0055 metCharge = model.metCharge(metIdxs);
+0056 metKEGGID = model.metKEGGID(metIdxs);
+0057 metChEBIID = model.metChEBIID(metIdxs);
+0058 metInChIString = model.metInChIString(metIdxs);
+0059 b = model.b(metIdxs);
+0060 
+0061 pseudo = addReaction(pseudo, rxnName, mets, stoich, rev, lb, ub);
+0062 pseudo.rules(1) = rule;
+0063 pseudo.rxnReferences(1) = rxnReference;
+0064 pseudo.rxnECNumbers(1) = rxnECNumber;
+0065 pseudo.grGrules(1) = grRule;
+0066 pseudo.metFormulas = metFormulas;
+0067 pseudo.metCharge = metCharge;
+0068 pseudo.KEGGID = metKEGGID;
+0069 pseudo.metChEBIID = metChEBIID;
+0070 pseudo.metInChIString = metInChIString;
+0071 pseudo.b = b;
+0072 
+0073 <span class="comment">%add exchange reactions</span>
+0074 pseudo = addExchangeRxn(pseudo,mets);
+0075 pseudo = addExchangeRxn(pseudo,enzmet);
+0076 <span class="comment">%TODO: if there aren't any rxns already to compare max/min bounds, will</span>
+0077 <span class="comment">%this still work?</span>
+0078 <span class="comment">%pseudo = addDemandReaction(pseudo,enzmet);</span>
+0079 
+0080 <span class="comment">%biomass reaction</span>
+0081 pseudo = addReaction(pseudo,<span class="string">'biomass'</span>,enzmet,-1,0);
+0082 
+0083 <span class="comment">%optimize the reaction as well as the biomass</span>
+0084 pseudo = changeObjective(pseudo,{rxnName,<span class="string">'biomass'</span>});</pre></div>
+<hr><address>Generated on Thu 14-Jun-2018 15:27:34 by <strong><a href="http://www.artefact.tk/software/matlab/m2html/" target="_parent">m2html</a></strong> &copy; 2005</address>
+</body>
+</html>

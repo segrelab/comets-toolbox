@@ -1,0 +1,175 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+                "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+<head>
+  <title>Description of normalizeMetNames</title>
+  <meta name="keywords" content="normalizeMetNames">
+  <meta name="description" content="NORMALIZEMETNAMES Replace the model.mets with a standardized name and format">
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <meta name="generator" content="m2html &copy; 2005 Guillaume Flandin">
+  <meta name="robots" content="index, follow">
+  <link type="text/css" rel="stylesheet" href="../../../m2html.css">
+  <script type="text/javascript">
+    if (top.frames.length == 0) { top.location = "../../../index.html"; };
+  </script>
+</head>
+<body>
+<a name="_top"></a>
+<!-- # CometsToolbox --><!-- ../menu.html util --><!-- menu.html metabolites -->
+<h1>normalizeMetNames
+</h1>
+
+<h2><a name="_name"></a>PURPOSE <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+<div class="box"><strong>NORMALIZEMETNAMES Replace the model.mets with a standardized name and format</strong></div>
+
+<h2><a name="_synopsis"></a>SYNOPSIS <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+<div class="box"><strong>function [model, failed, failedflag] = normalizeMetNames(model) </strong></div>
+
+<h2><a name="_description"></a>DESCRIPTION <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+<div class="fragment"><pre class="comment">NORMALIZEMETNAMES Replace the model.mets with a standardized name and format
+ 
+ [OUTPUTARGS] = NORMALIZEMETNAMES(INPUTARGS) 
+   model: A COBRA model
+   failed: cell array of the met names which did not have a match in
+   the alias DB
+   failedflag: logical array denoting for each met wether it did not have
+   a match in the alias DB (1 = no match found)
+ 
+ This script searches the SQLite database metnames.db for a cannonical
+ name matching the names in model.mets.
+ If any metabolite doesn't return a match, the db is searched using the 
+ corresponding value in model.metNames.
+ If neither returns a match, the original value in model.mets is used and
+ the metabolite is marked as 'failed'
+ 
+ $Author: mquintin $    $Date: 2016/10/28 12:59:12 $    $Revision: 0.2 $
+ Copyright: Daniel Segrè, Boston University Bioinformatics Program 2016</pre></div>
+
+<!-- crossreference -->
+<h2><a name="_cross"></a>CROSS-REFERENCE INFORMATION <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+This function calls:
+<ul style="list-style-image:url(../../../matlabicon.gif)">
+<li><a href="../../../CometsToolbox/external/mksqlite-2.4/mksqlite.html" class="code" title="">mksqlite</a>	MKSQLITE Eine MATLAB Schnittstelle zu SQLite</li></ul>
+This function is called by:
+<ul style="list-style-image:url(../../../matlabicon.gif)">
+</ul>
+<!-- crossreference -->
+
+
+
+<h2><a name="_source"></a>SOURCE CODE <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+<div class="fragment"><pre>0001 <a name="_sub0" href="#_subfunctions" class="code">function [model, failed, failedflag] = normalizeMetNames(model)</a>
+0002 <span class="comment">%NORMALIZEMETNAMES Replace the model.mets with a standardized name and format</span>
+0003 <span class="comment">%</span>
+0004 <span class="comment">% [OUTPUTARGS] = NORMALIZEMETNAMES(INPUTARGS)</span>
+0005 <span class="comment">%   model: A COBRA model</span>
+0006 <span class="comment">%   failed: cell array of the met names which did not have a match in</span>
+0007 <span class="comment">%   the alias DB</span>
+0008 <span class="comment">%   failedflag: logical array denoting for each met wether it did not have</span>
+0009 <span class="comment">%   a match in the alias DB (1 = no match found)</span>
+0010 <span class="comment">%</span>
+0011 <span class="comment">% This script searches the SQLite database metnames.db for a cannonical</span>
+0012 <span class="comment">% name matching the names in model.mets.</span>
+0013 <span class="comment">% If any metabolite doesn't return a match, the db is searched using the</span>
+0014 <span class="comment">% corresponding value in model.metNames.</span>
+0015 <span class="comment">% If neither returns a match, the original value in model.mets is used and</span>
+0016 <span class="comment">% the metabolite is marked as 'failed'</span>
+0017 <span class="comment">%</span>
+0018 <span class="comment">% $Author: mquintin $    $Date: 2016/10/28 12:59:12 $    $Revision: 0.2 $</span>
+0019 <span class="comment">% Copyright: Daniel Segrè, Boston University Bioinformatics Program 2016</span>
+0020 
+0021 <span class="comment">% Changelog:</span>
+0022 <span class="comment">% 5/23/2017: add compatability with names that denote compartment by using</span>
+0023 <span class="comment">% an underscore</span>
+0024 
+0025 <span class="comment">%To do:</span>
+0026 <span class="comment">%Add warning/fail when the number of unique metIDs is changed</span>
+0027 
+0028 <span class="comment">%convert names in the form &quot;some_metabolite_c&quot; to &quot;some_metabolite[c]&quot; in</span>
+0029 <span class="comment">%order to be compatible with parseMetNames. Note we're not directly</span>
+0030 <span class="comment">%modifying parseMetNames because we shouldn't touch Cobra functions</span>
+0031 mets = model.mets;
+0032 <span class="keyword">for</span> i = 1:length(mets)
+0033     met = mets{i};
+0034     <span class="keyword">if</span> (isempty(regexp(met,<span class="string">'[\[\(]'</span>, <span class="string">'once'</span>)) &amp;&amp; ~isempty(regexp(met,<span class="string">'_'</span>, <span class="string">'once'</span>)))
+0035         <span class="comment">%Greedy search, so there should only be two tokens</span>
+0036         <span class="comment">%regardless of the number of underscores in the string</span>
+0037         [tokens,tmp] = regexp(met,<span class="string">'(.+)_(.+)'</span>,<span class="string">'tokens'</span>,<span class="string">'match'</span>);
+0038         <span class="comment">%Now replace the name in bracketed format</span>
+0039         mets{i} = [tokens{1}{1} <span class="string">'['</span> tokens{1}{2} <span class="string">']'</span>];
+0040     <span class="keyword">end</span>
+0041 <span class="keyword">end</span>
+0042 
+0043 
+0044 <span class="comment">%call COBRA to strip the compartment if in the form &quot;metName[c]&quot; or &quot;metName(c)&quot;</span>
+0045 [basemetnames, compsymbols] = parseMetNames(mets);
+0046 
+0047 newmetnames = cell(length(basemetnames),1);
+0048 failed = cell(length(basemetnames),1);
+0049 failedflag = zeros(length(basemetnames),1);
+0050 
+0051 dbpath = which(<span class="string">'metabolites\metnames.db'</span>);
+0052 <a href="../../../CometsToolbox/external/mksqlite-2.4/mksqlite.html" class="code" title="">mksqlite</a>(<span class="string">'open'</span>,dbpath);
+0053 
+0054 <span class="keyword">for</span> i = 1:length(basemetnames)
+0055     met = basemetnames{i};
+0056     <span class="comment">%use LIKE instead of == to ignore case</span>
+0057     res = <a href="../../../CometsToolbox/external/mksqlite-2.4/mksqlite.html" class="code" title="">mksqlite</a>(<span class="string">'select official from PSEUDONYM where pseudonym like ?'</span>,met);
+0058     <span class="keyword">if</span> ~isempty(res) <span class="comment">%match found</span>
+0059         <span class="comment">%if ischar(res.official)</span>
+0060         <span class="comment">%    newmetnames{i} = res.official;</span>
+0061         <span class="comment">%elseif iscell(res.official)</span>
+0062         <span class="comment">%    newmetnames{i} = res.official{1};</span>
+0063         <span class="comment">%else %something weird happened. Default to failing</span>
+0064         <span class="comment">%    newmetnames{i} = met;</span>
+0065         <span class="comment">%    failedflag(i) = 1;</span>
+0066         <span class="comment">%    failed{i} = met;</span>
+0067         <span class="comment">%end</span>
+0068         
+0069         <span class="comment">%the above is temporarily removed due to strange behavior in</span>
+0070         <span class="comment">%mksqlite when multiple values are returned. I expected</span>
+0071         <span class="comment">%res.official to contain a single value, either a string or a cell</span>
+0072         <span class="comment">%array. Instead it contains multiple values: a string for each</span>
+0073         <span class="comment">%returned record. So, I'll wrap them in a cell array and pull out</span>
+0074         <span class="comment">%the first.</span>
+0075         <span class="comment">%Note that this means multiple returns (which shouldn't occur, but</span>
+0076         <span class="comment">%aren't enforced not to occur by the DB) will be hidden</span>
+0077         
+0078         newname = {res.official};
+0079         newmetnames{i} = newname{1};
+0080         
+0081     <span class="keyword">else</span> <span class="comment">%no match found</span>
+0082         <span class="comment">%try searching on the model.metNames field instead</span>
+0083         [tempbase, tempcomp] = parseMetNames(model.metNames(i));
+0084         res = <a href="../../../CometsToolbox/external/mksqlite-2.4/mksqlite.html" class="code" title="">mksqlite</a>(<span class="string">'select official from PSEUDONYM where pseudonym like ?'</span>,tempbase{1});
+0085         <span class="keyword">if</span> ~isempty(res)
+0086             newname = {res.official};
+0087             newmetnames{i} = newname{1};
+0088             <span class="keyword">if</span> strcmp(<span class="string">''</span>,compsymbols{i})
+0089                 compsymbols{i} = tempcomp{1};
+0090             <span class="keyword">end</span>
+0091         <span class="keyword">else</span> <span class="comment">%still no match</span>
+0092             newmetnames{i} = met;
+0093             failedflag(i) = 1;
+0094             failed{i} = met;
+0095         <span class="keyword">end</span>
+0096     <span class="keyword">end</span>
+0097 <span class="keyword">end</span>
+0098 <a href="../../../CometsToolbox/external/mksqlite-2.4/mksqlite.html" class="code" title="">mksqlite</a>(<span class="string">'close'</span>);
+0099 
+0100 <span class="comment">%trim the 'failed' cell array</span>
+0101 failed = failed(~cellfun(<span class="string">'isempty'</span>,failed));
+0102 
+0103 <span class="comment">%reattach compartment symbols</span>
+0104 <span class="keyword">for</span> i = 1:length(newmetnames)
+0105     <span class="keyword">if</span> ~strcmp(<span class="string">''</span>,compsymbols{i})
+0106         newmetnames{i} = [newmetnames{i} <span class="string">'['</span> compsymbols{i} <span class="string">']'</span>];
+0107     <span class="keyword">end</span>
+0108 <span class="keyword">end</span>
+0109 
+0110 <span class="comment">%apply change to the model</span>
+0111 model.mets = newmetnames;
+0112 <span class="keyword">end</span></pre></div>
+<hr><address>Generated on Thu 14-Jun-2018 15:27:34 by <strong><a href="http://www.artefact.tk/software/matlab/m2html/" target="_parent">m2html</a></strong> &copy; 2005</address>
+</body>
+</html>

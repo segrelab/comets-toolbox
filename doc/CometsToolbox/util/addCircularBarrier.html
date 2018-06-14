@@ -1,0 +1,75 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+                "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+<head>
+  <title>Description of addCircularBarrier</title>
+  <meta name="keywords" content="addCircularBarrier">
+  <meta name="description" content="ADDCIRCULARBARRIER Adds barriers to the layout so that a circular plate is">
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <meta name="generator" content="m2html &copy; 2005 Guillaume Flandin">
+  <meta name="robots" content="index, follow">
+  <link type="text/css" rel="stylesheet" href="../../m2html.css">
+  <script type="text/javascript">
+    if (top.frames.length == 0) { top.location = "../../index.html"; };
+  </script>
+</head>
+<body>
+<a name="_top"></a>
+<!-- # CometsToolbox --><!-- menu.html util -->
+<h1>addCircularBarrier
+</h1>
+
+<h2><a name="_name"></a>PURPOSE <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="box"><strong>ADDCIRCULARBARRIER Adds barriers to the layout so that a circular plate is</strong></div>
+
+<h2><a name="_synopsis"></a>SYNOPSIS <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="box"><strong>function layout = addCircularBarrier(layout) </strong></div>
+
+<h2><a name="_description"></a>DESCRIPTION <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="fragment"><pre class="comment">ADDCIRCULARBARRIER Adds barriers to the layout so that a circular plate is
+formed</pre></div>
+
+<!-- crossreference -->
+<h2><a name="_cross"></a>CROSS-REFERENCE INFORMATION <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+This function calls:
+<ul style="list-style-image:url(../../matlabicon.gif)">
+</ul>
+This function is called by:
+<ul style="list-style-image:url(../../matlabicon.gif)">
+</ul>
+<!-- crossreference -->
+
+<h2><a name="_subfunctions"></a>SUBFUNCTIONS <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<ul style="list-style-image:url(../../matlabicon.gif)">
+<li><a href="#_sub1" class="code">function [bar, dist] = distFromCenter(layout,x,y)</a></li></ul>
+
+<h2><a name="_source"></a>SOURCE CODE <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="fragment"><pre>0001 <a name="_sub0" href="#_subfunctions" class="code">function layout = addCircularBarrier(layout)</a>
+0002 <span class="comment">%ADDCIRCULARBARRIER Adds barriers to the layout so that a circular plate is</span>
+0003 <span class="comment">%formed</span>
+0004 
+0005 mask = layout.barrier;
+0006 <span class="keyword">for</span> i = 1:layout.xdim
+0007     <span class="keyword">for</span> j = 1:layout.ydim
+0008         [bar, dist] = <a href="#_sub1" class="code" title="subfunction [bar, dist] = distFromCenter(layout,x,y)">distFromCenter</a>(layout,i,j);
+0009         mask(i,j) = mask(i,j) | bar;
+0010     <span class="keyword">end</span>
+0011 <span class="keyword">end</span>
+0012 layout = applyBarrierMask(layout,mask);
+0013 
+0014 <span class="keyword">end</span>
+0015 
+0016 <a name="_sub1" href="#_subfunctions" class="code">function [bar, dist] = distFromCenter(layout,x,y)</a>
+0017 <span class="comment">%return whether an input coordinate is far enough from the center that it</span>
+0018 <span class="comment">%should be a barrier, and the euclidian distance</span>
+0019 cx = floor(layout.xdim/2);
+0020 cy = floor(layout.ydim/2);
+0021 r = min(cx,cy);
+0022 dx = floor(abs(x - cx));
+0023 dy = floor(abs(y - cy));
+0024 dist = sqrt((dx^2) + (dy^2));
+0025 bar = dist &gt; r;
+0026 <span class="keyword">end</span></pre></div>
+<hr><address>Generated on Thu 14-Jun-2018 15:27:34 by <strong><a href="http://www.artefact.tk/software/matlab/m2html/" target="_parent">m2html</a></strong> &copy; 2005</address>
+</body>
+</html>

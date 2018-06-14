@@ -1,0 +1,224 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+                "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+<head>
+  <title>Description of Main</title>
+  <meta name="keywords" content="Main">
+  <meta name="description" content="Uday Tripathi 7/2016">
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <meta name="generator" content="m2html &copy; 2005 Guillaume Flandin">
+  <meta name="robots" content="index, follow">
+  <link type="text/css" rel="stylesheet" href="../../../m2html.css">
+  <script type="text/javascript">
+    if (top.frames.length == 0) { top.location = "../../../index.html"; };
+  </script>
+</head>
+<body>
+<a name="_top"></a>
+<!-- # CometsToolbox --><!-- # projects --><!-- menu.html ga -->
+<h1>Main
+</h1>
+
+<h2><a name="_name"></a>PURPOSE <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+<div class="box"><strong>Uday Tripathi 7/2016</strong></div>
+
+<h2><a name="_synopsis"></a>SYNOPSIS <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+<div class="box"><strong>This is a script file. </strong></div>
+
+<h2><a name="_description"></a>DESCRIPTION <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+<div class="fragment"><pre class="comment"> Uday Tripathi 7/2016
+ Main class: Runs the entire algorithm iteratively</pre></div>
+
+<!-- crossreference -->
+<h2><a name="_cross"></a>CROSS-REFERENCE INFORMATION <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+This function calls:
+<ul style="list-style-image:url(../../../matlabicon.gif)">
+<li><a href="Genome.html" class="code" title="">Genome</a>	Uday Tripathi 7/2016</li><li><a href="Main.html" class="code" title="">Main</a>	Uday Tripathi 7/2016</li><li><a href="breed.html" class="code" title="function modGenomes=breed(genomesArray, survivors, newMets, newModels, numCross)">breed</a>	BREED Produce a new array of genomes derived from the given genomesArray</li><li><a href="changeMetLevels.html" class="code" title="function modModel=changeMetLevels(model,block,retain,numModels)">changeMetLevels</a>	CHANGEMETLEVELS Set the uptake reaction rate to 0 for all metabolites in</li><li><a href="hash.html" class="code" title="function code=hash(genome, mets, newMets)">hash</a>	Uday Tripathi 7/2016</li><li><a href="hashTab.html" class="code" title="function hashSetup=hashTab(keys,values)">hashTab</a>	Uday Tripathi 7/2016</li></ul>
+This function is called by:
+<ul style="list-style-image:url(../../../matlabicon.gif)">
+<li><a href="Main.html" class="code" title="">Main</a>	Uday Tripathi 7/2016</li><li><a href="graphMultiple.html" class="code" title="">graphMultiple</a>	Uday Tripathi 7/2016</li><li><a href="quickFitness.html" class="code" title="function main=quickFitness(numOfGenomes, numOfGenerations)">quickFitness</a>	Uday Tripathi 7/2016</li><li><a href="runner.html" class="code" title="">runner</a>	Uday Tripathi 7/2016</li></ul>
+<!-- crossreference -->
+
+<h2><a name="_subfunctions"></a>SUBFUNCTIONS <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+<ul style="list-style-image:url(../../../matlabicon.gif)">
+<li><a href="#_sub1" class="code">function self=initModels(self,models)</a></li><li><a href="#_sub2" class="code">function self=initMets(self,mets)</a></li><li><a href="#_sub3" class="code">function self=initGenomes(self, numGenomes, numOfMets, numOfModels)</a></li><li><a href="#_sub4" class="code">function self=runGeneration(self, type, excRxn,newMets)</a></li><li><a href="#_sub5" class="code">function self=nextGeneration(self, numStaySame, newMets, newModels, numCross)</a></li><li><a href="#_sub6" class="code">function self=run(self,maxCycles,numStaySame,newMets,newModels,numCross,type,excRxn)</a></li><li><a href="#_sub7" class="code">function self=runCobra(self,excRxn,newMets)</a></li><li><a href="#_sub8" class="code">function score=cobraFlux(self,model,exchangeReaction,metsToKeep,numModels)</a></li><li><a href="#_sub9" class="code">function table=getResults(self, fileName)</a></li></ul>
+
+<h2><a name="_source"></a>SOURCE CODE <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+<div class="fragment"><pre>0001 <span class="comment">% Uday Tripathi 7/2016</span>
+0002 <span class="comment">% Main class: Runs the entire algorithm iteratively</span>
+0003 
+0004 <span class="comment">% Standard Protocol to set up GA</span>
+0005 <span class="comment">% main=Main()</span>
+0006 <span class="comment">% main=main.initModels(models)</span>
+0007 <span class="comment">% main=main.initMets(mets)</span>
+0008 <span class="comment">% main=main.initGenomes(numGenomes,numMets,numModels)</span>
+0009 <span class="comment">% main=main.run(self,maxCycles,numStaySame,newMets,newModels,numCross,type,excRxn)</span>
+0010 <span class="comment">% type: 'Cobra' or 'Comets'</span>
+0011 <span class="comment">% excRxn: 'EX Nitrite e0'</span>
+0012 classdef <a href="Main.html" class="code" title="">Main</a>
+0013     properties
+0014         generationNum=1; <span class="comment">% The current generation number; 1 by default</span>
+0015         generation=[]; <span class="comment">% The sets of genomes per generation</span>
+0016         models=[]; <span class="comment">% The models that the genomes draw from</span>
+0017         mets=[]; <span class="comment">% The metabolites that the genomes draw from</span>
+0018         hashMap;
+0019     <span class="keyword">end</span>
+0020     
+0021     methods
+0022         <span class="comment">% Called before initGenomes(). Sets the models field for the main</span>
+0023         <a name="_sub0" href="#_subfunctions" class="code">function self=initModels(self,models)</a>
+0024             self.models=models;
+0025         <span class="keyword">end</span>
+0026         
+0027         <span class="comment">% Called before initGenomes(). Sets the mets field for the main</span>
+0028         <a name="_sub1" href="#_subfunctions" class="code">function self=initMets(self,mets)</a>
+0029             self.mets=mets;
+0030         <span class="keyword">end</span>
+0031         
+0032         <span class="comment">% Initializes the genomes. Called once to begin the algorithm.</span>
+0033         <span class="comment">% Called before run()</span>
+0034         <span class="comment">% Input:</span>
+0035         <span class="comment">% numGenomes = the number of genomes each generation is to have</span>
+0036         <span class="comment">% numOfMets = the number of metabolites that are in each genome</span>
+0037         <span class="comment">% numOfModels = the number of models that are in each genome</span>
+0038         <a name="_sub2" href="#_subfunctions" class="code">function self=initGenomes(self, numGenomes, numOfMets, numOfModels)</a>
+0039              self.hashMap=containers.Map;
+0040             
+0041             modelsInUse=zeros(numGenomes);
+0042             <span class="keyword">for</span> i=1:numGenomes
+0043                 <span class="comment">% Generates random sequence of metabolites from the</span>
+0044                 <span class="comment">% possible list</span>
+0045                 firstMet=randi([1,length(self.mets)-numOfMets]);
+0046                 lastMet=firstMet+numOfMets-1;
+0047                 metabolites=self.mets(firstMet:lastMet);
+0048                 
+0049                 modelsInUse=zeros(numOfModels);
+0050                 <span class="keyword">for</span> j=1:numOfModels
+0051                     tempModel=randi([1,length(self.models)-numOfMets]);
+0052                     <span class="keyword">while</span>(sum(find(tempModel==modelsInUse))~=0) <span class="comment">% Ensures</span>
+0053                         <span class="comment">% that each model is only used once in a sequence</span>
+0054                         tempModel=randi([1,length(self.models)-numOfMets]);
+0055                     <span class="keyword">end</span>
+0056                     modelsInUse(j)=tempModel;
+0057                     modelRef(j)=tempModel;
+0058                 <span class="keyword">end</span>
+0059                 <span class="comment">% Creates each genome for each slot in a generation</span>
+0060                 tempGenome=<a href="Genome.html" class="code" title="">Genome</a>();
+0061                 tempGenome=tempGenome.addMetsAndModels(metabolites,modelRef);
+0062                 
+0063                 tempList(i)=tempGenome;
+0064             <span class="keyword">end</span>
+0065             self.generation{1}=tempList;
+0066         <span class="keyword">end</span>
+0067         
+0068         <span class="comment">% type = 'Cobra' or 'Comets'</span>
+0069         <a name="_sub3" href="#_subfunctions" class="code">function self=runGeneration(self, type, excRxn,newMets)</a>
+0070             <span class="keyword">if</span> strcmp(type,<span class="string">'Cobra'</span>)==1
+0071                 self=<a href="#_sub7" class="code" title="subfunction self=runCobra(self,excRxn,newMets)">runCobra</a>(self, excRxn,newMets);
+0072             <span class="keyword">elseif</span> strcmp(type,<span class="string">'Comets'</span>)
+0073                 <span class="comment">% TODO: COMETS implementation</span>
+0074             <span class="keyword">else</span>
+0075             <span class="keyword">end</span>
+0076         <span class="keyword">end</span>
+0077         
+0078         <span class="comment">% Generates the next generation of genomes by calling breed and</span>
+0079         <span class="comment">% making the appropriate changes in the generation field</span>
+0080         <span class="comment">% Input</span>
+0081         <span class="comment">% numStaySame = the number of genomes that are to stay intact when</span>
+0082         <span class="comment">% selecting highest scoring genomes to reproduce directly</span>
+0083         <span class="comment">% newMets = the list of possible metabolites that can replace</span>
+0084         <span class="comment">% metabolites in a genome via mutation</span>
+0085         <span class="comment">% numCross = the number of cross-bred genomes to be present in each</span>
+0086         <span class="comment">% generation</span>
+0087         <a name="_sub4" href="#_subfunctions" class="code">function self=nextGeneration(self, numStaySame, newMets, newModels, numCross)</a>
+0088             currLength=length(self.generation);
+0089             oldGenomes=self.generation{currLength};
+0090             tempGenome=<a href="breed.html" class="code" title="function modGenomes=breed(genomesArray, survivors, newMets, newModels, numCross)">breed</a>(oldGenomes,numStaySame,newMets,newModels,numCross);
+0091             self.generation{currLength+1}=tempGenome;
+0092             self.generationNum=self.generationNum+1;
+0093         <span class="keyword">end</span>
+0094         
+0095         <span class="comment">% Runs the algorithm iteratively, automatically recording and</span>
+0096         <span class="comment">% returning results</span>
+0097         <span class="comment">% Input:</span>
+0098         <span class="comment">% maxCycles = the number of generations the algorithm is intended</span>
+0099         <span class="comment">% to run for</span>
+0100         <span class="comment">% newMets = the set of new metabolites that could replace others in</span>
+0101         <span class="comment">% the genome via mutation</span>
+0102         <span class="comment">% numCross = the number of cross-bred genomes to be present in each</span>
+0103         <span class="comment">% generation + 1</span>
+0104         <a name="_sub5" href="#_subfunctions" class="code">function self=run(self,maxCycles,numStaySame,newMets,newModels,numCross,type,excRxn)</a>
+0105             self=self.runGeneration(type, excRxn, newMets);
+0106             <span class="keyword">for</span> i=1:maxCycles-1
+0107                 self=self.nextGeneration(numStaySame,newMets,newModels,numCross);
+0108                 self=self.runGeneration(type,excRxn,newMets);
+0109             <span class="keyword">end</span>
+0110         <span class="keyword">end</span>
+0111         
+0112         <span class="comment">% Runs each model through COBRA optimization and adds up scores</span>
+0113         <a name="_sub6" href="#_subfunctions" class="code">function self=runCobra(self,excRxn,newMets)</a>
+0114             genomeSet=self.generation{self.generationNum};
+0115             <span class="keyword">for</span> i=1:length(genomeSet)
+0116                 genome=self.generation{self.generationNum}(i);
+0117                 numModels=length(genome.sequence)-genome.endOfMets;
+0118                 hashCode=<a href="hash.html" class="code" title="function code=hash(genome, mets, newMets)">hash</a>(genome,self.mets, newMets);
+0119                 <span class="keyword">if</span> isKey(self.hashMap,hashCode)==1 <span class="comment">% Checks if genome is already in hashmap</span>
+0120                     genome.score=self.hashMap(hashCode);
+0121                 <span class="keyword">else</span>
+0122                     metsToKeep=genome.sequence(1:genome.endOfMets);
+0123                     fluxScore=0;
+0124                     <span class="keyword">for</span> j=genome.endOfMets+1:length(genome.sequence);
+0125                         modelIndex=genome.sequence{j};
+0126                         <span class="keyword">while</span> (ischar(modelIndex)==1) <span class="comment">% if knockout occured, move to next index</span>
+0127                            j=j+1;
+0128                            modelIndex=genome.sequence{j};
+0129                         <span class="keyword">end</span>
+0130                         <span class="keyword">if</span> isempty(modelIndex)==1 <span class="comment">% if knockout occurred at that position</span>
+0131                             fluxScore=fluxScore+0;
+0132                         <span class="keyword">else</span>
+0133                             model=self.models{modelIndex};
+0134                             fluxScore=fluxScore+<a href="#_sub8" class="code" title="subfunction score=cobraFlux(self,model,exchangeReaction,metsToKeep,numModels)">cobraFlux</a>(self,model,excRxn,metsToKeep,numModels); 
+0135                         <span class="keyword">end</span>
+0136                     <span class="keyword">end</span>
+0137                     genome.score=(abs(fluxScore)/numModels);
+0138                     self.hashMap(hashCode)=abs((fluxScore)/numModels);
+0139                 <span class="keyword">end</span>
+0140                 self.generation{self.generationNum}(i)=genome;
+0141             <span class="keyword">end</span>
+0142         <span class="keyword">end</span>
+0143         
+0144         <span class="comment">% Same as lookForFlux</span>
+0145         <a name="_sub7" href="#_subfunctions" class="code">function score=cobraFlux(self,model,exchangeReaction,metsToKeep,numModels)</a>
+0146             model=<a href="changeMetLevels.html" class="code" title="function modModel=changeMetLevels(model,block,retain,numModels)">changeMetLevels</a>(model,self.mets,metsToKeep,numModels);
+0147             score=0;
+0148             indexOfRxn=strmatch(exchangeReaction,model.rxnNames);
+0149             <span class="keyword">if</span> (isempty(indexOfRxn)==0)
+0150                 temp=model.S(:,indexOfRxn);
+0151                 tempArr=nonzeros(temp);
+0152 <span class="comment">%                 opt=optimizeCbModel(model,'max',0,true);</span>
+0153                 rxnTrueName = model.rxns(indexOfRxn);
+0154                 [fmin, fmax, vmin, vmax] = fluxVariability(model,100,<span class="string">'max'</span>,{rxnTrueName});
+0155 <span class="comment">%                 flux=opt.x(indexOfRxn);</span>
+0156                 flux=fmin;
+0157                 <span class="keyword">for</span> i=1:length(tempArr)
+0158                     score=score+tempArr(i);
+0159                 <span class="keyword">end</span>
+0160                 score=score*flux;
+0161                 score=abs(score); 
+0162             <span class="keyword">else</span>
+0163                 score=0;
+0164             <span class="keyword">end</span>
+0165         <span class="keyword">end</span>
+0166         
+0167         <span class="comment">% Generates tables with hashes and scores from the entire genome</span>
+0168         <span class="comment">% set</span>
+0169         <a name="_sub8" href="#_subfunctions" class="code">function table=getResults(self, fileName)</a>
+0170            table=<a href="hashTab.html" class="code" title="function hashSetup=hashTab(keys,values)">hashTab</a>(self.hashMap.keys,self.hashMap.values);
+0171            writetable(table,fileName);
+0172         <span class="keyword">end</span>
+0173     <span class="keyword">end</span>
+0174 <span class="keyword">end</span>
+0175</pre></div>
+<hr><address>Generated on Thu 14-Jun-2018 15:27:34 by <strong><a href="http://www.artefact.tk/software/matlab/m2html/" target="_parent">m2html</a></strong> &copy; 2005</address>
+</body>
+</html>

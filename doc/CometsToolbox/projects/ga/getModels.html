@@ -1,0 +1,96 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+                "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+<head>
+  <title>Description of getModels</title>
+  <meta name="keywords" content="getModels">
+  <meta name="description" content="Uday Tripathi 7/2016">
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <meta name="generator" content="m2html &copy; 2005 Guillaume Flandin">
+  <meta name="robots" content="index, follow">
+  <link type="text/css" rel="stylesheet" href="../../../m2html.css">
+  <script type="text/javascript">
+    if (top.frames.length == 0) { top.location = "../../../index.html"; };
+  </script>
+</head>
+<body>
+<a name="_top"></a>
+<!-- # CometsToolbox --><!-- # projects --><!-- menu.html ga -->
+<h1>getModels
+</h1>
+
+<h2><a name="_name"></a>PURPOSE <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+<div class="box"><strong>Uday Tripathi 7/2016</strong></div>
+
+<h2><a name="_synopsis"></a>SYNOPSIS <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+<div class="box"><strong>This is a script file. </strong></div>
+
+<h2><a name="_description"></a>DESCRIPTION <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+<div class="fragment"><pre class="comment"> Uday Tripathi 7/2016</pre></div>
+
+<!-- crossreference -->
+<h2><a name="_cross"></a>CROSS-REFERENCE INFORMATION <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+This function calls:
+<ul style="list-style-image:url(../../../matlabicon.gif)">
+</ul>
+This function is called by:
+<ul style="list-style-image:url(../../../matlabicon.gif)">
+<li><a href="quickFitness.html" class="code" title="function main=quickFitness(numOfGenomes, numOfGenerations)">quickFitness</a>	Uday Tripathi 7/2016</li></ul>
+<!-- crossreference -->
+
+
+
+<h2><a name="_source"></a>SOURCE CODE <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+<div class="fragment"><pre>0001 <span class="comment">% Uday Tripathi 7/2016</span>
+0002 
+0003 K1=load(<span class="string">'C:\Users\udayt.AD\Desktop\Kolenbrander_MATLAB\K1_HOMD_GF3613_Streptococcus_sanguinis.mat'</span>);
+0004 K1=K1.model;
+0005 K1A=load(<span class="string">'C:\Users\udayt.AD\Desktop\Kolenbrander_MATLAB\K1_HOMD_GF23368_Streptococcus_oralis.mat'</span>);
+0006 K1A=K1A.model;
+0007 K2=load(<span class="string">'C:\Users\udayt.AD\Desktop\Kolenbrander_MATLAB\K2_HOMD_GF510__Streptococcus_mitis.mat'</span>);
+0008 K2=K2.model;
+0009 K3=load(<span class="string">'C:\Users\udayt.AD\Desktop\Kolenbrander_MATLAB\K3_HOMD_GF1638_Streptococcus_gordonii.mat'</span>);
+0010 K3=K3.model;
+0011 K4=load(<span class="string">'C:\Users\udayt.AD\Desktop\Kolenbrander_MATLAB\K4_HOMD_GF3532_Capnocytophaga_ochracea.mat'</span>);
+0012 K4=K4.model;
+0013 K5=load(<span class="string">'C:\Users\udayt.AD\Desktop\Kolenbrander_MATLAB\K5_HOMD_GF207244_Propionibacterium_acnes.mat'</span>);
+0014 K5=K5.model;
+0015 K6=load(<span class="string">'C:\Users\udayt.AD\Desktop\Kolenbrander_MATLAB\K6_HOMD_GF24173_Haemophilus_parainfluenzae.mat'</span>);
+0016 K6=K6.model
+0017 K7=load(<span class="string">'C:\Users\udayt.AD\Desktop\Kolenbrander_MATLAB\K7_HOMD_GF29664_Prevotella_loescheii.mat'</span>);
+0018 K7=K7.model;
+0019 K8=load(<span class="string">'C:\Users\udayt.AD\Desktop\Kolenbrander_MATLAB\K8_HOMD_GF212687_Veillonella_dispar.mat'</span>);
+0020 K8=K8.model;
+0021 K9=load(<span class="string">'C:\Users\udayt.AD\Desktop\Kolenbrander_MATLAB\K9_HOMD_GF24325_Actinomyces_naeslundii.mat'</span>);
+0022 K9=K9.model;
+0023 K9A=load(<span class="string">'C:\Users\udayt.AD\Desktop\Kolenbrander_MATLAB\K9_HOMD_GF27961_Actinomyces_oris.mat'</span>);
+0024 K9A=K9A.model;
+0025 K10=load(<span class="string">'C:\Users\udayt.AD\Desktop\Kolenbrander_MATLAB\K10_HOMD_GF206787_Eikenella_corrodens.mat'</span>);
+0026 K10=K10.model;
+0027 K11=load(<span class="string">'C:\Users\udayt.AD\Desktop\Kolenbrander_MATLAB\K11_HOMD_GF_GBK_Actinomyces_israelii.mat'</span>);
+0028 K11=K11.model;
+0029 K12=load(<span class="string">'C:\Users\udayt.AD\Desktop\Kolenbrander_MATLAB\K12_HOMD_GF2244_Capnocytophaga_gingivalis.mat'</span>);
+0030 K12=K12.model;
+0031 K13=load(<span class="string">'C:\Users\udayt.AD\Desktop\Kolenbrander_MATLAB\K13_HOMD_GF2243_Capnocytophaga_sputigena.mat'</span>);
+0032 K13=K13.model;
+0033 K14=load(<span class="string">'C:\Users\udayt.AD\Desktop\Kolenbrander_MATLAB\K14_HOMD_GF32198_Fusobacterium_nucleatum.mat'</span>);
+0034 K14=K14.model;
+0035 K15=load(<span class="string">'C:\Users\udayt.AD\Desktop\Kolenbrander_MATLAB\K15_HOMD_GF3787_Prevotella_denticola.mat'</span>);
+0036 K15=K15.model;
+0037 K16=load(<span class="string">'C:\Users\udayt.AD\Desktop\Kolenbrander_MATLAB\K16_HOMD_GF28316_Aggregatibacter_actinomycetemcomitans.mat'</span>);
+0038 K16=K16.model;
+0039 K17=load(<span class="string">'C:\Users\udayt.AD\Desktop\Kolenbrander_MATLAB\K17_HOMD_GF3647_Eubacterium_limosum.mat'</span>);
+0040 K17=K17.model;
+0041 K18=load(<span class="string">'C:\Users\udayt.AD\Desktop\Kolenbrander_MATLAB\K18_HOMD_GF32471_Treponema_denticola.mat'</span>);
+0042 K18=K18.model;
+0043 K19=load(<span class="string">'C:\Users\udayt.AD\Desktop\Kolenbrander_MATLAB\K19_HOMD_GF_GBK_Tannerella_forsythia.mat'</span>);
+0044 K19=K19.model;
+0045 K20=load(<span class="string">'C:\Users\udayt.AD\Desktop\Kolenbrander_MATLAB\K20_HOMD_GF208016_Porphyromonas_gingivalis.mat'</span>);
+0046 K20=K20.model;
+0047 K21=load(<span class="string">'C:\Users\udayt.AD\Desktop\Kolenbrander_MATLAB\K21_HOMD_GF26179_Prevotella_intermedia.mat'</span>);
+0048 K21=K21.model;
+0049 K22=load(<span class="string">'C:\Users\udayt.AD\Desktop\Kolenbrander_MATLAB\K22_HOMD_GF2711_Selenomonas_flueggei.mat'</span>);
+0050 K22=K22.model;</pre></div>
+<hr><address>Generated on Thu 14-Jun-2018 15:27:34 by <strong><a href="http://www.artefact.tk/software/matlab/m2html/" target="_parent">m2html</a></strong> &copy; 2005</address>
+</body>
+</html>

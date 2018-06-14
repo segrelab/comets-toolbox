@@ -1,0 +1,141 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+                "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+<head>
+  <title>Description of breed</title>
+  <meta name="keywords" content="breed">
+  <meta name="description" content="BREED Produce a new array of genomes derived from the given genomesArray">
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <meta name="generator" content="m2html &copy; 2005 Guillaume Flandin">
+  <meta name="robots" content="index, follow">
+  <link type="text/css" rel="stylesheet" href="../../../m2html.css">
+  <script type="text/javascript">
+    if (top.frames.length == 0) { top.location = "../../../index.html"; };
+  </script>
+</head>
+<body>
+<a name="_top"></a>
+<!-- # CometsToolbox --><!-- # projects --><!-- menu.html ga -->
+<h1>breed
+</h1>
+
+<h2><a name="_name"></a>PURPOSE <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+<div class="box"><strong>BREED Produce a new array of genomes derived from the given genomesArray</strong></div>
+
+<h2><a name="_synopsis"></a>SYNOPSIS <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+<div class="box"><strong>function modGenomes=breed(genomesArray, survivors, newMets, newModels, numCross) </strong></div>
+
+<h2><a name="_description"></a>DESCRIPTION <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+<div class="fragment"><pre class="comment">BREED Produce a new array of genomes derived from the given genomesArray
+     arguments:
+         genomesArray cell array of Genome objects
+         survivors number of top-scoring Genomes to retain between generations
+         newMets cell array of string names of metabolites which can be added by mutation 
+         newModels cell array of Cobra models which can be added by
+         mutation
+         numCross number of genomes to be created by crossing the
+         metabolites of one parent with the models of the other parent</pre></div>
+
+<!-- crossreference -->
+<h2><a name="_cross"></a>CROSS-REFERENCE INFORMATION <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+This function calls:
+<ul style="list-style-image:url(../../../matlabicon.gif)">
+<li><a href="Genome.html" class="code" title="">Genome</a>	Uday Tripathi 7/2016</li></ul>
+This function is called by:
+<ul style="list-style-image:url(../../../matlabicon.gif)">
+<li><a href="Main.html" class="code" title="">Main</a>	Uday Tripathi 7/2016</li></ul>
+<!-- crossreference -->
+
+
+
+<h2><a name="_source"></a>SOURCE CODE <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+<div class="fragment"><pre>0001 <a name="_sub0" href="#_subfunctions" class="code">function modGenomes=breed(genomesArray, survivors, newMets, newModels, numCross)</a>
+0002 <span class="comment">%BREED Produce a new array of genomes derived from the given genomesArray</span>
+0003 <span class="comment">%     arguments:</span>
+0004 <span class="comment">%         genomesArray cell array of Genome objects</span>
+0005 <span class="comment">%         survivors number of top-scoring Genomes to retain between generations</span>
+0006 <span class="comment">%         newMets cell array of string names of metabolites which can be added by mutation</span>
+0007 <span class="comment">%         newModels cell array of Cobra models which can be added by</span>
+0008 <span class="comment">%         mutation</span>
+0009 <span class="comment">%         numCross number of genomes to be created by crossing the</span>
+0010 <span class="comment">%         metabolites of one parent with the models of the other parent</span>
+0011 
+0012 <span class="comment">% Uday Tripathi 7/2016</span>
+0013 
+0014 <span class="comment">% Sample input: (genomes, 3, newMets)</span>
+0015 <span class="comment">% newMets={'EX Ca2 e0','EX Cbl e0','EX Cd2 e0','EX Cl- e0','EX Co2 e0'}</span>
+0016 genomeSize=length(genomesArray);
+0017 copyGen=genomesArray;
+0018 
+0019 <span class="comment">% First &quot;survivors&quot; genomes are populated by the x fittest genomes from</span>
+0020 <span class="comment">% prior generation</span>
+0021 <span class="keyword">for</span> i=1:survivors
+0022     <span class="keyword">for</span> j=1:length(copyGen)
+0023         scores(j)=abs(copyGen(j).score);
+0024     <span class="keyword">end</span>
+0025     [a,b]=sort(scores(:),<span class="string">'descend'</span>);
+0026     maxIndicies=b(1:survivors);
+0027 <span class="keyword">end</span>
+0028 
+0029 <span class="keyword">for</span> k=1:survivors
+0030     index=b(k);
+0031     copyGen(index).score=0;
+0032     modGenomes(k)=copyGen(index);
+0033 <span class="keyword">end</span>
+0034 
+0035 <span class="keyword">for</span> i=survivors+1:genomeSize
+0036     <span class="comment">% Cross-Breeding</span>
+0037     counter=1;
+0038     <span class="keyword">for</span> j=1:numCross-1 <span class="comment">%</span>
+0039         max1=maxIndicies(j);
+0040         <span class="keyword">if</span> mod(counter,2)~=0 <span class="comment">% Allows for both recombinations</span>
+0041             max2=maxIndicies(j+1);
+0042         <span class="keyword">else</span>
+0043             max2=maxIndicies(j-1);
+0044         <span class="keyword">end</span>
+0045         g1=genomesArray(max1);
+0046         g2=genomesArray(max2);
+0047         sq1=g1.sequence;
+0048         models1=sq1(g1.endOfMets+1:length(sq1));
+0049         models1=cell2mat(models1);
+0050         sq2=g2.sequence;
+0051         mets2=sq2(1:g2.endOfMets);
+0052         tempG=<a href="Genome.html" class="code" title="">Genome</a>();
+0053         tempG=tempG.addMetsAndModels(mets2,models1(1:length(models1)));
+0054         modGenomes(survivors+counter)=tempG;
+0055         counter=counter+1;
+0056     <span class="keyword">end</span>
+0057     
+0058     <span class="comment">% Mutations</span>
+0059     mut=1;
+0060     <span class="keyword">for</span> k=genomeSize-survivors+(counter):genomeSize
+0061         <span class="comment">%genIndex=maxIndicies(mut);</span>
+0062         genIndex=randi([1,survivors]);
+0063         gen=genomesArray(genIndex);
+0064         
+0065         genomesArray(i).endOfMets=3; <span class="comment">%%</span>
+0066         
+0067         coinflip=randi([1,20]);
+0068         <span class="keyword">if</span> coinflip&lt;6 <span class="comment">% Mets</span>
+0069             metPos=genomesArray(i).endOfMets;
+0070             posOfMutation=randi([1,metPos]);
+0071             randMet=randi([1,length(newMets)]);
+0072             gen.sequence(posOfMutation)=newMets(randMet);
+0073         <span class="keyword">elseif</span> coinflip&lt;18 <span class="comment">% Models</span>
+0074             modelPos=genomesArray(i).endOfMets+1;
+0075             posOfMutation=randi([modelPos,length(gen.sequence)]);
+0076             randModel=randi([1,length(newModels)]);
+0077             gen.sequence{posOfMutation}=randModel;
+0078         <span class="keyword">else</span> <span class="comment">% Knockout</span>
+0079             pos=randi([1,genomesArray(i).endOfMets]);
+0080             gen.sequence{pos}=[];
+0081         <span class="keyword">end</span>
+0082         gen.score=0;
+0083         modGenomes(k)=gen;
+0084         mut=mut+1;
+0085     <span class="keyword">end</span>
+0086 <span class="keyword">end</span>
+0087 <span class="keyword">end</span></pre></div>
+<hr><address>Generated on Thu 14-Jun-2018 15:27:34 by <strong><a href="http://www.artefact.tk/software/matlab/m2html/" target="_parent">m2html</a></strong> &copy; 2005</address>
+</body>
+</html>

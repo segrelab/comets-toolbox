@@ -1,0 +1,80 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+                "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+<head>
+  <title>Description of Genome</title>
+  <meta name="keywords" content="Genome">
+  <meta name="description" content="Uday Tripathi 7/2016">
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <meta name="generator" content="m2html &copy; 2005 Guillaume Flandin">
+  <meta name="robots" content="index, follow">
+  <link type="text/css" rel="stylesheet" href="../../../m2html.css">
+  <script type="text/javascript">
+    if (top.frames.length == 0) { top.location = "../../../index.html"; };
+  </script>
+</head>
+<body>
+<a name="_top"></a>
+<!-- # CometsToolbox --><!-- # projects --><!-- menu.html ga -->
+<h1>Genome
+</h1>
+
+<h2><a name="_name"></a>PURPOSE <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+<div class="box"><strong>Uday Tripathi 7/2016</strong></div>
+
+<h2><a name="_synopsis"></a>SYNOPSIS <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+<div class="box"><strong>This is a script file. </strong></div>
+
+<h2><a name="_description"></a>DESCRIPTION <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+<div class="fragment"><pre class="comment"> Uday Tripathi 7/2016
+ Genome class. Responsible for each sequence within the main class that
+ runs the algorithm</pre></div>
+
+<!-- crossreference -->
+<h2><a name="_cross"></a>CROSS-REFERENCE INFORMATION <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+This function calls:
+<ul style="list-style-image:url(../../../matlabicon.gif)">
+<li><a href="Genome.html" class="code" title="">Genome</a>	Uday Tripathi 7/2016</li></ul>
+This function is called by:
+<ul style="list-style-image:url(../../../matlabicon.gif)">
+<li><a href="Genome.html" class="code" title="">Genome</a>	Uday Tripathi 7/2016</li><li><a href="Main.html" class="code" title="">Main</a>	Uday Tripathi 7/2016</li><li><a href="breed.html" class="code" title="function modGenomes=breed(genomesArray, survivors, newMets, newModels, numCross)">breed</a>	BREED Produce a new array of genomes derived from the given genomesArray</li><li><a href="genomeGenerator.html" class="code" title="function genomes=genomeGenerator(models, mets)">genomeGenerator</a>	Uday Tripathi 7/2016</li></ul>
+<!-- crossreference -->
+
+<h2><a name="_subfunctions"></a>SUBFUNCTIONS <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+<ul style="list-style-image:url(../../../matlabicon.gif)">
+<li><a href="#_sub1" class="code">function self=addMetsAndModels(self, metInput, models)</a></li></ul>
+
+<h2><a name="_source"></a>SOURCE CODE <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+<div class="fragment"><pre>0001 <span class="comment">% Uday Tripathi 7/2016</span>
+0002 <span class="comment">% Genome class. Responsible for each sequence within the main class that</span>
+0003 <span class="comment">% runs the algorithm</span>
+0004 classdef <a href="Genome.html" class="code" title="">Genome</a>
+0005     properties
+0006         score=0; <span class="comment">% the fitness score of specified genome</span>
+0007         sequence={}; <span class="comment">% the sequence of metabolites and models in the genome</span>
+0008         endOfMets=0; <span class="comment">% the position of the last metabolite in the sequence</span>
+0009     <span class="keyword">end</span>
+0010     
+0011     methods
+0012         <span class="comment">% Adds metabolites and models to the genome's sequence</span>
+0013         <span class="comment">% Input:</span>
+0014         <span class="comment">% metInput = the metabolites to be entered into the sequence</span>
+0015         <span class="comment">% models = the models to be entered into the sequence</span>
+0016         <a name="_sub0" href="#_subfunctions" class="code">function self=addMetsAndModels(self, metInput, models)</a>
+0017             <span class="keyword">for</span> i=1:length(metInput)
+0018                 self.sequence{i}=metInput{i};
+0019                 self.endOfMets=self.endOfMets+1;
+0020             <span class="keyword">end</span>
+0021             
+0022             counter=1;
+0023             <span class="keyword">for</span> j=length(metInput)+1:length(models)+length(metInput)
+0024                 self.sequence{j}=models(counter);
+0025                 counter=counter+1;
+0026             <span class="keyword">end</span>
+0027         <span class="keyword">end</span>
+0028 
+0029     <span class="keyword">end</span>
+0030 <span class="keyword">end</span></pre></div>
+<hr><address>Generated on Thu 14-Jun-2018 15:27:34 by <strong><a href="http://www.artefact.tk/software/matlab/m2html/" target="_parent">m2html</a></strong> &copy; 2005</address>
+</body>
+</html>

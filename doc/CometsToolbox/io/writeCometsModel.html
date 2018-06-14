@@ -1,0 +1,264 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+                "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+<head>
+  <title>Description of writeCometsModel</title>
+  <meta name="keywords" content="writeCometsModel">
+  <meta name="description" content="WRITECOMETSMODEL create a Comets input file for the given model">
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <meta name="generator" content="m2html &copy; 2005 Guillaume Flandin">
+  <meta name="robots" content="index, follow">
+  <link type="text/css" rel="stylesheet" href="../../m2html.css">
+  <script type="text/javascript">
+    if (top.frames.length == 0) { top.location = "../../index.html"; };
+  </script>
+</head>
+<body>
+<a name="_top"></a>
+<!-- # CometsToolbox --><!-- menu.html io -->
+<h1>writeCometsModel
+</h1>
+
+<h2><a name="_name"></a>PURPOSE <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="box"><strong>WRITECOMETSMODEL create a Comets input file for the given model</strong></div>
+
+<h2><a name="_synopsis"></a>SYNOPSIS <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="box"><strong>function f = writeCometsModel( input, filename, cometsParams) </strong></div>
+
+<h2><a name="_description"></a>DESCRIPTION <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="fragment"><pre class="comment">WRITECOMETSMODEL create a Comets input file for the given model
+   The third argument is optional, and can be used to override the default
+kinetic parameters declared in the CometsParams class</pre></div>
+
+<!-- crossreference -->
+<h2><a name="_cross"></a>CROSS-REFERENCE INFORMATION <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+This function calls:
+<ul style="list-style-image:url(../../matlabicon.gif)">
+<li><a href="../../CometsToolbox/core/CometsParams.html" class="code" title="">CometsParams</a>	</li><li><a href="../../CometsToolbox/external/m2html/@template/char.html" class="code" title="function s = char(tpl)">char</a>	TEMPLATE Convert a template object in a one line description string</li><li><a href="../../CometsToolbox/util/stridx.html" class="code" title="function [idx] = stridx(query, list, allowSubstr)">stridx</a>	STRIDX(str, {str}, [true]) Get the indexes of the query string in the given cell array.</li></ul>
+This function is called by:
+<ul style="list-style-image:url(../../matlabicon.gif)">
+<li><a href="writeCometsLayout.html" class="code" title="function writeCometsLayout( input, filedir, filename, includeParams, writeModels)">writeCometsLayout</a>	WRITECOMETSLAYOUT(input,[filedir],[filename],[includeParams],[writeModels]) Create a layout file along with the corresponding model</li></ul>
+<!-- crossreference -->
+
+<h2><a name="_subfunctions"></a>SUBFUNCTIONS <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<ul style="list-style-image:url(../../matlabicon.gif)">
+<li><a href="#_sub1" class="code">function s = findExcByS(model)</a></li></ul>
+
+<h2><a name="_source"></a>SOURCE CODE <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="fragment"><pre>0001 <a name="_sub0" href="#_subfunctions" class="code">function f = writeCometsModel( input, filename, cometsParams)</a>
+0002 <span class="comment">%WRITECOMETSMODEL create a Comets input file for the given model</span>
+0003 <span class="comment">%   The third argument is optional, and can be used to override the default</span>
+0004 <span class="comment">%kinetic parameters declared in the CometsParams class</span>
+0005 
+0006 <span class="comment">%Change how exchange reactions are defined:</span>
+0007 <span class="comment">% 1: by the S matrix</span>
+0008 <span class="comment">% 2: by name</span>
+0009 exchangeMode = 1;
+0010 
+0011 <span class="keyword">if</span> isa(input,<span class="string">'string'</span>)
+0012     strct=load(input);
+0013     model=strct.(<a href="../../CometsToolbox/external/m2html/@template/char.html" class="code" title="function s = char(tpl)">char</a>(fieldnames(strct)));
+0014 <span class="keyword">else</span>
+0015     <span class="keyword">if</span> isa(input,<span class="string">'struct'</span>)
+0016         model=input;
+0017     <span class="keyword">else</span>
+0018         error([<span class="string">'Invalid argument in writeCometsModel('</span> class(input)<span class="keyword">...</span>
+0019             <span class="string">', '</span> class(filename) <span class="string">'): The first argument should '</span><span class="keyword">...</span>
+0020             <span class="string">'be a well-structured COBRA model or the path of a '</span><span class="keyword">...</span>
+0021             <span class="string">'.mat file containing one.'</span>]);
+0022     <span class="keyword">end</span>
+0023 <span class="keyword">end</span>
+0024 
+0025 <span class="comment">%assert that the model is a well-structured COBRA model</span>
+0026 <span class="comment">%check for these fields: metNames, rxns, S, lb, ub, c, mets</span>
+0027 <span class="keyword">for</span> cf={<span class="string">'mets'</span> <span class="string">'rxns'</span> <span class="string">'S'</span> <span class="string">'lb'</span> <span class="string">'ub'</span> <span class="string">'c'</span>}
+0028     <span class="keyword">if</span> ~isfield(model,cf)
+0029         error([<span class="string">'Invalid argument in writeCometsModel('</span> class(input)<span class="keyword">...</span>
+0030             <span class="string">', '</span> class(filename) <span class="string">'): The input model requires the '</span><span class="keyword">...</span>
+0031             <span class="string">'following fields: [mets, rxns, S, lb, ub, c].'</span>]);<span class="comment">% Identified fields are ' [fieldnames(model)]']);</span>
+0032     <span class="keyword">end</span>
+0033 <span class="keyword">end</span>
+0034         
+0035 
+0036 clear exchange_rxnsIndex;
+0037 <span class="comment">%exc_logical=findExcRxns(model, 1);%COBRA function returning a logical vector.</span>
+0038 <span class="comment">%NOTE: We don't use findExcRxns any more because of the 'inclObjFlag'</span>
+0039 <span class="comment">%argument, when either puts the objective into the list or leaves it out,</span>
+0040 <span class="comment">%regardless of whether it satisfies the conditions that define an exchange</span>
+0041 <span class="comment">%reaction</span>
+0042 <span class="keyword">if</span> exchangeMode == 1 <span class="comment">%find by the S matrix</span>
+0043     exc_logical = <a href="#_sub1" class="code" title="subfunction s = findExcByS(model)">findExcByS</a>(model);
+0044     exchange_rxnsIndex=find(exc_logical);
+0045 <span class="keyword">else</span> <span class="comment">%find by name</span>
+0046     exchange_rxnsIndex = <a href="../../CometsToolbox/util/stridx.html" class="code" title="function [idx] = stridx(query, list, allowSubstr)">stridx</a>(<span class="string">'EX_'</span>,model.rxns,true);
+0047 <span class="keyword">end</span>
+0048 
+0049 S=full(model.S);
+0050 
+0051 [p, f, e] = fileparts(filename);
+0052 <span class="keyword">if</span> ~exist(p)
+0053     mkdir(p); <span class="comment">%initialize the folder</span>
+0054 <span class="keyword">end</span>
+0055 fileID = fopen(filename,<span class="string">'w'</span>);
+0056 
+0057 <span class="comment">%Print the S matrix</span>
+0058 [sx, sy] = size(model.S);
+0059 <span class="keyword">if</span> (sx + sy &lt; 1)
+0060     error(<span class="string">'There must be at least one row in the Stoichiometrix Matrix'</span>);
+0061 <span class="keyword">end</span>
+0062 fprintf(fileID,<span class="string">'SMATRIX  %d  %d\n'</span>,sx,sy);
+0063 <span class="keyword">for</span> i=1:sx
+0064     <span class="keyword">for</span> j=1:sy
+0065         <span class="keyword">if</span> S(i,j)~=0
+0066             fprintf(fileID,<span class="string">'    %d   %d   %f\n'</span>,i,j,S(i,j));
+0067         <span class="keyword">end</span>
+0068     <span class="keyword">end</span>
+0069 <span class="keyword">end</span>
+0070 
+0071 fprintf(fileID,<span class="string">'//\n'</span>);
+0072 
+0073 <span class="comment">%get the default flux and kinetic parameters</span>
+0074 <span class="keyword">if</span> nargin &lt; 3
+0075     <span class="comment">%load defaults from the CometsParams class</span>
+0076     cometsParams = <a href="../../CometsToolbox/core/CometsParams.html" class="code" title="">CometsParams</a>(); 
+0077 <span class="keyword">end</span>
+0078 defaults.ub = cometsParams.defaultReactionUpper;
+0079 defaults.lb = cometsParams.defaultReactionLower;
+0080 defaults.km = cometsParams.defaultKm;
+0081 defaults.vmax = cometsParams.defaultVmax;
+0082 
+0083 <span class="comment">%Print the bounds</span>
+0084 fprintf(fileID,<span class="string">'BOUNDS  %d  %d\n'</span>,defaults.lb,defaults.ub);
+0085 <span class="keyword">for</span> i=1:length(model.rxns)
+0086     fprintf(fileID,<span class="string">'    %d   %f   %f\n'</span>,i,model.lb(i),model.ub(i));
+0087 <span class="keyword">end</span>
+0088 fprintf(fileID,<span class="string">'//\n'</span>);
+0089 
+0090 <span class="comment">% %find objective reaction</span>
+0091 <span class="comment">% for i=1:length(model.c)</span>
+0092 <span class="comment">%     if model.c(i) ~= 0</span>
+0093 <span class="comment">%         objective=i;</span>
+0094 <span class="comment">%     end</span>
+0095 <span class="comment">% end</span>
+0096 
+0097 <span class="comment">%find the objective reaction or reactions</span>
+0098 <span class="comment">%The absolute value of model.c should denote priority, with 1 being highest</span>
+0099 <span class="comment">%A negative number denotes that the reaction should be minimized</span>
+0100 <span class="comment">%Ex: if c = [0 0 3 0 -2 1], maximize r6, then minimize r5, then maximize r3</span>
+0101 <span class="comment">%   so the output line should be: &quot;   6 -5 3&quot;</span>
+0102 <span class="keyword">if</span> ~isfield(model,<span class="string">'objective'</span>)
+0103     model.objective = model.c;
+0104 <span class="keyword">end</span>
+0105 
+0106 objIdxs = find(model.objective);
+0107 [objPriority, map] = sort(abs(model.objective(objIdxs)));
+0108 objLine = <span class="string">'   '</span>;
+0109 <span class="keyword">for</span> i = 1:length(objPriority)
+0110     idx = objIdxs(map(i));
+0111     <span class="keyword">if</span> (model.objective(idx) &lt; 0) 
+0112         idx = -1 * idx;
+0113     <span class="keyword">end</span>
+0114     objLine = [objLine <span class="string">' '</span> num2str(idx)];
+0115 <span class="keyword">end</span>
+0116 objLine = [objLine <span class="string">'\n'</span>];
+0117 <span class="comment">%Print the objective reaction</span>
+0118 fprintf(fileID,<span class="string">'OBJECTIVE\n'</span>);
+0119    fprintf(fileID,objLine); 
+0120 fprintf(fileID,<span class="string">'//\n'</span>);
+0121 
+0122 <span class="comment">%Print the Biomass reaction, if there are any true values in</span>
+0123 <span class="comment">%model.biomassRxn</span>
+0124 <span class="keyword">if</span> isfield(model,<span class="string">'biomassRxn'</span>) 
+0125     <span class="keyword">if</span> any(model.biomassRxn)
+0126         fprintf(fileID,<span class="string">'BIOMASS\n'</span>);
+0127         fprintf(fileID,<span class="string">'    '</span>);
+0128         idx = find(model.biomassRxn);
+0129         <span class="keyword">for</span> i=1:length(idx)
+0130             fprintf(fileID,<span class="string">' %d'</span>,idx(i));
+0131         <span class="keyword">end</span>
+0132         fprintf(fileID,<span class="string">'\n//\n'</span>);
+0133     <span class="keyword">end</span>
+0134 <span class="keyword">end</span>
+0135 
+0136 <span class="comment">%Print metabolite names</span>
+0137 fprintf(fileID,<span class="string">'METABOLITE_NAMES\n'</span>);
+0138 <span class="keyword">for</span> i=1:length(model.mets)
+0139   fprintf(fileID,<span class="string">'    %s\n'</span>,<a href="../../CometsToolbox/external/m2html/@template/char.html" class="code" title="function s = char(tpl)">char</a>(model.mets(i)));  
+0140 <span class="keyword">end</span>
+0141 fprintf(fileID,<span class="string">'//\n'</span>);
+0142 
+0143 <span class="comment">%Print reaction names</span>
+0144 fprintf(fileID,<span class="string">'REACTION_NAMES\n'</span>);
+0145 <span class="keyword">for</span> i=1:length(model.rxns)
+0146     rxnname = model.rxns{i};
+0147     <span class="keyword">if</span> length(strtrim(rxnname)) &lt; 1
+0148         rxnname = [<span class="string">'reaction_'</span> num2str(i)];
+0149     <span class="keyword">end</span>
+0150     rxnname = strrep(rxnname,<span class="string">' '</span>,<span class="string">'_'</span>);
+0151     fprintf(fileID,<span class="string">'    %s\n'</span>,rxnname);
+0152 <span class="keyword">end</span>
+0153 fprintf(fileID,<span class="string">'//\n'</span>);
+0154 
+0155 <span class="comment">%Print exchange reactions</span>
+0156 fprintf(fileID,<span class="string">'EXCHANGE_REACTIONS\n'</span>);
+0157 <span class="keyword">for</span> i=1:length(exchange_rxnsIndex)
+0158     idx = exchange_rxnsIndex(i);
+0159     fprintf(fileID,<span class="string">' %d'</span>,idx); 
+0160 <span class="keyword">end</span>
+0161 fprintf(fileID,<span class="string">'\n//\n'</span>);
+0162 
+0163 <span class="comment">%Print kinetic parameters</span>
+0164 <span class="comment">%Note that the reaction indices refer to the position of the reaction ID in</span>
+0165 <span class="comment">%the Exchange Reactions block, *Not* the actual index of the reaction</span>
+0166 <span class="comment">%KM</span>
+0167 <span class="keyword">if</span> isfield(model,<span class="string">'km'</span>) &amp;&amp; any(model.km)
+0168     fprintf(fileID,<span class="string">'KM_VALUES\t%d\n'</span>,defaults.km);
+0169     idx = find(~isnan(model.km) &amp; model.km ~= defaults.km);
+0170     <span class="keyword">for</span> i=1:length(idx)
+0171         rxnidx = idx(i);
+0172         exchidx = find(exchange_rxnsIndex==rxnidx);
+0173         <span class="keyword">if</span> exchidx
+0174             <span class="keyword">if</span> model.km(rxnidx) &gt; 0
+0175                 fprintf(fileID,<span class="string">'    %d %d\n'</span>,exchidx,model.km(rxnidx));
+0176             <span class="keyword">end</span>
+0177         <span class="keyword">end</span>
+0178     <span class="keyword">end</span>
+0179     fprintf(fileID,<span class="string">'//\n'</span>);
+0180 <span class="keyword">end</span>
+0181 
+0182 <span class="comment">%Vmax</span>
+0183 <span class="keyword">if</span> isfield(model,<span class="string">'vmax'</span>) &amp;&amp; any(model.vmax)
+0184     fprintf(fileID,<span class="string">'VMAX_VALUES\t%d\n'</span>,defaults.vmax);
+0185     idx = find(~isnan(model.vmax) &amp; model.vmax ~= defaults.vmax);
+0186     <span class="keyword">for</span> i=1:length(idx)
+0187         rxnidx = idx(i);
+0188         exchidx = find(exchange_rxnsIndex==rxnidx);
+0189         <span class="keyword">if</span> exchidx
+0190             <span class="keyword">if</span> model.vmax(rxnidx) &gt; 0
+0191                 fprintf(fileID,<span class="string">'    %d %d\n'</span>,exchidx,model.vmax(rxnidx));
+0192             <span class="keyword">end</span>
+0193         <span class="keyword">end</span>
+0194     <span class="keyword">end</span>
+0195     fprintf(fileID,<span class="string">'//\n'</span>);
+0196 <span class="keyword">end</span>
+0197 
+0198 <span class="comment">%Objective Style</span>
+0199 <span class="keyword">if</span> ~strcmpi(cometsParams.objectiveStyle,<span class="string">'default'</span>)
+0200     fprintf(fileID,<span class="string">'OBJECTIVE_STYLE\n'</span>);
+0201     fprintf(fileID,<span class="string">'\t%s\n//\n'</span>,cometsParams.objectiveStyle);
+0202 <span class="keyword">end</span>
+0203 
+0204 fclose(fileID);
+0205 <span class="keyword">end</span>
+0206 
+0207 <span class="comment">%determine if the reactions are exchanges or not by checking if there's</span>
+0208 <span class="comment">%only one reactant in the S matrix</span>
+0209 <a name="_sub1" href="#_subfunctions" class="code">function s = findExcByS(model)</a>
+0210     s = model.S;
+0211     s = s ~= 0; <span class="comment">%convert to logical: is there a value?</span>
+0212     s = sum(s,1); <span class="comment">%collapse columns</span>
+0213     s = s == 1; <span class="comment">%did each column have one member?</span>
+0214 <span class="keyword">end</span></pre></div>
+<hr><address>Generated on Thu 14-Jun-2018 15:27:34 by <strong><a href="http://www.artefact.tk/software/matlab/m2html/" target="_parent">m2html</a></strong> &copy; 2005</address>
+</body>
+</html>

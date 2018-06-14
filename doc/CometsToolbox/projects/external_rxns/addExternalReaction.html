@@ -1,0 +1,156 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+                "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+<head>
+  <title>Description of addExternalReaction</title>
+  <meta name="keywords" content="addExternalReaction">
+  <meta name="description" content="Add an external reaction to the given layout">
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <meta name="generator" content="m2html &copy; 2005 Guillaume Flandin">
+  <meta name="robots" content="index, follow">
+  <link type="text/css" rel="stylesheet" href="../../../m2html.css">
+  <script type="text/javascript">
+    if (top.frames.length == 0) { top.location = "../../../index.html"; };
+  </script>
+</head>
+<body>
+<a name="_top"></a>
+<!-- # CometsToolbox --><!-- # projects --><!-- menu.html external_rxns -->
+<h1>addExternalReaction
+</h1>
+
+<h2><a name="_name"></a>PURPOSE <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+<div class="box"><strong>Add an external reaction to the given layout</strong></div>
+
+<h2><a name="_synopsis"></a>SYNOPSIS <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+<div class="box"><strong>function layout = addExternalReaction(layout, rxnName, metabolites, stoichiometries, varargin) </strong></div>
+
+<h2><a name="_description"></a>DESCRIPTION <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+<div class="fragment"><pre class="comment">Add an external reaction to the given layout
+@author mquintin 5/8/2017
+Usage: layout = addExternalReaction(layout, rxnName, metabolites{},
+stoichiometries[], ['enzyme', enzymeName], ['k', rxnRate], ['km',
+michaelisConstant]</pre></div>
+
+<!-- crossreference -->
+<h2><a name="_cross"></a>CROSS-REFERENCE INFORMATION <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+This function calls:
+<ul style="list-style-image:url(../../../matlabicon.gif)">
+</ul>
+This function is called by:
+<ul style="list-style-image:url(../../../matlabicon.gif)">
+<li><a href="../../../CometsToolbox/projects/bioreactors/makeChemostat.html" class="code" title="function layout = makeChemostat(layout,varargin)">makeChemostat</a>	MAKECHEMOSTAT makeChemostat(layout, dilution{mL/h}, cellVolume)</li></ul>
+<!-- crossreference -->
+
+<h2><a name="_subfunctions"></a>SUBFUNCTIONS <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+<ul style="list-style-image:url(../../../matlabicon.gif)">
+<li><a href="#_sub1" class="code">function layout = addMetIfNotPresent(layout, metnames)</a></li><li><a href="#_sub2" class="code">function arr = verticalize(arr)</a></li></ul>
+
+<h2><a name="_source"></a>SOURCE CODE <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+<div class="fragment"><pre>0001 <span class="comment">%Add an external reaction to the given layout</span>
+0002 <span class="comment">%@author mquintin 5/8/2017</span>
+0003 <a name="_sub0" href="#_subfunctions" class="code">function layout = addExternalReaction(layout, rxnName, metabolites, stoichiometries, varargin)</a>
+0004 <span class="comment">%Usage: layout = addExternalReaction(layout, rxnName, metabolites{},</span>
+0005 <span class="comment">%stoichiometries[], ['enzyme', enzymeName], ['k', rxnRate], ['km',</span>
+0006 <span class="comment">%michaelisConstant]</span>
+0007 
+0008 
+0009 t.rxns = layout.external_rxns;
+0010 t.mets = layout.external_rxn_mets;
+0011 <span class="comment">% % % %initialize the tables if empty</span>
+0012 <span class="comment">% % % if isempty(t.rxns)</span>
+0013 <span class="comment">% % %     t.rxns = cell2table({'TEMP_INIT_REACTION',0,'TEMP_MET',0});</span>
+0014 <span class="comment">% % %     t.rxns.Properties.VariableNames = {'name','k','enzyme','km'};</span>
+0015 <span class="comment">% % % end</span>
+0016 <span class="comment">% % % if isempty(t.mets)</span>
+0017 <span class="comment">% % %     t.mets = cell2table({'TEMP_INIT_REACTION','TEMP_MET',0});</span>
+0018 <span class="comment">% % %     t.mets.Properties.VariableNames = {'rxn','met','stoich'};</span>
+0019 <span class="comment">% % % end</span>
+0020 <span class="comment">% % %</span>
+0021 <span class="comment">% % % %check that the reaction doesn't already exist</span>
+0022 <span class="comment">% % % if any(stridx(rxnName,t.rxns.name))</span>
+0023 <span class="comment">% % %     error(['The reaction &quot;' rxnName '&quot; already exists.']);</span>
+0024 <span class="comment">% % % end</span>
+0025 
+0026 <span class="comment">%default values</span>
+0027 enzyme = <span class="string">''</span>;
+0028 k = layout.params.defaultVmax;
+0029 km = layout.params.defaultKm;
+0030 
+0031 <span class="comment">%parse optional arguments</span>
+0032 <span class="keyword">for</span> i = 1:2:length(varargin)
+0033     <span class="keyword">switch</span> upper(varargin{i})
+0034         <span class="keyword">case</span> <span class="string">'ENZYME'</span>
+0035             <span class="comment">%add an enzyme to the reaction</span>
+0036             enzyme = varargin{i+1};
+0037             layout = <a href="#_sub1" class="code" title="subfunction layout = addMetIfNotPresent(layout, metnames)">addMetIfNotPresent</a>(layout,varargin{i+1});
+0038         <span class="keyword">case</span> <span class="string">'K'</span>
+0039             <span class="comment">%set kcat/vmax. 'K', 'KCAT', and 'VMAX' are all identical</span>
+0040             k = varargin{i+1};
+0041         <span class="keyword">case</span> <span class="string">'KCAT'</span>
+0042             k = varargin{i+1};
+0043         <span class="keyword">case</span> <span class="string">'VMAX'</span>
+0044             k = varargin{i+1};
+0045         <span class="keyword">case</span> <span class="string">'KM'</span>
+0046             <span class="comment">%set Michaelis constant</span>
+0047             km = varargin{i+1};
+0048     <span class="keyword">end</span>
+0049 <span class="keyword">end</span>
+0050 
+0051 <span class="comment">%add the reaction to the table</span>
+0052 rxnrow = {rxnName, k, enzyme, km};
+0053 t.rxns = [t.rxns; rxnrow];
+0054 
+0055 <span class="comment">%add the metabolites to the table</span>
+0056 <span class="keyword">if</span> iscell(metabolites)
+0057     <span class="comment">%mets should always be a vertical array</span>
+0058     metabolites = <a href="#_sub2" class="code" title="subfunction arr = verticalize(arr)">verticalize</a>(metabolites);
+0059     layout = <a href="#_sub1" class="code" title="subfunction layout = addMetIfNotPresent(layout, metnames)">addMetIfNotPresent</a>(layout,metabolites);
+0060     <span class="keyword">for</span> i = 1:length(metabolites)
+0061         s = stoichiometries(i);
+0062         metrow = {rxnName, metabolites{i}, s};
+0063         t.mets = [t.mets; metrow];
+0064     <span class="keyword">end</span>
+0065 <span class="keyword">elseif</span> ischar(metabolites)
+0066     layout = <a href="#_sub1" class="code" title="subfunction layout = addMetIfNotPresent(layout, metnames)">addMetIfNotPresent</a>(layout,{metabolites});
+0067     metrow = {rxnName, metabolites, stoichiometries(1)};
+0068     t.mets = [t.mets; metrow];
+0069 <span class="keyword">end</span>
+0070 
+0071 <span class="comment">%make sure the column names are set correctly</span>
+0072 t.rxns.Properties.VariableNames = {<span class="string">'name'</span>,<span class="string">'k'</span>,<span class="string">'enzyme'</span>,<span class="string">'km'</span>};
+0073 t.mets.Properties.VariableNames = {<span class="string">'rxn'</span>,<span class="string">'met'</span>,<span class="string">'stoich'</span>};
+0074 
+0075 <span class="comment">% % %remove initialization rows</span>
+0076 <span class="comment">% % if any(stridx('TEMP_INIT_REACTION',t.rxns.name))</span>
+0077 <span class="comment">% %     tmp = stridx('TEMP_INIT_REACTION',t.rxns.name);</span>
+0078 <span class="comment">% %     t.rxns = t.rxns(1:length(t.rxns.name) ~= tmp,:);</span>
+0079 <span class="comment">% % end</span>
+0080 <span class="comment">% % if any(stridx('TEMP_INIT_REACTION',t.mets.rxn))</span>
+0081 <span class="comment">% %     tmp = stridx('TEMP_INIT_REACTION',t.rxns.name);</span>
+0082 <span class="comment">% %     t.rxns = t.rxns(1:length(t.mets.rxn) ~= tmp,:);</span>
+0083 <span class="comment">% % end</span>
+0084 
+0085 layout.external_rxns = t.rxns;
+0086 layout.external_rxn_mets = t.mets;
+0087 
+0088 
+0089     <a name="_sub1" href="#_subfunctions" class="code">function layout = addMetIfNotPresent(layout, metnames)</a>
+0090         diff = setdiff(metnames,layout.mets);
+0091         <span class="keyword">if</span> ~isempty(diff)
+0092             layout = addMets(layout,diff);
+0093         <span class="keyword">end</span>
+0094     <span class="keyword">end</span>
+0095 
+0096     <a name="_sub2" href="#_subfunctions" class="code">function arr = verticalize(arr)</a>
+0097         <span class="comment">%layout.mets should always be a column vector</span>
+0098         [h,w] = size(arr);
+0099         <span class="keyword">if</span> w &gt; 1
+0100             arr = arr';
+0101             arr = arr(1:end);
+0102         <span class="keyword">end</span>
+0103     <span class="keyword">end</span>
+0104 <span class="keyword">end</span></pre></div>
+<hr><address>Generated on Thu 14-Jun-2018 15:27:34 by <strong><a href="http://www.artefact.tk/software/matlab/m2html/" target="_parent">m2html</a></strong> &copy; 2005</address>
+</body>
+</html>
