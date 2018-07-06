@@ -42,7 +42,7 @@ end
 
 
 %call COBRA to strip the compartment if in the form "metName[c]" or "metName(c)"
-[basemetnames, compsymbols] = parseMetNames(mets);
+[basemetnames, compsymbols] = parseMetNames2(mets);
 
 newmetnames = cell(length(basemetnames),1);
 failed = cell(length(basemetnames),1);
@@ -54,7 +54,7 @@ mksqlite('open',dbpath);
 for i = 1:length(basemetnames)
     met = basemetnames{i};
     %use LIKE instead of == to ignore case
-    res = mksqlite('select official from PSEUDONYM where pseudonym like ?',met);
+    res = mksqlite('select official from PSEUDONYM where pseudonym like ?',strtrim(met));
     if ~isempty(res) %match found
         %if ischar(res.official)
         %    newmetnames{i} = res.official;
@@ -80,13 +80,13 @@ for i = 1:length(basemetnames)
         
     else %no match found
         %try searching on the model.metNames field instead
-        [tempbase, tempcomp] = parseMetNames(model.metNames(i));
-        res = mksqlite('select official from PSEUDONYM where pseudonym like ?',tempbase{1});
+        [fullbase, fullcomp] = parseMetNames2(model.metNames(i));
+        res = mksqlite('select official from PSEUDONYM where pseudonym like ?',strtrim(fullbase{1}));
         if ~isempty(res)
             newname = {res.official};
             newmetnames{i} = newname{1};
             if strcmp('',compsymbols{i})
-                compsymbols{i} = tempcomp{1};
+                compsymbols{i} = fullcomp{1};
             end
         else %still no match
             newmetnames{i} = met;
@@ -109,4 +109,29 @@ end
 
 %apply change to the model
 model.mets = newmetnames;
+end
+
+%Extended from COBRA parseMetNames in order to support compartments with
+%multi-character abbreviations
+function [baseMetNames, compSymbols] = parseMetNames2(metNames)
+if ~iscell(metNames)
+    metNames = {metNames};
+end
+
+try
+    data = cellfun(@(x) regexp(x,'^(?<metNames>.*)\[(?<compSymbols>[^\[*]*)\]$','names'),metNames);
+catch
+    %If the above doesn't work, its likely, that we either have an odd
+    %compartment symbol (e.g. (), or that we have a non compartmented
+    %entry.
+    %Lets see if we have a ()compartment symbol
+    try
+        data = cellfun(@(x) regexp(x,'^(?<metNames>.*)\((?<compSymbols>[^\[*]*)\)$','names'),metNames);
+    catch
+        %No, we don't lets assume, we only have a metabolite name
+        data = cellfun(@(x) regexp(x,'^(?<metNames>.*)[\(\[]*(?<compSymbols>.*)[^\[\(]*[\]\)]*$','names'),metNames);
+    end
+end
+baseMetNames = columnVector({data.metNames});
+compSymbols = columnVector({data.compSymbols});
 end
