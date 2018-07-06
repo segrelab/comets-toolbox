@@ -70,7 +70,7 @@ else %COMETS format:
     
     %initialize the table
     varnames = {'t' 'x' 'y' 'model' 'rxn' 'flux'};
-    nrows = nsteps * xmax * ymax * numfluxes;
+    nrows = nsteps * xmax * ymax * nspecies * numfluxes;
     tab = table();
     tab.t = zeros(nrows,1);
     tab.x = zeros(nrows,1);

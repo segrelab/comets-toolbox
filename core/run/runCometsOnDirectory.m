@@ -22,6 +22,7 @@ function comets_output = runCometsOnDirectory(run_COMETS_folder)
 %   -If no copy of comets_w64_scr.bat can be found, create a new one.
 %   -If multiple versions of comets*.jar exist, use the most recent one
 %
+% TODO: Update this to not rely on .bat files, so it works on Linux
 
 %% Add COMETS Java Classpath to MATLAB
 cometshome = getenv('COMETS_HOME');

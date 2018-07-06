@@ -125,7 +125,11 @@ if isfield(model,'biomassRxn')
     if any(model.biomassRxn)
         fprintf(fileID,'BIOMASS\n');
         fprintf(fileID,'    ');
-        idx = find(model.biomassRxn);
+        if length(model.biomassRxn > 1)
+            idx = find(model.biomassRxn);
+        else 
+            idx = model.biomassRxn;
+        end
         for i=1:length(idx)
             fprintf(fileID,' %d',idx(i));
         end

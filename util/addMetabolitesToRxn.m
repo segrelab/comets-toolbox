@@ -31,7 +31,7 @@ end
 
 if ~isempty(newmets)
     for i = 1:length(newmets)
-        warning(['Adding metabolite ' newmets{i} ' to the model ' getModelName(model)]);
+        %warning(['Adding metabolite ' newmets{i} ' to the model ' getModelName(model)]);
         model = addMetabolite(model,newmets{i});
     end
 end
