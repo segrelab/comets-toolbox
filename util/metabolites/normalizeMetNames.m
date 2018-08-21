@@ -54,7 +54,7 @@ mksqlite('open',dbpath);
 for i = 1:length(basemetnames)
     met = basemetnames{i};
     %use LIKE instead of == to ignore case
-    res = mksqlite('select official from PSEUDONYM where pseudonym like ?',strtrim(met));
+    res = mksqlite('select official from PSEUDONYM where pseudonym == ?',strtrim(met));
     if ~isempty(res) %match found
         %if ischar(res.official)
         %    newmetnames{i} = res.official;
@@ -81,7 +81,7 @@ for i = 1:length(basemetnames)
     else %no match found
         %try searching on the model.metNames field instead
         [fullbase, fullcomp] = parseMetNames2(model.metNames(i));
-        res = mksqlite('select official from PSEUDONYM where pseudonym like ?',strtrim(fullbase{1}));
+        res = mksqlite('select official from PSEUDONYM where pseudonym == ?',strtrim(fullbase{1}));
         if ~isempty(res)
             newname = {res.official};
             newmetnames{i} = newname{1};
