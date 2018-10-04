@@ -523,7 +523,28 @@ classdef CometsLayout
             
             self = applyBarrierMask(self,mask);
         end
-                
+        
+        function self = setGlobalStaticMedia(self,metname,val)
+            %Sets the given metabolite or list of metabolites to be
+            %globally held at the given value or values. To remove a
+            %metabolite from this setting, assign it a value < 0
+            if ~iscell(metname)
+                metname = {metname};
+            end
+            if length(val) < length(metname)
+                val = repmat(val,length(metname),1);
+            end
+            for i = 1:length(metname)
+                metidx = stridx(metname{i},self.mets,false);
+                if val(i) >= 0
+                    self.global_static_media(metidx,1) = 1;
+                    self.global_static_media(metidx,2) = val(i);
+                else
+                    self.global_static_media(metidx,1) = 0;
+                end
+            end
+        end
+        
     end
     
 end
