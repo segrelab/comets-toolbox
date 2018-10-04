@@ -140,7 +140,9 @@ end
 %Print metabolite names
 fprintf(fileID,'METABOLITE_NAMES\n');
 for i=1:length(model.mets)
-  fprintf(fileID,'    %s\n',char(model.mets(i)));  
+    m = model.mets{i};
+    m = strrep(m,' ','_');
+  fprintf(fileID,'    %s\n',m);  
 end
 fprintf(fileID,'//\n');
 

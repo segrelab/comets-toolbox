@@ -206,7 +206,7 @@ end
 fprintf(fileID,'\t//\n');
 
 % // Media
-% TODO: This section should handle specification of media on a cell-by-cell
+% This section should handle specification of media on a cell-by-cell
 % basis.
 fprintf(fileID,'\tmedia\n');
 
