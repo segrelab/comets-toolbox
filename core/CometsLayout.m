@@ -203,10 +203,10 @@ classdef CometsLayout
             if any(self.media_amt)
                 self.media_amt = self.media_amt(map);
             end
-            if any(self.diffusion_constants)
-                self.diffusion_constants = self.diffusion_constants(map,1:2);
+            if any(self.diffusion_constants(:))
+                self.diffusion_constants = self.diffusion_constants(map,:);
             end
-            if any(self.global_media_refresh)
+            if any(self.global_media_refresh(:))
                 self.global_media_refresh = self.global_media_refresh(map);
             end
             if any(self.media_refresh(:))
