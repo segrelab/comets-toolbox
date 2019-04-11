@@ -1,24 +1,35 @@
 function createScriptFile( directory, layoutName, paramFilesExist )
-%CREATESCRIPTFILE(directory, [layoutName], [paramFilesExist]) Create the
+%CREATESCRIPTFILE([directory], [layoutName], [paramFilesExist]) Create the
 %comets_script.txt file which tells command-line COMETS where to find the
 %files it needs to run
 %
+%current directory will be used if not provided
 %Layout name will be guessed if not provided.
 %If paramFilesExist is not given, the function will check the given
 %directory for 'global_params.txt' and 'package_params.txt'.
 %If paramFilesExist = false, the script will exclude any params files even
 %if they really do exist
 
+if nargin < 1
+    directory = pwd;
+end
+
 if nargin < 2
     layoutName = 'comets_layout.txt';
-elseif ~strfind(layoutName,'.') %the layout name doesn't have an extension
+elseif ~contains(layoutName,'.') %the layout name doesn't have an extension
     layoutName = [layoutName '.txt'];
 end
 
-scriptfile = fullfile(directory, 'comets_script.txt');
-lfile = fullfile(directory,layoutName);
-gpfile = fullfile(directory,'global_params.txt');
-ppfile = fullfile(directory,'package_params.txt');
+% scriptfile = fullfile(directory, 'comets_script.txt');
+% lfile = fullfile(directory,layoutName);
+% gpfile = fullfile(directory,'global_params.txt');
+% ppfile = fullfile(directory,'package_params.txt');
+sep = filesep;
+scriptfile = 'comets_script.txt';
+lfile = layoutName;
+gpfile = 'global_params.txt';
+ppfile = 'package_params.txt';
+
 
 %do the param files exist?
 gpexist = exist(gpfile,'file');
@@ -29,7 +40,7 @@ if nargin < 3
     paramFilesExist = gpexist | ppexist;
 end
 
-file = fopen(scriptfile,'w');
+file = fopen([directory sep scriptfile],'w');
 
 fprintf(file,'load_layout %s\n',lfile);
 

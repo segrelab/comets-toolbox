@@ -1,11 +1,18 @@
-function writeCometsLayout( input, filedir, filename, includeParams, writeModels)
-%WRITECOMETSLAYOUT(input,[filedir],[filename],[includeParams],[writeModels]) Create a layout file along with the corresponding model
+function writeCometsLayout( input, filedir, filename, includeParams, writeModels, modelFileDir)
+%WRITECOMETSLAYOUT(input,[filedir],[filename],[includeParams],[writeModels],[modelFileDir]) Create a layout file along with the corresponding model
 %files
 % Arguments:
 %     input: a CometsLayout struct
 %     filedir: directory in which files should be created. Defaults to the current working directory
 %     includeParams: should a 'parameters' block be included in the start of the file text?
 %     writeModels: should model files be created for each model in the given CometsLayout?
+%     modelFileDir: Directory that contains the model files. This string
+%     will be prepended onto the model file name, but not affect the
+%     destination where this script creates the model files (which is
+%     set in the filedir argument). This is intended for when the model
+%     files are already in a separate location, or an absolute path must be
+%     provided because the layout will be executed by a script that is not
+%     in the same location as it.
 if nargin == 2
     filename = 'layout.txt';
     %filedir = 'layout';
@@ -16,6 +23,9 @@ if nargin < 4
 end
 if nargin < 5
     writeModels = true;
+end
+if nargin < 6
+    modelFileDir = '';
 end
 
 if isa(input,'string')
@@ -131,7 +141,8 @@ end
 fprintf(fileID,'model_file');
 for i = 1:length(layout.models)
     m = layout.models{i};
-    fprintf(fileID,' %s',getModelFileName(m));
+    mname = [modelFileDir getModelFileName(m)];
+    fprintf(fileID,' %s',mname);
 end
 fprintf(fileID,'\n');
 
