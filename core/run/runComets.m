@@ -6,7 +6,7 @@ currentdir = pwd;
 if nargin < 2
     directory = pwd;
 end
-if ~exist(directory)
+if ~exist(directory,'dir')
     mkdir(directory);
 end
 cd(directory);

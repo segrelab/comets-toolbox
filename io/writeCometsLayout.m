@@ -106,6 +106,7 @@ if includeParams
         'useLogNameTimeStamp','showCycleTime','showCycleCount','saveslideshow',...
         'slideshowColorRelative','simulateActivation','randomOrder','pauseOnStep','allowCellOverlap',...
         'toroidalWorld','colorRelative','slideshowColorRelative'};
+    integerFields = {'maxCycles','numDiffPerStep','numRunThreads','numExRxnSubsteps','fluxLogRate','mediaLogRate','biomassLogRate','totalBiomassLogRate'};
     for i = 1:length(pfields)
         p = pfields{i};
         if ~ismember(p,dontPrint)
@@ -117,6 +118,9 @@ if includeParams
                 else
                     val = 'false';
                 end
+            end
+            if ismember(c,integerFields)
+                val = round(val);
             end
             %     if ~ischar(val)
             %         val = char(val);

@@ -31,6 +31,7 @@ end
 
 p = plot(x,y);
 legend(metnames,'location','best','Interpreter', 'none');
-
+xlabel('Timestep');
+ylabel('Concentration (mmol)');
 end
 
