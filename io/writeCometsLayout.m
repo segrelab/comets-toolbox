@@ -354,7 +354,7 @@ if any(find(layout.static_media(:,:,:,1)))
 end
 fprintf(fileID,'\t//\n');
 
-% // 2f. Barrier Coordinates
+%% // 2f. Barrier Coordinates
 %
 % Simple enough, this block describes those grid coordinates that contain
 % barriers (i.e., no media, biomass, or diffusion can occur here).
@@ -370,8 +370,36 @@ for x = 1:s(1)
         end
     end
 end
+fprintf(fileID,'\t//\n');
 
-fprintf(fileID,'\t//\n//\n');
+
+%% 2g Periodic media
+% This block describes what and where should be the periodic media.
+% There are two settings, simple and detailed. 
+% Simple:
+% metIndex  functionName   amplitude period  phase offset
+%
+% Detailed:
+% metIndex functionName    rowIndex  colIndex amplitude period phase offset
+if layout.periodic_media_mode == "simple"   
+    % Simple mode
+    fprintf(fileID,'\tperiodic_media\tsimple\n\t');
+    % Iterate over array and print if amplitude is > 0
+    for i=1:length(layout.simple_periodic_media)
+        params = layout.simple_periodic_media(i);
+        fprintf(fileID,'\t%d', params.idx);
+        fprintf(fileID,'\t%s', params.funcname);
+        fprintf(fileID,'\t%d', params.amplitude);
+        fprintf(fileID,'\t%d', params.period);
+        fprintf(fileID,'\t%d', params.phase);
+        fprintf(fileID,'\t%d', params.offset);
+    end
+elseif layout.periodic_media_mode == "detailed"
+    % Detailed mode
+    fprintf(fileID,'\tperiodic_media\tdetailed\n');
+end
+
+fprintf(fileID,'\n//\n');
 % // 3. Initial Biomass Population
 %
 % This final block describes the initial biomass population in the layout,

@@ -30,6 +30,9 @@ classdef CometsLayout
         initial_pop = [0];%models by x by y, default 0. Units = grams.
         external_rxns = table();
         external_rxn_mets = table();
+        periodic_media_mode = 'none';
+        simple_periodic_media = {}; % met by 5 cell array
+        detailed_periodic_media = {}; % met by 7 cell array
         %TODO: initial_pop modes (rectangle, random...)
     end
     
@@ -543,6 +546,24 @@ classdef CometsLayout
                     self.global_static_media(metidx,1) = 0;
                 end
             end
+        end
+        
+        function self = setSimplePeriodicMedia(self, metname, funcname, amplitude, period, phase, offset)
+            if nargin<6
+                offset = 0;
+            end
+            if nargin < 5
+                phase = 0;
+            end
+            
+            i = length(self.simple_periodic_media);
+            self.simple_periodic_media(i+1).idx = metIdx(self, metname);
+            self.simple_periodic_media(i+1).funcname = funcname;
+            self.simple_periodic_media(i+1).amplitude = amplitude;
+            self.simple_periodic_media(i+1).period = period;
+            self.simple_periodic_media(i+1).phase = phase;
+            self.simple_periodic_media(i+1).offset = offset;
+            self.periodic_media_mode = 'simple';
         end
         
     end
