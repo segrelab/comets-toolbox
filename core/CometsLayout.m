@@ -584,7 +584,7 @@ classdef CometsLayout
             end
         end
         
-        function self = setDetailedPeriodicMedia(self, metname, funcname, row, col, amplitude, period, phase, offset)
+        function self = setDetailedPeriodicMedia(self, metname, funcname, x, y, amplitude, period, phase, offset)
             if nargin<8
                 offset = 0;
             end
@@ -602,8 +602,8 @@ classdef CometsLayout
             new_PM = struct;
             new_PM.idx = metIdx(self, metname);
             new_PM.funcname = funcname;
-            new_PM.row = row;
-            new_PM.col = col;
+            new_PM.x = x;
+            new_PM.y = y;
             new_PM.amplitude = amplitude;
             new_PM.period = period;
             new_PM.phase = phase;

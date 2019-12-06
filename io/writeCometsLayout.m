@@ -402,8 +402,8 @@ elseif layout.periodic_media_mode == "detailed"
         params = layout.detailed_periodic_media{i};
         fprintf(fileID,'\t\t%d', params.idx);
         fprintf(fileID,'\t%s', params.funcname);
-        fprintf(fileID,'\t%d', params.row);
-        fprintf(fileID,'\t%d', params.col);
+        fprintf(fileID,'\t%d', params.x - 1);
+        fprintf(fileID,'\t%d', params.y - 1);
         fprintf(fileID,'\t%d', params.amplitude);
         fprintf(fileID,'\t%d', params.period);
         fprintf(fileID,'\t%d', params.phase);
