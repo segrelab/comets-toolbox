@@ -381,6 +381,7 @@ fprintf(fileID,'\t//\n');
 %
 % Detailed:
 % metIndex functionName    rowIndex  colIndex amplitude period phase offset
+
 if layout.periodic_media_mode == "global"   
     % Global mode
     fprintf(fileID,'\tperiodic_media\tglobal\n');

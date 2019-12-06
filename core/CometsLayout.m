@@ -549,6 +549,20 @@ classdef CometsLayout
         end
         
         function self = setGlobalPeriodicMedia(self, metname, funcname, amplitude, period, phase, offset)
+            % Seet the parameters for a periodic media concentration of a
+            % specific cell. The possible periodic functions (funcname)
+            % are 
+            %   - "step": A normal step function (i.e. on/off)
+            %   - "sin": Sinus function
+            %   - "cos": Cosinus function
+            %   - "half_sin": max(sin, 0), i.e. a sinus function when above
+            %   0. Used to model diurnal light conditions
+            %   - "half_cos": max(cos, 0), i.e. a sinus function when above
+            %   0. Used to model diurnal light conditions
+            %
+            % All functions must be provided an amplitud, period, phase
+            % (not angular phase) and offset.
+            
             if nargin<6
                 offset = 0;
             end
@@ -585,6 +599,20 @@ classdef CometsLayout
         end
         
         function self = setDetailedPeriodicMedia(self, metname, funcname, x, y, amplitude, period, phase, offset)
+            % Seet the parameters for a periodic media concentration of a
+            % specific cell. The possible periodic functions (funcname)
+            % are 
+            %   - "step": A normal step function (i.e. on/off)
+            %   - "sin": Sinus function
+            %   - "cos": Cosinus function
+            %   - "half_sin": max(sin, 0), i.e. a sinus function when above
+            %   0. Used to model diurnal light conditions
+            %   - "half_cos": max(cos, 0), i.e. a sinus function when above
+            %   0. Used to model diurnal light conditions
+            %
+            % All functions must be provided an amplitud, period, phase
+            % (not angular phase) and offset.
+            %
             if nargin<8
                 offset = 0;
             end
