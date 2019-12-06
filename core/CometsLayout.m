@@ -31,7 +31,7 @@ classdef CometsLayout
         external_rxns = table();
         external_rxn_mets = table();
         periodic_media_mode = 'none';
-        simple_periodic_media = {}; % met by 5 cell array
+        global_periodic_media = {}; % met by 5 cell array
         detailed_periodic_media = {}; % met by 7 cell array
         %TODO: initial_pop modes (rectangle, random...)
     end
@@ -548,7 +548,7 @@ classdef CometsLayout
             end
         end
         
-        function self = setSimplePeriodicMedia(self, metname, funcname, amplitude, period, phase, offset)
+        function self = setGlobalPeriodicMedia(self, metname, funcname, amplitude, period, phase, offset)
             if nargin<6
                 offset = 0;
             end
@@ -556,16 +556,71 @@ classdef CometsLayout
                 phase = 0;
             end
             
-            i = length(self.simple_periodic_media);
-            self.simple_periodic_media(i+1).idx = metIdx(self, metname);
-            self.simple_periodic_media(i+1).funcname = funcname;
-            self.simple_periodic_media(i+1).amplitude = amplitude;
-            self.simple_periodic_media(i+1).period = period;
-            self.simple_periodic_media(i+1).phase = phase;
-            self.simple_periodic_media(i+1).offset = offset;
-            self.periodic_media_mode = 'simple';
+            % If detailed media is set previously, delete that
+            if self.periodic_media_mode == "detailed"
+                disp('Discarding detailed periodic media')
+                self.detailed_periodic_media = {};
+            end
+            self.periodic_media_mode = "global";
+            
+            new_PM = struct;
+            new_PM.idx = metIdx(self, metname);
+            new_PM.funcname = funcname;
+            new_PM.amplitude = amplitude;
+            new_PM.period = period;
+            new_PM.phase = phase;
+            new_PM.offset = offset;
+            
+            n = length(self.global_periodic_media);
+            already_set = false;
+            for i=1:n
+                if isequaln(new_PM,self.global_periodic_media{i})
+                    already_set = true;
+                    break
+                end
+            end
+            if ~already_set
+                self.global_periodic_media{n+1} = new_PM;
+            end
         end
         
+        function self = setDetailedPeriodicMedia(self, metname, funcname, row, col, amplitude, period, phase, offset)
+            if nargin<8
+                offset = 0;
+            end
+            if nargin < 7
+                phase = 0;
+            end
+            
+            % If global media is set previously, delete that
+            if self.periodic_media_mode == "global"
+                disp('Discarding global periodic media')
+                self.global_periodic_media = {};
+            end
+            self.periodic_media_mode = "detailed";
+            
+            new_PM = struct;
+            new_PM.idx = metIdx(self, metname);
+            new_PM.funcname = funcname;
+            new_PM.row = row;
+            new_PM.col = col;
+            new_PM.amplitude = amplitude;
+            new_PM.period = period;
+            new_PM.phase = phase;
+            new_PM.offset = offset;
+            
+            n = length(self.detailed_periodic_media);
+            already_set = false;
+            for i=1:n
+                if isequaln(new_PM,self.detailed_periodic_media{i})
+                    already_set = true;
+                    break
+                end
+            end
+            if ~already_set
+                self.detailed_periodic_media{n+1} = new_PM;
+            end
+        end
     end
     
 end

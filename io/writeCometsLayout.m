@@ -375,31 +375,45 @@ fprintf(fileID,'\t//\n');
 
 %% 2g Periodic media
 % This block describes what and where should be the periodic media.
-% There are two settings, simple and detailed. 
-% Simple:
+% There are two settings, global and detailed. 
+% Global:
 % metIndex  functionName   amplitude period  phase offset
 %
 % Detailed:
 % metIndex functionName    rowIndex  colIndex amplitude period phase offset
-if layout.periodic_media_mode == "simple"   
-    % Simple mode
-    fprintf(fileID,'\tperiodic_media\tsimple\n\t');
+if layout.periodic_media_mode == "global"   
+    % Global mode
+    fprintf(fileID,'\tperiodic_media\tglobal\n');
     % Iterate over array and print if amplitude is > 0
-    for i=1:length(layout.simple_periodic_media)
-        params = layout.simple_periodic_media(i);
-        fprintf(fileID,'\t%d', params.idx);
+    for i=1:length(layout.global_periodic_media)
+        params = layout.global_periodic_media{i};
+        fprintf(fileID,'\t\t%d', params.idx);
         fprintf(fileID,'\t%s', params.funcname);
         fprintf(fileID,'\t%d', params.amplitude);
         fprintf(fileID,'\t%d', params.period);
         fprintf(fileID,'\t%d', params.phase);
         fprintf(fileID,'\t%d', params.offset);
+        fprintf(fileID,'\n');
     end
 elseif layout.periodic_media_mode == "detailed"
     % Detailed mode
     fprintf(fileID,'\tperiodic_media\tdetailed\n');
+    for i=1:length(layout.detailed_periodic_media)
+        params = layout.detailed_periodic_media{i};
+        fprintf(fileID,'\t\t%d', params.idx);
+        fprintf(fileID,'\t%s', params.funcname);
+        fprintf(fileID,'\t%d', params.row);
+        fprintf(fileID,'\t%d', params.col);
+        fprintf(fileID,'\t%d', params.amplitude);
+        fprintf(fileID,'\t%d', params.period);
+        fprintf(fileID,'\t%d', params.phase);
+        fprintf(fileID,'\t%d', params.offset);
+        fprintf(fileID,'\n');
+    end
+    
 end
-
-fprintf(fileID,'\n//\n');
+fprintf(fileID, "\t//\n");
+fprintf(fileID,'//\n');
 % // 3. Initial Biomass Population
 %
 % This final block describes the initial biomass population in the layout,
