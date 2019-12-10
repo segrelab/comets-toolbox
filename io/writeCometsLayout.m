@@ -387,28 +387,28 @@ if layout.periodic_media_mode == "global"
     fprintf(fileID,'\tperiodic_media\tglobal\n');
     % Iterate over array and print if amplitude is > 0
     for i=1:length(layout.global_periodic_media)
-        params = layout.global_periodic_media{i};
-        fprintf(fileID,'\t\t%d', params.idx - 1);
-        fprintf(fileID,'\t%s', params.funcname);
-        fprintf(fileID,'\t%d', params.amplitude);
-        fprintf(fileID,'\t%d', params.period);
-        fprintf(fileID,'\t%d', params.phase);
-        fprintf(fileID,'\t%d', params.offset);
+        gpm_i = layout.global_periodic_media{i};
+        fprintf(fileID,'\t\t%d', gpm_i.idx - 1);
+        fprintf(fileID,'\t%s', gpm_i.funcname);
+        fprintf(fileID,'\t%d', gpm_i.amplitude);
+        fprintf(fileID,'\t%d', gpm_i.period);
+        fprintf(fileID,'\t%d', gpm_i.phase);
+        fprintf(fileID,'\t%d', gpm_i.offset);
         fprintf(fileID,'\n');
     end
 elseif layout.periodic_media_mode == "detailed"
     % Detailed mode
     fprintf(fileID,'\tperiodic_media\tdetailed\n');
     for i=1:length(layout.detailed_periodic_media)
-        params = layout.detailed_periodic_media{i};
-        fprintf(fileID,'\t\t%d', params.idx - 1);
-        fprintf(fileID,'\t%s', params.funcname);
-        fprintf(fileID,'\t%d', params.x - 1);
-        fprintf(fileID,'\t%d', params.y - 1);
-        fprintf(fileID,'\t%d', params.amplitude);
-        fprintf(fileID,'\t%d', params.period);
-        fprintf(fileID,'\t%d', params.phase);
-        fprintf(fileID,'\t%d', params.offset);
+        dpm_i = layout.detailed_periodic_media{i};
+        fprintf(fileID,'\t\t%d', dpm_i.idx - 1);
+        fprintf(fileID,'\t%s', dpm_i.funcname);
+        fprintf(fileID,'\t%d', dpm_i.x - 1);
+        fprintf(fileID,'\t%d', dpm_i.y - 1);
+        fprintf(fileID,'\t%d', dpm_i.amplitude);
+        fprintf(fileID,'\t%d', dpm_i.period);
+        fprintf(fileID,'\t%d', dpm_i.phase);
+        fprintf(fileID,'\t%d', dpm_i.offset);
         fprintf(fileID,'\n');
     end
     
