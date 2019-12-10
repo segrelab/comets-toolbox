@@ -388,7 +388,7 @@ if layout.periodic_media_mode == "global"
     % Iterate over array and print if amplitude is > 0
     for i=1:length(layout.global_periodic_media)
         params = layout.global_periodic_media{i};
-        fprintf(fileID,'\t\t%d', params.idx);
+        fprintf(fileID,'\t\t%d', params.idx - 1);
         fprintf(fileID,'\t%s', params.funcname);
         fprintf(fileID,'\t%d', params.amplitude);
         fprintf(fileID,'\t%d', params.period);
@@ -401,7 +401,7 @@ elseif layout.periodic_media_mode == "detailed"
     fprintf(fileID,'\tperiodic_media\tdetailed\n');
     for i=1:length(layout.detailed_periodic_media)
         params = layout.detailed_periodic_media{i};
-        fprintf(fileID,'\t\t%d', params.idx);
+        fprintf(fileID,'\t\t%d', params.idx - 1);
         fprintf(fileID,'\t%s', params.funcname);
         fprintf(fileID,'\t%d', params.x - 1);
         fprintf(fileID,'\t%d', params.y - 1);
