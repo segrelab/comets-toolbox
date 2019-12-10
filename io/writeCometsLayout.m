@@ -382,7 +382,7 @@ fprintf(fileID,'\t//\n');
 % Detailed:
 % metIndex functionName    rowIndex  colIndex amplitude period phase offset
 
-if layout.periodic_media_mode == "global"   
+if ~isempty(layout.global_periodic_media)   
     % Global mode
     fprintf(fileID,'\tperiodic_media\tglobal\n');
     % Iterate over array and print if amplitude is > 0
@@ -396,7 +396,7 @@ if layout.periodic_media_mode == "global"
         fprintf(fileID,'\t%d', gpm_i.offset);
         fprintf(fileID,'\n');
     end
-elseif layout.periodic_media_mode == "detailed"
+elseif ~isempty(layout.detailed_periodic_media)
     % Detailed mode
     fprintf(fileID,'\tperiodic_media\tdetailed\n');
     for i=1:length(layout.detailed_periodic_media)

@@ -30,7 +30,6 @@ classdef CometsLayout
         initial_pop = [0];%models by x by y, default 0. Units = grams.
         external_rxns = table();
         external_rxn_mets = table();
-        periodic_media_mode = 'none'; % Flag to distinguish between the two modes for periodic parameters.
         global_periodic_media = {}; % met by 5 cell array: {metabolite index, periodic function name, amplitude, period, phase offset}
         detailed_periodic_media = {}; % met by 7 cell array: {metabolite index, periodic function name,x-coordinate, y-coordinate, amplitude, period, phase offset}
         %TODO: initial_pop modes (rectangle, random...)
@@ -562,6 +561,9 @@ classdef CometsLayout
             %
             % All functions must be provided an amplitud, period, phase
             % (not angular phase) and offset.
+            % NB! You can only set EITHER detailed or global media.
+            % Therefore, setting global periodic media will discard any
+            % previously set detailed periodic media.
             
             if nargin<6
                 offset = 0;
@@ -571,11 +573,8 @@ classdef CometsLayout
             end
             
             % If detailed media is set previously, delete that
-            if self.periodic_media_mode == "detailed"
-                disp('Discarding detailed periodic media')
-                self.detailed_periodic_media = {};
-            end
-            self.periodic_media_mode = "global";
+            % disp('Discarding detailed periodic media')
+            self.detailed_periodic_media = {};
             
             new_PM = struct;
             new_PM.idx = metIdx(self, metname);
@@ -613,6 +612,9 @@ classdef CometsLayout
             % All functions must be provided an amplitud, period, phase
             % (not angular phase) and offset.
             %
+            % NB! You can only set EITHER detailed or global media.
+            % Therefore, setting detailed periodic media will discard any
+            % previously set global periodic media.
             if nargin<8
                 offset = 0;
             end
@@ -621,11 +623,8 @@ classdef CometsLayout
             end
             
             % If global media is set previously, delete that
-            if self.periodic_media_mode == "global"
-                disp('Discarding global periodic media')
-                self.global_periodic_media = {};
-            end
-            self.periodic_media_mode = "detailed";
+            % disp('Discarding possible global periodic media')
+            self.global_periodic_media = {};
             
             new_PM = struct;
             new_PM.idx = metIdx(self, metname);
