@@ -30,7 +30,7 @@ classdef CometsLayout
         initial_pop = [0];%models by x by y, default 0. Units = grams.
         external_rxns = table();
         external_rxn_mets = table();
-        periodic_media_mode = 'none';
+        periodic_media_mode = 'none'; % Flag to distinguish between the two modes for periodic parameters.
         global_periodic_media = {}; % met by 5 cell array: {metabolite index, periodic function name, amplitude, period, phase offset}
         detailed_periodic_media = {}; % met by 7 cell array: {metabolite index, periodic function name,x-coordinate, y-coordinate, amplitude, period, phase offset}
         %TODO: initial_pop modes (rectangle, random...)
