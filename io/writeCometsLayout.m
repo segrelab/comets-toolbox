@@ -354,7 +354,7 @@ if any(find(layout.static_media(:,:,:,1)))
 end
 fprintf(fileID,'\t//\n');
 
-% // 2f. Barrier Coordinates
+%% // 2f. Barrier Coordinates
 %
 % Simple enough, this block describes those grid coordinates that contain
 % barriers (i.e., no media, biomass, or diffusion can occur here).
@@ -370,8 +370,51 @@ for x = 1:s(1)
         end
     end
 end
+fprintf(fileID,'\t//\n');
 
-fprintf(fileID,'\t//\n//\n');
+
+%% 2g Periodic media
+% This block describes what and where should be the periodic media.
+% There are two settings, global and detailed. 
+% Global:
+% metIndex  functionName   amplitude period  phase offset
+%
+% Detailed:
+% metIndex functionName    rowIndex  colIndex amplitude period phase offset
+
+if ~isempty(layout.global_periodic_media)   
+    % Global mode
+    fprintf(fileID,'\tperiodic_media\tglobal\n');
+    % Iterate over array and print if amplitude is > 0
+    for i=1:length(layout.global_periodic_media)
+        gpm_i = layout.global_periodic_media{i};
+        fprintf(fileID,'\t\t%d', gpm_i.idx - 1);
+        fprintf(fileID,'\t%s', gpm_i.funcname);
+        fprintf(fileID,'\t%d', gpm_i.amplitude);
+        fprintf(fileID,'\t%d', gpm_i.period);
+        fprintf(fileID,'\t%d', gpm_i.phase);
+        fprintf(fileID,'\t%d', gpm_i.offset);
+        fprintf(fileID,'\n');
+    end
+elseif ~isempty(layout.detailed_periodic_media)
+    % Detailed mode
+    fprintf(fileID,'\tperiodic_media\tdetailed\n');
+    for i=1:length(layout.detailed_periodic_media)
+        dpm_i = layout.detailed_periodic_media{i};
+        fprintf(fileID,'\t\t%d', dpm_i.idx - 1);
+        fprintf(fileID,'\t%s', dpm_i.funcname);
+        fprintf(fileID,'\t%d', dpm_i.x - 1);
+        fprintf(fileID,'\t%d', dpm_i.y - 1);
+        fprintf(fileID,'\t%d', dpm_i.amplitude);
+        fprintf(fileID,'\t%d', dpm_i.period);
+        fprintf(fileID,'\t%d', dpm_i.phase);
+        fprintf(fileID,'\t%d', dpm_i.offset);
+        fprintf(fileID,'\n');
+    end
+    
+end
+fprintf(fileID, "\t//\n");
+fprintf(fileID,'//\n');
 % // 3. Initial Biomass Population
 %
 % This final block describes the initial biomass population in the layout,

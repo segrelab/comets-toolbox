@@ -30,6 +30,8 @@ classdef CometsLayout
         initial_pop = [0];%models by x by y, default 0. Units = grams.
         external_rxns = table();
         external_rxn_mets = table();
+        global_periodic_media = {}; % met by 5 cell array: {metabolite index, periodic function name, amplitude, period, phase offset}
+        detailed_periodic_media = {}; % met by 7 cell array: {metabolite index, periodic function name,x-coordinate, y-coordinate, amplitude, period, phase offset}
         %TODO: initial_pop modes (rectangle, random...)
     end
     
@@ -545,6 +547,107 @@ classdef CometsLayout
             end
         end
         
+        function self = setGlobalPeriodicMedia(self, metname, funcname, amplitude, period, phase, offset)
+            % Seet the parameters for a periodic media concentration of a
+            % specific cell. The possible periodic functions (funcname)
+            % are 
+            %   - "step": A normal step function (i.e. on/off)
+            %   - "sin": Sinus function
+            %   - "cos": Cosinus function
+            %   - "half_sin": max(sin, 0), i.e. a sinus function when above
+            %   0. Used to model diurnal light conditions
+            %   - "half_cos": max(cos, 0), i.e. a sinus function when above
+            %   0. Used to model diurnal light conditions
+            %
+            % All functions must be provided an amplitud, period, phase
+            % (not angular phase) and offset.
+            % NB! You can only set EITHER detailed or global media.
+            % Therefore, setting global periodic media will discard any
+            % previously set detailed periodic media.
+            
+            if nargin<6
+                offset = 0;
+            end
+            if nargin < 5
+                phase = 0;
+            end
+            
+            % If detailed media is set previously, delete that
+            % disp('Discarding detailed periodic media')
+            self.detailed_periodic_media = {};
+            
+            new_PM = struct;
+            new_PM.idx = metIdx(self, metname);
+            new_PM.funcname = funcname;
+            new_PM.amplitude = amplitude;
+            new_PM.period = period;
+            new_PM.phase = phase;
+            new_PM.offset = offset;
+            
+            n = length(self.global_periodic_media);
+            already_set = false;
+            for i=1:n
+                if isequaln(new_PM,self.global_periodic_media{i})
+                    already_set = true;
+                    break
+                end
+            end
+            if ~already_set
+                self.global_periodic_media{n+1} = new_PM;
+            end
+        end
+        
+        function self = setDetailedPeriodicMedia(self, metname, funcname, x, y, amplitude, period, phase, offset)
+            % Seet the parameters for a periodic media concentration of a
+            % specific cell. The possible periodic functions (funcname)
+            % are 
+            %   - "step": A normal step function (i.e. on/off)
+            %   - "sin": Sinus function
+            %   - "cos": Cosinus function
+            %   - "half_sin": max(sin, 0), i.e. a sinus function when above
+            %   0. Used to model diurnal light conditions
+            %   - "half_cos": max(cos, 0), i.e. a sinus function when above
+            %   0. Used to model diurnal light conditions
+            %
+            % All functions must be provided an amplitud, period, phase
+            % (not angular phase) and offset.
+            %
+            % NB! You can only set EITHER detailed or global media.
+            % Therefore, setting detailed periodic media will discard any
+            % previously set global periodic media.
+            if nargin<8
+                offset = 0;
+            end
+            if nargin < 7
+                phase = 0;
+            end
+            
+            % If global media is set previously, delete that
+            % disp('Discarding possible global periodic media')
+            self.global_periodic_media = {};
+            
+            new_PM = struct;
+            new_PM.idx = metIdx(self, metname);
+            new_PM.funcname = funcname;
+            new_PM.x = x;
+            new_PM.y = y;
+            new_PM.amplitude = amplitude;
+            new_PM.period = period;
+            new_PM.phase = phase;
+            new_PM.offset = offset;
+            
+            n = length(self.detailed_periodic_media);
+            already_set = false;
+            for i=1:n
+                if isequaln(new_PM,self.detailed_periodic_media{i})
+                    already_set = true;
+                    break
+                end
+            end
+            if ~already_set
+                self.detailed_periodic_media{n+1} = new_PM;
+            end
+        end
     end
     
 end
