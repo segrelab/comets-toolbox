@@ -1,17 +1,62 @@
-function p = plotMediaTimecourse(table,metnames,logscale)
-%PLOTMEDIATIMECOURSE(table,{metnames},[logscale]) create a line plot of the total 
+function p = plotMediaTimecourse(table,metnames,scale,linewidth)
+%PLOTMEDIATIMECOURSE(table,{metnames},[scale],lineweight) create a line plot of the total 
 %amount of the specified metabolites. 
 %The first argument should be a data table loaded through parseMediaLog.m
+%Scale is one of 'normal' (default), 'log', or 'relative'. The first letter
+%of each option is also valid.
+%   for legacy reasons from when the parameter was "logscale",
+%   false='normal' and true= 'log'
+%   'Relative' scales each metabolite to its own max concentration
 if nargin < 3
-    logscale = false;
+    scale = 'normal';
+end
+
+if nargin >= 3
+    if islogical(scale)
+        if scale
+            scale = 'log';
+        else
+            scale = 'normal';
+        end
+    else %clean up input
+        switch upper(scale(1))
+            case 'N'
+                scale = 'normal';
+            case 'L'
+                scale = 'log';
+            case 'R'
+                scale = 'relative';
+            case 'T'
+                scale = 'log';
+            case 'F'
+                scale = 'normal';
+            otherwise
+                scale = 'normal';
+        end
+    end
+end
+        
+
+if nargin < 4
+    linewidth = 2;
 end
 
 if ischar(metnames) %if given one metabolite to plot
     metnames = {metnames};
 end
 
+nummets = length(metnames);
+%set number of columns in the legend
+ncol = nummets;
+if nummets >= 5
+    ncol = 3;
+end
+if nummets >= 7
+    ncol = 4;
+end
+
 x = unique(table.t);
-y = zeros(length(x),length(metnames));
+y = zeros(length(x),nummets);
 
 ncells = max(table.x) * max(table.y);
 for i = 1:length(metnames)
@@ -22,16 +67,24 @@ for i = 1:length(metnames)
     amt = reshape(st.amt,length(x),ncells);
     amt = sum(amt,2);
     
+    if strcmpi(scale,'relative')
+        amt = amt/(max(amt));
+    end
+    
     y(:,i) = amt;
 end
 
-if logscale
-    y = log10(y);
+p = plot(x,y,'LineWidth',linewidth);
+if strcmpi(scale,'log')
+    set(gca,'YScale','log');
 end
-
-p = plot(x,y);
-legend(metnames,'location','best','Interpreter', 'none');
+leg = legend(metnames,'location','southoutside','Interpreter', 'none');
+set(leg,'NumColumns',ncol);
 xlabel('Timestep');
-ylabel('Concentration (mmol)');
+yl = 'Concentration (mmol)';
+if strcmpi(scale,'relative')
+    yl = 'Relative Concentraion';
+end
+ylabel(yl);
 end
 
