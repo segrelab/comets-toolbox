@@ -7,8 +7,8 @@ function [out] = parseBiomassCometsOutput(biomassFile)
 % timeStep: cycle time step
 % model: model ID
 
-f = fopen(biomassFile);
-tline = fgetl(f);
+fid = fopen(biomassFile);
+tline = fgetl(fid);
 % build a 
 k = 1;
 while ischar(tline)
@@ -28,7 +28,7 @@ while ischar(tline)
             ModelId(k) = modelID;
             k = k+1;
         end
-        tline = fgetl(f);
+        tline = fgetl(fid);
 
     
 end
@@ -38,5 +38,5 @@ out.y = Y;
 out.biomass = Biomass;
 out.model = ModelId;
 out.timeStep = T;
-
+fclose(fid);
 end
