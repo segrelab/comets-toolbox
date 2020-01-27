@@ -5,8 +5,6 @@ function comets_output = runCometsOnDirectory(run_COMETS_folder)
 %
 %REQUIRED INPUTS
 % run_COMETS_folder: Path to folder that contains:
-%	 global_params.txt
-%    package_params.txt
 %    comets_script.txt
 %    COMETS layout (e.g. Ecoli_colony_layout.txt)
 %    COMETS models (e.g. EC_ijo1366_model.txt)
