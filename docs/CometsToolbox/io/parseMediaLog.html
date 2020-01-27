@@ -43,15 +43,13 @@ Input:
 <h2><a name="_cross"></a>CROSS-REFERENCE INFORMATION <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
 This function calls:
 <ul style="list-style-image:url(../../matlabicon.gif)">
-<li><a href="../../CometsToolbox/external/m2html/@template/char.html" class="code" title="function s = char(tpl)">char</a>	TEMPLATE Convert a template object in a one line description string</li><li><a href="../../CometsToolbox/util/stridx.html" class="code" title="function [idx] = stridx(query, list, allowSubstr)">stridx</a>	STRIDX(str, {str}, [true]) Get the indexes of the query string in the given cell array.</li></ul>
+<li><a href="../../CometsToolbox/util/countLinesInFile.html" class="code" title="function count = countLinesInFile(fname)">countLinesInFile</a>	credit to Edric Ellis @ https://stackoverflow.com/questions/12176519/is-there-a-way-in-matlab-to-determine-the-number-of-lines-in-a-file-without-loop</li><li><a href="../../CometsToolbox/util/stridx.html" class="code" title="function [idx] = stridx(query, list, allowSubstr)">stridx</a>	STRIDX(str, {str}, [true]) Get the indexes of the query string in the given cell array.</li></ul>
 This function is called by:
 <ul style="list-style-image:url(../../matlabicon.gif)">
 <li><a href="../../CometsToolbox/projects/serial_dilution/runSerialDilution.html" class="code" title="function [biomass,t,media] = runSerialDilution(layout,varargin)">runSerialDilution</a>	runSerialDilution(layout,nCycles,dilutionFactor,includeSpentMedia,directory)</li></ul>
 <!-- crossreference -->
 
-<h2><a name="_subfunctions"></a>SUBFUNCTIONS <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
-<ul style="list-style-image:url(../../matlabicon.gif)">
-<li><a href="#_sub1" class="code">function count = countLines(fname)</a></li></ul>
+
 
 <h2><a name="_source"></a>SOURCE CODE <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
 <div class="fragment"><pre>0001 <a name="_sub0" href="#_subfunctions" class="code">function tab = parseMediaLog(varargin)</a>
@@ -78,227 +76,185 @@ This function is called by:
 0022     error([<span class="string">'Could not find the log file '</span> logFilePath]);
 0023 <span class="keyword">end</span>
 0024 
-0025 <span class="comment">%filelength = countLines(logFilePath);</span>
-0026 
-0027 fid = fopen(logFilePath);
-0028 
-0029 <span class="comment">%first line includes met names</span>
-0030 fline = fgetl(fid);
-0031 
-0032 <span class="comment">%The fist line is a function that creates the media_names array, holding</span>
-0033 <span class="comment">%all names</span>
-0034 media_names = {};
-0035 <span class="keyword">if</span> (strfind(fline,<span class="string">'media_names = {'</span>) == 1) &amp;&amp; (strfind(fline,<span class="string">';'</span>) == length(fline))
-0036     <span class="comment">%^makes sure the right function call is there, and there's only one</span>
-0037     <span class="comment">%command on the line</span>
-0038     eval(fline); <span class="comment">%replaces media_names</span>
-0039 <span class="keyword">end</span>
-0040 
-0041 <span class="keyword">if</span> nargin &gt; 1
-0042     names = varargin{2};
-0043     <span class="keyword">if</span> ischar(names) <span class="comment">%make sure it's a cell array</span>
-0044         names = {names};
-0045     <span class="keyword">end</span>
-0046     <span class="comment">%store the indexes of the metabolites</span>
-0047     midxs = zeros(length(names),1);
-0048     <span class="keyword">for</span> i = 1:length(names)
-0049         idx = <a href="../../CometsToolbox/util/stridx.html" class="code" title="function [idx] = stridx(query, list, allowSubstr)">stridx</a>(names{i}, media_names, false);
-0050         assert(~isempty(idx), <span class="string">'The metabolite name ''%s'' does not appear to be present in the log file.'</span>, names{i});
-0051         midxs(i) = idx;
-0052     <span class="keyword">end</span>
-0053 <span class="keyword">else</span>
-0054     names = media_names;
-0055     midxs = 1:length(names); <span class="comment">%indexes of the mets we're reporting</span>
-0056 <span class="keyword">end</span>
-0057 
-0058 <span class="comment">%figure out the dimensions of the layout</span>
-0059 fline = fgetl(fid);
-0060 <span class="comment">%second line should be media_0{1} = sparse(zeros(X, Y));</span>
-0061 splitline = regexp(fline,<span class="string">'[(,)]'</span>,<span class="string">'split'</span>);
-0062 xdim = str2double(splitline{3});
-0063 ydim = str2double(splitline{4});
-0064 
-0065 <span class="comment">%figure out how many timepoints there are</span>
-0066 <span class="comment">%first, find the last line</span>
-0067 readsize = 256; <span class="comment">%should be longer than any of the data lines</span>
-0068 fseek(fid, -readsize, <span class="string">'eof'</span>); <span class="comment">%move the position indicator near end of file</span>
-0069 fline = fgetl(fid); <span class="comment">%read in the rest of the file</span>
-0070 tline = <span class="string">''</span>;
-0071 <span class="keyword">while</span> ischar(fline)
-0072     tline = [tline fline];
-0073     fline = fgetl(fid);
-0074 <span class="keyword">end</span>
-0075 wordpos = strfind(tline,<span class="string">'media_'</span>);
-0076 wordpos = wordpos(end);<span class="comment">%the byte # where the last line starts</span>
-0077 fline = tline(wordpos:end);
-0078 splitline = regexp(fline,<span class="string">'[_{]'</span>,<span class="string">'split'</span>);
-0079 tmax = str2double(splitline{2});
-0080 
-0081 fseek(fid,0,<span class="string">'bof'</span>); <span class="comment">%reset the read position</span>
-0082 
-0083 <span class="comment">%assemble vectors for data population</span>
-0084 <span class="comment">%this may be bigger than needed. We'll trim later</span>
-0085 numrows = length(names) * tmax * xdim * ydim;
-0086 t = zeros(numrows,1);
-0087 x = zeros(numrows,1);
-0088 y = zeros(numrows,1);
-0089 met = zeros(numrows,1);
-0090 amt = zeros(numrows,1);
-0091 metname = repmat({<span class="string">''</span>},numrows,1);
-0092 
-0093 <span class="comment">%parse the file</span>
-0094 <span class="comment">% fline = fgetl(fid);</span>
-0095 <span class="comment">% currow = 1; %pointer for which index is to be written next</span>
-0096 <span class="comment">% while ischar(fline)</span>
-0097 <span class="comment">%     %line format is like: media_0{162}(3, 3) = 1E-8;</span>
-0098 <span class="comment">%     %              or   : media_0{70} = sparse(zeros(5, 5));</span>
-0099 <span class="comment">%     %media_XX denotes the timestep</span>
-0100 <span class="comment">%     %{YY} denotes the metabolite</span>
-0101 <span class="comment">%     %(X, Y) denotes the coordinates</span>
-0102 <span class="comment">%     %the last value is either initiating a grid for each coordinate, or</span>
-0103 <span class="comment">%     %holds the amount</span>
-0104 <span class="comment">%     fline = fgetl(fid);</span>
-0105 <span class="comment">%     splitline = regexp(fline,'[_,{}();\s]+','split');</span>
-0106 <span class="comment">%     if length(splitline) == 8 %'sparse' line will have length 9</span>
-0107 <span class="comment">%         origmetid = str2double(splitline{3}); %the index of the name in media_names</span>
-0108 <span class="comment">%         newmetid = find(midxs == origmetid,1); %the index in the included mets</span>
-0109 <span class="comment">%</span>
-0110 <span class="comment">%         if ~isempty(newmetid)</span>
-0111 <span class="comment">%             t(currow) = str2double(splitline{2});</span>
-0112 <span class="comment">%             met(currow) = newmetid;</span>
-0113 <span class="comment">%             metname(currow) = media_names(origmetid);</span>
-0114 <span class="comment">%             x(currow) = str2double(splitline{4});</span>
-0115 <span class="comment">%             y(currow) = str2double(splitline{5});</span>
-0116 <span class="comment">%             amt(currow) = str2double(splitline{7});</span>
-0117 <span class="comment">%</span>
-0118 <span class="comment">%             currow = currow + 1;</span>
-0119 <span class="comment">%         end</span>
-0120 <span class="comment">%     else %'sparse' line: populate any metabolites that weren't listed in the last set as having 0 amount</span>
-0121 <span class="comment">%         if length(prevline) == 8</span>
-0122 <span class="comment">%</span>
-0123 <span class="comment">%         end</span>
-0124 <span class="comment">%         if length(prevline) &gt; 8 %previous line was also sparse</span>
-0125 <span class="comment">%</span>
-0126 <span class="comment">%         end</span>
-0127 <span class="comment">%         %if length(prevline) == 0, there's nothing to do here because we're</span>
-0128 <span class="comment">%         %at the first line</span>
-0129 <span class="comment">%</span>
-0130 <span class="comment">%         %Reset the arrays that track if a metabolite was present in the</span>
-0131 <span class="comment">%         %current coordinate</span>
-0132 <span class="comment">%</span>
-0133 <span class="comment">%</span>
-0134 <span class="comment">%     end</span>
-0135 <span class="comment">%     prevline = splitline;</span>
-0136 <span class="comment">%     fline = fgetl(fid);</span>
-0137 <span class="comment">% end</span>
-0138 
-0139 <span class="comment">%Do it a different way:</span>
-0140 <span class="comment">%When a new coordinate is set:</span>
-0141 <span class="comment">%   build an array of values for every met, initialized at 0</span>
-0142 <span class="comment">%When not-sparse:</span>
-0143 <span class="comment">%   set the value in the temp array for the corresponding met</span>
-0144 <span class="comment">%when sparse:</span>
-0145 <span class="comment">%   populate the values for the last coordinate, then set the new</span>
-0146 <span class="comment">%   coordinate</span>
-0147 fline = fgetl(fid); <span class="comment">%the media_names line</span>
-0148 fline = fgetl(fid); <span class="comment">%now we're at the first data line</span>
-0149 currow = 1; <span class="comment">%pointer for which index is to be written next</span>
-0150 tvals = zeros(xdim,ydim,length(midxs));
-0151 tt = -1;
-0152 <span class="keyword">while</span> ischar(fline)
-0153     <span class="comment">%line format is like: media_0{162}(3, 3) = 1E-8;</span>
-0154     <span class="comment">%              or   : media_0{70} = sparse(zeros(5, 5));</span>
-0155     <span class="comment">%media_XX denotes the timestep</span>
-0156     <span class="comment">%{YY} denotes the metabolite</span>
-0157     <span class="comment">%(X, Y) denotes the coordinates</span>
-0158     splitline = regexp(fline,<span class="string">'[_,{}();\s]+'</span>,<span class="string">'split'</span>);
-0159     <span class="keyword">if</span> length(splitline) == 9 <span class="comment">%'sparse' line will have length 9, and</span>
-0160         <span class="comment">%indicates that we've moved to the next coordinate</span>
-0161         <span class="comment">%write the records for the previous coordinate</span>
-0162         <span class="keyword">if</span> tt &gt;= 0 <span class="comment">%so we don't run on line 2, before any data's loaded</span>
-0163             <span class="keyword">if</span> ~isempty(newmetidx)
-0164                 <span class="keyword">for</span> xi = 1:xdim
-0165                     <span class="keyword">for</span> yi = 1:ydim
-0166                         mname = names{newmetidx};
-0167                         t(currow) = tt;
-0168                         met(currow) = newmetidx;
-0169                         metname{currow} = mname;
-0170                         x(currow) = xi;
-0171                         y(currow) = yi;
-0172                         amt(currow) = tvals(xi,yi);
-0173                         currow = currow + 1;
-0174                     <span class="keyword">end</span>
-0175                 <span class="keyword">end</span>
-0176             <span class="keyword">end</span>
-0177         <span class="keyword">end</span>
-0178         <span class="comment">%now reset the temp data</span>
-0179         origmetidx = str2double(splitline{3});
-0180         newmetidx = find(midxs == origmetidx);
-0181         tt = str2double(splitline{2});
-0182         <span class="comment">%tx = str2double(splitline{7});</span>
-0183         <span class="comment">%ty = str2double(splitline{8});</span>
-0184         tvals = zeros(xdim,ydim);
-0185         
-0186     <span class="keyword">elseif</span> length(splitline) == 8 <span class="comment">%this line has a value</span>
-0187         origmetidx = str2double(splitline{3});
-0188         newmetidx = find(midxs == origmetidx);
-0189         <span class="keyword">if</span> any(newmetidx)
-0190             tx = str2double(splitline{4});
-0191             ty = str2double(splitline{5});
-0192             tvals(tx,ty) = str2double(splitline{7});
-0193             <span class="comment">%tvals is a 2d matrix for each position's met concentration</span>
-0194         <span class="keyword">end</span>
-0195     <span class="keyword">end</span>
-0196     
-0197     fline = fgetl(fid);
-0198 <span class="keyword">end</span>
-0199 
-0200 <span class="comment">%now write the records for the last coordinate too</span>
-0201 <span class="keyword">if</span> tt &gt;= 0
-0202     origmetidx = str2double(splitline{3});
-0203     newmetidx = find(midxs == origmetidx);
-0204     <span class="keyword">if</span> ~isempty(newmetidx)
-0205         <span class="keyword">for</span> xi = 1:xdim
-0206             <span class="keyword">for</span> yi = 1:ydim
-0207                 mname = names{newmetidx};
-0208                 t(currow) = tt;
-0209                 met(currow) = newmetidx;
-0210                 metname{currow} = mname;
-0211                 x(currow) = xi;
-0212                 y(currow) = yi;
-0213                 amt(currow) = tvals(xi,yi);
-0214                 currow = currow + 1;
-0215             <span class="keyword">end</span>
-0216         <span class="keyword">end</span>
-0217     <span class="keyword">end</span>
-0218 <span class="keyword">end</span>
-0219 
-0220 fclose(fid);
-0221 
-0222 <span class="comment">%trim the arrays</span>
-0223 t = t(1:currow-1);
-0224 x = x(1:currow-1);
-0225 y = y(1:currow-1);
-0226 met = met(1:currow-1);
-0227 amt = amt(1:currow-1);
-0228 metname = metname(1:currow-1);
-0229 
-0230 <span class="comment">%assemble table</span>
-0231 tab = table(t, x, y, met, amt, metname);
-0232 
-0233 <span class="keyword">end</span>
-0234 
-0235 
-0236 <span class="comment">%credit to Edric Ellis @ https://stackoverflow.com/questions/12176519/is-there-a-way-in-matlab-to-determine-the-number-of-lines-in-a-file-without-loop</span>
-0237 <a name="_sub1" href="#_subfunctions" class="code">function count = countLines(fname)</a>
-0238 fh = fopen(fname, <span class="string">'rt'</span>);
-0239 assert(fh ~= -1, <span class="string">'Could not read: %s'</span>, fname);
-0240 count = 0;
-0241 <span class="keyword">while</span> ~feof(fh)
-0242     count = count + sum( fread( fh, 16384, <span class="string">'char'</span> ) == <a href="../../CometsToolbox/external/m2html/@template/char.html" class="code" title="function s = char(tpl)">char</a>(10) );
-0243 <span class="keyword">end</span>
-0244 fclose(fh);
-0245 <span class="keyword">end</span></pre></div>
-<hr><address>Generated on Thu 14-Jun-2018 15:27:34 by <strong><a href="http://www.artefact.tk/software/matlab/m2html/" target="_parent">m2html</a></strong> &copy; 2005</address>
+0025 filelength = <a href="../../CometsToolbox/util/countLinesInFile.html" class="code" title="function count = countLinesInFile(fname)">countLinesInFile</a>(logFilePath);
+0026 <span class="keyword">if</span> filelength &gt; 1
+0027     
+0028     fid = fopen(logFilePath);
+0029     
+0030     <span class="comment">%first line includes met names</span>
+0031     fline = fgetl(fid);
+0032     
+0033     <span class="comment">%The fist line is a function that creates the media_names array, holding</span>
+0034     <span class="comment">%all names</span>
+0035     media_names = {};
+0036     <span class="keyword">if</span> (strfind(fline,<span class="string">'media_names = {'</span>) == 1) &amp;&amp; (strfind(fline,<span class="string">';'</span>) == length(fline))
+0037         <span class="comment">%^makes sure the right function call is there, and there's only one</span>
+0038         <span class="comment">%command on the line</span>
+0039         eval(fline); <span class="comment">%replaces media_names</span>
+0040     <span class="keyword">end</span>
+0041     
+0042     <span class="keyword">if</span> nargin &gt; 1
+0043         names = varargin{2};
+0044         <span class="keyword">if</span> ischar(names) <span class="comment">%make sure it's a cell array</span>
+0045             names = {names};
+0046         <span class="keyword">end</span>
+0047         <span class="comment">%store the indexes of the metabolites</span>
+0048         midxs = zeros(length(names),1);
+0049         <span class="keyword">for</span> i = 1:length(names)
+0050             idx = <a href="../../CometsToolbox/util/stridx.html" class="code" title="function [idx] = stridx(query, list, allowSubstr)">stridx</a>(names{i}, media_names, false);
+0051             assert(~isempty(idx), <span class="string">'The metabolite name ''%s'' does not appear to be present in the log file.'</span>, names{i});
+0052             midxs(i) = idx;
+0053         <span class="keyword">end</span>
+0054     <span class="keyword">else</span>
+0055         names = media_names;
+0056         midxs = 1:length(names); <span class="comment">%indexes of the mets we're reporting</span>
+0057     <span class="keyword">end</span>
+0058     
+0059     <span class="comment">%figure out the dimensions of the layout</span>
+0060     fline = fgetl(fid);
+0061     <span class="comment">%second line should be media_0{1} = sparse(zeros(X, Y));</span>
+0062     splitline = regexp(fline,<span class="string">'[(,)]'</span>,<span class="string">'split'</span>);
+0063     xdim = str2double(splitline{3});
+0064     ydim = str2double(splitline{4});
+0065     
+0066     <span class="comment">%figure out how many timepoints there are</span>
+0067     <span class="comment">%first, find the last line</span>
+0068     readsize = 256; <span class="comment">%should be longer than any of the data lines</span>
+0069     fseek(fid, -readsize, <span class="string">'eof'</span>); <span class="comment">%move the position indicator near end of file</span>
+0070     fline = fgetl(fid); <span class="comment">%read in the rest of the file</span>
+0071     tline = <span class="string">''</span>;
+0072     <span class="keyword">while</span> ischar(fline)
+0073         tline = [tline fline];
+0074         fline = fgetl(fid);
+0075     <span class="keyword">end</span>
+0076     wordpos = strfind(tline,<span class="string">'media_'</span>);
+0077     wordposn = wordpos(end);<span class="comment">%the byte # where the last line starts</span>
+0078     fline = tline(wordposn:end);
+0079     splitline = regexp(fline,<span class="string">'[_{]'</span>,<span class="string">'split'</span>);
+0080     tmax = str2double(splitline{2});
+0081     
+0082     <span class="comment">%handle the edge case where the file got truncated, get the time from</span>
+0083     <span class="comment">%the second-to-last line</span>
+0084     <span class="keyword">if</span> isnan(tmax)
+0085         wordposn = wordpos(end-1);<span class="comment">%the byte # where the last line starts</span>
+0086         fline = tline(wordposn:end);
+0087         splitline = regexp(fline,<span class="string">'[_{]'</span>,<span class="string">'split'</span>);
+0088         tmax = str2double(splitline{2});
+0089     <span class="keyword">end</span>
+0090     
+0091     fseek(fid,0,<span class="string">'bof'</span>); <span class="comment">%reset the read position</span>
+0092     
+0093     <span class="comment">%assemble vectors for data population</span>
+0094     <span class="comment">%this may be bigger than needed. We'll trim later</span>
+0095     numrows = length(names) * tmax * xdim * ydim;
+0096     t = zeros(numrows,1);
+0097     x = zeros(numrows,1);
+0098     y = zeros(numrows,1);
+0099     met = zeros(numrows,1);
+0100     amt = zeros(numrows,1);
+0101     metname = repmat({<span class="string">''</span>},numrows,1);
+0102     
+0103     <span class="comment">%When a new coordinate is set:</span>
+0104     <span class="comment">%   build an array of values for every met, initialized at 0</span>
+0105     <span class="comment">%When not-sparse:</span>
+0106     <span class="comment">%   set the value in the temp array for the corresponding met</span>
+0107     <span class="comment">%when sparse:</span>
+0108     <span class="comment">%   populate the values for the last coordinate, then set the new</span>
+0109     <span class="comment">%   coordinate</span>
+0110     fline = fgetl(fid); <span class="comment">%the media_names line</span>
+0111     fline = fgetl(fid); <span class="comment">%now we're at the first data line</span>
+0112     currow = 1; <span class="comment">%pointer for which index is to be written next</span>
+0113     tvals = zeros(xdim,ydim,length(midxs));
+0114     tt = -1;
+0115     <span class="keyword">while</span> ischar(fline)
+0116         <span class="comment">%line format is like: media_0{162}(3, 3) = 1E-8;</span>
+0117         <span class="comment">%              or   : media_0{70} = sparse(zeros(5, 5));</span>
+0118         <span class="comment">%media_XX denotes the timestep</span>
+0119         <span class="comment">%{YY} denotes the metabolite</span>
+0120         <span class="comment">%(X, Y) denotes the coordinates</span>
+0121         splitline = regexp(fline,<span class="string">'[_,{}();\s]+'</span>,<span class="string">'split'</span>);
+0122         <span class="keyword">if</span> length(splitline) == 9 <span class="comment">%'sparse' line will have length 9, and</span>
+0123             <span class="comment">%indicates that we've moved to the next coordinate</span>
+0124             <span class="comment">%write the records for the previous coordinate</span>
+0125             <span class="keyword">if</span> tt &gt;= 0 <span class="comment">%so we don't run on line 2, before any data's loaded</span>
+0126                 <span class="keyword">if</span> ~isempty(newmetidx)
+0127                     <span class="keyword">for</span> xi = 1:xdim
+0128                         <span class="keyword">for</span> yi = 1:ydim
+0129                             mname = names{newmetidx};
+0130                             t(currow) = tt;
+0131                             met(currow) = newmetidx;
+0132                             metname{currow} = mname;
+0133                             x(currow) = xi;
+0134                             y(currow) = yi;
+0135                             amt(currow) = tvals(xi,yi);
+0136                             currow = currow + 1;
+0137                         <span class="keyword">end</span>
+0138                     <span class="keyword">end</span>
+0139                 <span class="keyword">end</span>
+0140             <span class="keyword">end</span>
+0141             <span class="comment">%now reset the temp data</span>
+0142             origmetidx = str2double(splitline{3});
+0143             newmetidx = find(midxs == origmetidx);
+0144             tt = str2double(splitline{2});
+0145             <span class="comment">%tx = str2double(splitline{7});</span>
+0146             <span class="comment">%ty = str2double(splitline{8});</span>
+0147             tvals = zeros(xdim,ydim);
+0148             
+0149         <span class="keyword">elseif</span> length(splitline) == 8 <span class="comment">%this line has a value</span>
+0150             origmetidx = str2double(splitline{3});
+0151             newmetidx = find(midxs == origmetidx);
+0152             <span class="keyword">if</span> any(newmetidx)
+0153                 tx = str2double(splitline{4});
+0154                 ty = str2double(splitline{5});
+0155                 tvals(tx,ty) = str2double(splitline{7});
+0156                 <span class="comment">%tvals is a 2d matrix for each position's met concentration</span>
+0157             <span class="keyword">end</span>
+0158         <span class="keyword">end</span>
+0159         
+0160         fline = fgetl(fid);
+0161     <span class="keyword">end</span>
+0162     
+0163     <span class="comment">%now write the records for the last coordinate too</span>
+0164     <span class="keyword">if</span> tt &gt;= 0
+0165         <span class="keyword">if</span> length(splitline) &gt;= 3
+0166             origmetidx = str2double(splitline{3});
+0167             newmetidx = find(midxs == origmetidx);
+0168             <span class="keyword">if</span> ~isempty(newmetidx)
+0169                 <span class="keyword">for</span> xi = 1:xdim
+0170                     <span class="keyword">for</span> yi = 1:ydim
+0171                         mname = names{newmetidx};
+0172                         t(currow) = tt;
+0173                         met(currow) = newmetidx;
+0174                         metname{currow} = mname;
+0175                         x(currow) = xi;
+0176                         y(currow) = yi;
+0177                         amt(currow) = tvals(xi,yi);
+0178                         currow = currow + 1;
+0179                     <span class="keyword">end</span>
+0180                 <span class="keyword">end</span>
+0181             <span class="keyword">end</span>
+0182         <span class="keyword">end</span>
+0183     <span class="keyword">end</span>
+0184     
+0185     fclose(fid);
+0186     
+0187     <span class="comment">%trim the arrays</span>
+0188     t = t(1:currow-1);
+0189     x = x(1:currow-1);
+0190     y = y(1:currow-1);
+0191     met = met(1:currow-1);
+0192     amt = amt(1:currow-1);
+0193     metname = metname(1:currow-1);
+0194     
+0195     <span class="comment">%assemble table</span>
+0196     tab = table(t, x, y, met, amt, metname);
+0197 <span class="keyword">else</span>
+0198     tab = cell2table({0 0 0 0 0 <span class="string">'name'</span>}, <span class="string">'VariableNames'</span>,{<span class="string">'t'</span>,<span class="string">'x'</span>,<span class="string">'y'</span>,<span class="string">'met'</span>,<span class="string">'amt'</span>,<span class="string">'metname'</span>});
+0199     tab(:,:) = [];
+0200 <span class="keyword">end</span>
+0201 
+0202 
+0203 <span class="keyword">end</span></pre></div>
+<hr><address>Generated on Mon 27-Jan-2020 12:49:43 by <strong><a href="http://www.artefact.tk/software/matlab/m2html/" target="_parent">m2html</a></strong> &copy; 2005</address>
 </body>
 </html>

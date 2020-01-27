@@ -55,7 +55,9 @@ This function is called by:
 </ul>
 <!-- crossreference -->
 
-
+<h2><a name="_subfunctions"></a>SUBFUNCTIONS <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+<ul style="list-style-image:url(../../../matlabicon.gif)">
+<li><a href="#_sub1" class="code">function [baseMetNames, compSymbols] = parseMetNames2(metNames)</a></li></ul>
 
 <h2><a name="_source"></a>SOURCE CODE <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
 <div class="fragment"><pre>0001 <a name="_sub0" href="#_subfunctions" class="code">function [model, failed, failedflag] = normalizeMetNames(model)</a>
@@ -102,7 +104,7 @@ This function is called by:
 0042 
 0043 
 0044 <span class="comment">%call COBRA to strip the compartment if in the form &quot;metName[c]&quot; or &quot;metName(c)&quot;</span>
-0045 [basemetnames, compsymbols] = parseMetNames(mets);
+0045 [basemetnames, compsymbols] = <a href="#_sub1" class="code" title="subfunction [baseMetNames, compSymbols] = parseMetNames2(metNames)">parseMetNames2</a>(mets);
 0046 
 0047 newmetnames = cell(length(basemetnames),1);
 0048 failed = cell(length(basemetnames),1);
@@ -114,7 +116,7 @@ This function is called by:
 0054 <span class="keyword">for</span> i = 1:length(basemetnames)
 0055     met = basemetnames{i};
 0056     <span class="comment">%use LIKE instead of == to ignore case</span>
-0057     res = <a href="../../../CometsToolbox/external/mksqlite-2.4/mksqlite.html" class="code" title="">mksqlite</a>(<span class="string">'select official from PSEUDONYM where pseudonym like ?'</span>,met);
+0057     res = <a href="../../../CometsToolbox/external/mksqlite-2.4/mksqlite.html" class="code" title="">mksqlite</a>(<span class="string">'select official from PSEUDONYM where pseudonym == ?'</span>,strtrim(met));
 0058     <span class="keyword">if</span> ~isempty(res) <span class="comment">%match found</span>
 0059         <span class="comment">%if ischar(res.official)</span>
 0060         <span class="comment">%    newmetnames{i} = res.official;</span>
@@ -140,13 +142,13 @@ This function is called by:
 0080         
 0081     <span class="keyword">else</span> <span class="comment">%no match found</span>
 0082         <span class="comment">%try searching on the model.metNames field instead</span>
-0083         [tempbase, tempcomp] = parseMetNames(model.metNames(i));
-0084         res = <a href="../../../CometsToolbox/external/mksqlite-2.4/mksqlite.html" class="code" title="">mksqlite</a>(<span class="string">'select official from PSEUDONYM where pseudonym like ?'</span>,tempbase{1});
+0083         [fullbase, fullcomp] = <a href="#_sub1" class="code" title="subfunction [baseMetNames, compSymbols] = parseMetNames2(metNames)">parseMetNames2</a>(model.metNames(i));
+0084         res = <a href="../../../CometsToolbox/external/mksqlite-2.4/mksqlite.html" class="code" title="">mksqlite</a>(<span class="string">'select official from PSEUDONYM where pseudonym == ?'</span>,strtrim(fullbase{1}));
 0085         <span class="keyword">if</span> ~isempty(res)
 0086             newname = {res.official};
 0087             newmetnames{i} = newname{1};
 0088             <span class="keyword">if</span> strcmp(<span class="string">''</span>,compsymbols{i})
-0089                 compsymbols{i} = tempcomp{1};
+0089                 compsymbols{i} = fullcomp{1};
 0090             <span class="keyword">end</span>
 0091         <span class="keyword">else</span> <span class="comment">%still no match</span>
 0092             newmetnames{i} = met;
@@ -169,7 +171,32 @@ This function is called by:
 0109 
 0110 <span class="comment">%apply change to the model</span>
 0111 model.mets = newmetnames;
-0112 <span class="keyword">end</span></pre></div>
-<hr><address>Generated on Thu 14-Jun-2018 15:27:34 by <strong><a href="http://www.artefact.tk/software/matlab/m2html/" target="_parent">m2html</a></strong> &copy; 2005</address>
+0112 <span class="keyword">end</span>
+0113 
+0114 <span class="comment">%Extended from COBRA parseMetNames in order to support compartments with</span>
+0115 <span class="comment">%multi-character abbreviations</span>
+0116 <a name="_sub1" href="#_subfunctions" class="code">function [baseMetNames, compSymbols] = parseMetNames2(metNames)</a>
+0117 <span class="keyword">if</span> ~iscell(metNames)
+0118     metNames = {metNames};
+0119 <span class="keyword">end</span>
+0120 
+0121 <span class="keyword">try</span>
+0122     data = cellfun(@(x) regexp(x,<span class="string">'^(?&lt;metNames&gt;.*)\[(?&lt;compSymbols&gt;[^\[*]*)\]$'</span>,<span class="string">'names'</span>),metNames);
+0123 <span class="keyword">catch</span>
+0124     <span class="comment">%If the above doesn't work, its likely, that we either have an odd</span>
+0125     <span class="comment">%compartment symbol (e.g. (), or that we have a non compartmented</span>
+0126     <span class="comment">%entry.</span>
+0127     <span class="comment">%Lets see if we have a ()compartment symbol</span>
+0128     <span class="keyword">try</span>
+0129         data = cellfun(@(x) regexp(x,<span class="string">'^(?&lt;metNames&gt;.*)\((?&lt;compSymbols&gt;[^\[*]*)\)$'</span>,<span class="string">'names'</span>),metNames);
+0130     <span class="keyword">catch</span>
+0131         <span class="comment">%No, we don't lets assume, we only have a metabolite name</span>
+0132         data = cellfun(@(x) regexp(x,<span class="string">'^(?&lt;metNames&gt;.*)[\(\[]*(?&lt;compSymbols&gt;.*)[^\[\(]*[\]\)]*$'</span>,<span class="string">'names'</span>),metNames);
+0133     <span class="keyword">end</span>
+0134 <span class="keyword">end</span>
+0135 baseMetNames = columnVector({data.metNames});
+0136 compSymbols = columnVector({data.compSymbols});
+0137 <span class="keyword">end</span></pre></div>
+<hr><address>Generated on Mon 27-Jan-2020 12:49:43 by <strong><a href="http://www.artefact.tk/software/matlab/m2html/" target="_parent">m2html</a></strong> &copy; 2005</address>
 </body>
 </html>

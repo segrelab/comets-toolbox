@@ -1,0 +1,113 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+                "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+<head>
+  <title>Description of createScriptFile</title>
+  <meta name="keywords" content="createScriptFile">
+  <meta name="description" content="CREATESCRIPTFILE([directory], [layoutName], [paramFilesExist]) Create the">
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <meta name="generator" content="m2html &copy; 2005 Guillaume Flandin">
+  <meta name="robots" content="index, follow">
+  <link type="text/css" rel="stylesheet" href="../../m2html.css">
+  <script type="text/javascript">
+    if (top.frames.length == 0) { top.location = "../../index.html"; };
+  </script>
+</head>
+<body>
+<a name="_top"></a>
+<!-- # CometsToolbox --><!-- menu.html io -->
+<h1>createScriptFile
+</h1>
+
+<h2><a name="_name"></a>PURPOSE <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="box"><strong>CREATESCRIPTFILE([directory], [layoutName], [paramFilesExist]) Create the</strong></div>
+
+<h2><a name="_synopsis"></a>SYNOPSIS <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="box"><strong>function createScriptFile( directory, layoutName, paramFilesExist ) </strong></div>
+
+<h2><a name="_description"></a>DESCRIPTION <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="fragment"><pre class="comment">CREATESCRIPTFILE([directory], [layoutName], [paramFilesExist]) Create the
+comets_script.txt file which tells command-line COMETS where to find the
+files it needs to run
+
+current directory will be used if not provided
+Layout name will be guessed if not provided.
+If paramFilesExist is not given, the function will check the given
+directory for 'global_params.txt' and 'package_params.txt'.
+If paramFilesExist = false, the script will exclude any params files even
+if they really do exist</pre></div>
+
+<!-- crossreference -->
+<h2><a name="_cross"></a>CROSS-REFERENCE INFORMATION <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+This function calls:
+<ul style="list-style-image:url(../../matlabicon.gif)">
+</ul>
+This function is called by:
+<ul style="list-style-image:url(../../matlabicon.gif)">
+<li><a href="createCometsFiles.html" class="code" title="function [ output_args ] = createCometsFiles(layout, directory, layoutFileName, separateParamsFiles, modelFileDir)">createCometsFiles</a>	CREATECOMETSFILES(layout, [directory], [layoutFileName], [separateParamsFiles])</li></ul>
+<!-- crossreference -->
+
+
+
+<h2><a name="_source"></a>SOURCE CODE <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="fragment"><pre>0001 <a name="_sub0" href="#_subfunctions" class="code">function createScriptFile( directory, layoutName, paramFilesExist )</a>
+0002 <span class="comment">%CREATESCRIPTFILE([directory], [layoutName], [paramFilesExist]) Create the</span>
+0003 <span class="comment">%comets_script.txt file which tells command-line COMETS where to find the</span>
+0004 <span class="comment">%files it needs to run</span>
+0005 <span class="comment">%</span>
+0006 <span class="comment">%current directory will be used if not provided</span>
+0007 <span class="comment">%Layout name will be guessed if not provided.</span>
+0008 <span class="comment">%If paramFilesExist is not given, the function will check the given</span>
+0009 <span class="comment">%directory for 'global_params.txt' and 'package_params.txt'.</span>
+0010 <span class="comment">%If paramFilesExist = false, the script will exclude any params files even</span>
+0011 <span class="comment">%if they really do exist</span>
+0012 
+0013 <span class="keyword">if</span> nargin &lt; 1
+0014     directory = pwd;
+0015 <span class="keyword">end</span>
+0016 
+0017 <span class="keyword">if</span> nargin &lt; 2
+0018     layoutName = <span class="string">'comets_layout.txt'</span>;
+0019 <span class="keyword">elseif</span> ~contains(layoutName,<span class="string">'.'</span>) <span class="comment">%the layout name doesn't have an extension</span>
+0020     layoutName = [layoutName <span class="string">'.txt'</span>];
+0021 <span class="keyword">end</span>
+0022 
+0023 <span class="comment">% scriptfile = fullfile(directory, 'comets_script.txt');</span>
+0024 <span class="comment">% lfile = fullfile(directory,layoutName);</span>
+0025 <span class="comment">% gpfile = fullfile(directory,'global_params.txt');</span>
+0026 <span class="comment">% ppfile = fullfile(directory,'package_params.txt');</span>
+0027 sep = filesep;
+0028 scriptfile = <span class="string">'comets_script.txt'</span>;
+0029 lfile = layoutName;
+0030 gpfile = <span class="string">'global_params.txt'</span>;
+0031 ppfile = <span class="string">'package_params.txt'</span>;
+0032 
+0033 
+0034 <span class="comment">%do the param files exist?</span>
+0035 gpexist = exist(gpfile,<span class="string">'file'</span>);
+0036 ppexist = exist(ppfile,<span class="string">'file'</span>);
+0037 
+0038 <span class="comment">%default behavior if paramFilesExist is not given</span>
+0039 <span class="keyword">if</span> nargin &lt; 3
+0040     paramFilesExist = gpexist | ppexist;
+0041 <span class="keyword">end</span>
+0042 
+0043 file = fopen([directory sep scriptfile],<span class="string">'w'</span>);
+0044 
+0045 fprintf(file,<span class="string">'load_layout %s\n'</span>,lfile);
+0046 
+0047 <span class="keyword">if</span> paramFilesExist
+0048     <span class="keyword">if</span> gpexist
+0049         fprintf(file,<span class="string">'load_comets_parameters %s\n'</span>,gpfile);
+0050     <span class="keyword">end</span>
+0051     <span class="keyword">if</span> ppexist
+0052         fprintf(file,<span class="string">'load_package_parameters %s\n'</span>,ppfile);
+0053     <span class="keyword">end</span>
+0054 <span class="keyword">end</span>
+0055 
+0056 fclose(file);
+0057 <span class="keyword">end</span>
+0058</pre></div>
+<hr><address>Generated on Mon 27-Jan-2020 12:49:43 by <strong><a href="http://www.artefact.tk/software/matlab/m2html/" target="_parent">m2html</a></strong> &copy; 2005</address>
+</body>
+</html>

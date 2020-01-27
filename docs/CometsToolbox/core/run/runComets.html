@@ -34,7 +34,7 @@ otherwise files will be placed in the current directory</pre></div>
 <h2><a name="_cross"></a>CROSS-REFERENCE INFORMATION <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
 This function calls:
 <ul style="list-style-image:url(../../../matlabicon.gif)">
-<li><a href="createCometsFiles.html" class="code" title="function [ output_args ] = createCometsFiles(layout, directory, layoutFileName, separateParamsFiles)">createCometsFiles</a>	CREATECOMETSFILES(layout, [directory], [layoutFileName], [separateParamsFiles])</li><li><a href="runCometsOnDirectory.html" class="code" title="function comets_output = runCometsOnDirectory(run_COMETS_folder)">runCometsOnDirectory</a>	run_COMETS Run COMETS without a GUI from MATLAB</li></ul>
+<li><a href="runCometsOnDirectory.html" class="code" title="function comets_output = runCometsOnDirectory(run_COMETS_folder)">runCometsOnDirectory</a>	run_COMETS Run COMETS without a GUI from MATLAB</li><li><a href="../../../CometsToolbox/io/createCometsFiles.html" class="code" title="function [ output_args ] = createCometsFiles(layout, directory, layoutFileName, separateParamsFiles, modelFileDir)">createCometsFiles</a>	CREATECOMETSFILES(layout, [directory], [layoutFileName], [separateParamsFiles])</li></ul>
 This function is called by:
 <ul style="list-style-image:url(../../../matlabicon.gif)">
 <li><a href="../../../CometsToolbox/projects/serial_dilution/runSerialDilution.html" class="code" title="function [biomass,t,media] = runSerialDilution(layout,varargin)">runSerialDilution</a>	runSerialDilution(layout,nCycles,dilutionFactor,includeSpentMedia,directory)</li><li><a href="../../../CometsToolbox/scratch/write_run.html" class="code" title="">write_run</a>	test writing the files for a COMETS run, then execute COMETS from the</li></ul>
@@ -51,21 +51,45 @@ This function is called by:
 0006 <span class="keyword">if</span> nargin &lt; 2
 0007     directory = pwd;
 0008 <span class="keyword">end</span>
-0009 <span class="keyword">if</span> ~exist(directory)
+0009 <span class="keyword">if</span> ~exist(directory,<span class="string">'dir'</span>)
 0010     mkdir(directory);
 0011 <span class="keyword">end</span>
 0012 cd(directory);
 0013 
-0014 <a href="createCometsFiles.html" class="code" title="function [ output_args ] = createCometsFiles(layout, directory, layoutFileName, separateParamsFiles)">createCometsFiles</a>(layout,pwd);<span class="comment">%create layout,model,script &amp; param files</span>
+0014 <a href="../../../CometsToolbox/io/createCometsFiles.html" class="code" title="function [ output_args ] = createCometsFiles(layout, directory, layoutFileName, separateParamsFiles, modelFileDir)">createCometsFiles</a>(layout,pwd);<span class="comment">%create layout,model,script &amp; param files</span>
 0015 
-0016 disp([<span class="string">'Executing COMETS in the directory '</span> pwd]);
-0017 cometsOutput = <a href="runCometsOnDirectory.html" class="code" title="function comets_output = runCometsOnDirectory(run_COMETS_folder)">runCometsOnDirectory</a>(pwd);<span class="comment">%run</span>
-0018 
-0019 <span class="comment">%return to initial directory</span>
-0020 cd(currentdir);
-0021 
+0016 <span class="comment">%clear out files with name conflicts for the output files</span>
+0017 <span class="comment">%this should help avoid issues where a silently failed run results in</span>
+0018 <span class="comment">%scripts loading old results</span>
+0019 logfilenames = {};
+0020 <span class="keyword">if</span> layout.params.writeMediaLog
+0021     logfilenames = [logfilenames layout.params.mediaLogName];
 0022 <span class="keyword">end</span>
-0023</pre></div>
-<hr><address>Generated on Thu 14-Jun-2018 15:27:34 by <strong><a href="http://www.artefact.tk/software/matlab/m2html/" target="_parent">m2html</a></strong> &copy; 2005</address>
+0023 <span class="keyword">if</span> layout.params.writeBiomassLog
+0024     logfilenames = [logfilenames layout.params.biomassLogName];
+0025 <span class="keyword">end</span>
+0026 <span class="keyword">if</span> layout.params.writeTotalBiomassLog
+0027     logfilenames = [logfilenames layout.params.totalBiomassLogName];
+0028 <span class="keyword">end</span>
+0029 <span class="keyword">if</span> layout.params.writeFluxLog
+0030     logfilenames = [logfilenames layout.params.fluxLogName];
+0031 <span class="keyword">end</span>
+0032 <span class="keyword">for</span> i = 1:length(logfilenames)
+0033     n = logfilenames{i};
+0034     <span class="keyword">if</span> exist(n,<span class="string">'file'</span>)
+0035         disp([<span class="string">'Log file '</span> n <span class="string">' already exists! Deleting it before COMETS execution...'</span>]);
+0036         delete(n);
+0037     <span class="keyword">end</span>
+0038 <span class="keyword">end</span>     
+0039 
+0040 disp([<span class="string">'Executing COMETS in the directory '</span> pwd]);
+0041 cometsOutput = <a href="runCometsOnDirectory.html" class="code" title="function comets_output = runCometsOnDirectory(run_COMETS_folder)">runCometsOnDirectory</a>(pwd);<span class="comment">%run</span>
+0042 
+0043 <span class="comment">%return to initial directory</span>
+0044 cd(currentdir);
+0045 
+0046 <span class="keyword">end</span>
+0047</pre></div>
+<hr><address>Generated on Mon 27-Jan-2020 12:49:43 by <strong><a href="http://www.artefact.tk/software/matlab/m2html/" target="_parent">m2html</a></strong> &copy; 2005</address>
 </body>
 </html>

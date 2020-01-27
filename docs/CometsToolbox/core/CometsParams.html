@@ -68,71 +68,72 @@ This function is called by:
 0023         timeStep = 0.01 <span class="comment">%hours. time for each simulation step</span>
 0024         toroidalWorld = false <span class="comment">%If true, edge cells are considered adjacent to the cell on the opposite edge</span>
 0025         objectiveStyle = <span class="string">'MAX_OBJECTIVE_MIN_TOTAL'</span> <span class="comment">%replace with 'default' to use the Comets package default</span>
-0026         
-0027         <span class="comment">%Graphical &amp; output global params</span>
-0028         colorRelative = true <span class="comment">%if true, colors each space relative to the space with the highest value.</span>
-0029         displayLayer = 0 <span class="comment">%sets the current medium component (or biomass if 0) to be displayed</span>
-0030         pixelScale = 5 <span class="comment">%the number of pixels to render for each space</span>
-0031         showCycleTime = true <span class="comment">%if true, shows the time it took to finish the fba cycle in the output</span>
-0032         showCycleCount = true <span class="comment">%if true, shows the current cycle number in the output</span>
-0033         
-0034         <span class="comment">%Slideshow global params</span>
-0035         saveslideshow = false <span class="comment">%if true, saves a graphics slideshow to a series of files. See also slideshowName.</span>
-0036         slideshowColorRelative = true <span class="comment">%as colorRelative above, applied to the slideshow</span>
-0037         slideshowExt = <span class="string">'png'</span> <span class="comment">%the file extension for slideshow pictures. Currently, only “png” “bmp” and “jpg” are supported, and “png” is probably the best.</span>
-0038         slideshowLayer = 0 <span class="comment">%the layer to take a snapshot of for each slideshow step, in order of media from 0 to N-1 (for N media components). If this is set to N, a snapshot of the biomass is taken.</span>
-0039         slideshowName = <span class="string">'./res.png'</span>
-0040         slideshowRate = 1 <span class="comment">%the number of steps between taking a slideshow picture</span>
-0041                 
-0042         <span class="comment">%COMETS FBA package params with defaults:</span>
-0043         biomassMotionStyle = <span class="string">'Diffusion (Crank-Nicolson)'</span> <span class="comment">%Sets the method used for diffusing biomass. Only one of the indicated strings is an allowed value</span>
-0044             <span class="comment">%['Diffusion 2D(Crank-Nicolson)', 'Diffusion 2D(Eight Point)', 'Diffusion 3D']</span>
-0045             <span class="comment">%Not yet implemented: ['Convection 2D', 'Convection 3D']</span>
-0046             <span class="comment">%Comets versions older than v 2.2.2 should use &quot;Diffusion (Cranck-Nicolson)&quot; or &quot;Diffusion (Eight Point)&quot;, ommitting &quot;2D&quot;</span>
-0047         defaultDiffConst = 1e-6 <span class="comment">%Units = cm^2/s. The default diffusion constant for extracellular metabolites</span>
-0048         <span class="comment">%logFormat = 'COMETS' %['COMETS', 'Matlab']</span>
-0049         exchangeStyle = <span class="string">'Monod Style'</span> <span class="comment">%Sets the method used for calculating maximum exchange rates for all extracellular metabolites. Only one of the three strings is an allowed value: ['Standard FBA', 'Monod Style', 'Pseudo-Monod Style']</span>
-0050         flowDiffRate = 0 <span class="comment">%cm^2/s. The default biomass diffusion constant for non-growth diffusion</span>
-0051         growthDiffRate = 0 <span class="comment">%cm^2/s. The default biomass diffusion constant for growth</span>
-0052         numDiffPerStep = 10 <span class="comment">%Number of partial diffusions to do for each time step. Instead of doing one big jump for a time step, this gives the option of breaking the time step into smaller pieces to do a smoother diffusion calculation.</span>
-0053         numRunThreads = 1 <span class="comment">%set &gt;1 to allow multithreaded computation</span>
-0054         
-0055         <span class="comment">%Model kinetics package parameters</span>
-0056         defaultAlpha = 1 <span class="comment">%The default Alpha coefficient (slope) for the Pseudo-Monod style exchange</span>
-0057         defaultHill = 2 <span class="comment">%The default Hill coefficient for Monod-style exchange</span>
-0058         defaultKm = 0.01 <span class="comment">%millimoles/cm^3. The default Km value for Monod-style exchange</span>
-0059         defaultReactionLower = -1000
-0060         defaultReactionUpper = 1000
-0061         defaultVmax = 10 <span class="comment">%moles/g/hr. The default Vmax value for Monod-style exchange</span>
-0062         defaultW = 10 <span class="comment">%The default W coefficient (plateau) for the Pseudo-Monod style exchange</span>
-0063         numExRxnSubsteps = 10
-0064         
-0065         <span class="comment">%Logging package params</span>
-0066         writeFluxLog = false <span class="comment">%If true, writes fluxes out to a log file</span>
-0067         fluxLogName = <span class="string">'./flux.m'</span>
-0068         fluxLogRate = 1 <span class="comment">%How often (number of simulation steps) to write to the flux file. A value of 1 will cause writing after every step.</span>
-0069         writeMediaLog = false
-0070         mediaLogName = <span class="string">'./media.m'</span>
-0071         mediaLogRate = 1
-0072         writeBiomassLog = false <span class="comment">%if true, writes a summation of all biomass on a per-grid cell basis to a log file</span>
-0073         biomassLogName = <span class="string">'./biomass.m'</span>
-0074         biomassLogRate = 1
-0075         writeTotalBiomassLog = false <span class="comment">%if true, writes a summation of all biomass information to a log file</span>
-0076         totalBiomassLogRate = 1
-0077         totalBiomassLogName = <span class="string">'./total_biomass.m'</span>
-0078         useLogNameTimeStamp = false <span class="comment">%If true, appends a time stamp to every log file name</span>
-0079         writeMatFile = false <span class="comment">%If true, writes a .mat files of everything</span>
-0080         MatFileName = <span class="string">'./comets_log.mat'</span>
-0081     <span class="keyword">end</span>
-0082     
-0083     methods
-0084         <span class="comment">%constructor</span>
-0085         <a name="_sub0" href="#_subfunctions" class="code">function self = CometsParams()</a>
-0086         <span class="keyword">end</span>
-0087     <span class="keyword">end</span>
-0088     
-0089 <span class="keyword">end</span>
-0090</pre></div>
-<hr><address>Generated on Thu 14-Jun-2018 15:27:34 by <strong><a href="http://www.artefact.tk/software/matlab/m2html/" target="_parent">m2html</a></strong> &copy; 2005</address>
+0026         randomSeed = 0 <span class="comment">%seed for the semirandom number generator</span>
+0027         
+0028         <span class="comment">%Graphical &amp; output global params</span>
+0029         colorRelative = true <span class="comment">%if true, colors each space relative to the space with the highest value.</span>
+0030         displayLayer = 0 <span class="comment">%sets the current medium component (or biomass if 0) to be displayed</span>
+0031         pixelScale = 5 <span class="comment">%the number of pixels to render for each space</span>
+0032         showCycleTime = true <span class="comment">%if true, shows the time it took to finish the fba cycle in the output</span>
+0033         showCycleCount = true <span class="comment">%if true, shows the current cycle number in the output</span>
+0034         
+0035         <span class="comment">%Slideshow global params</span>
+0036         saveslideshow = false <span class="comment">%if true, saves a graphics slideshow to a series of files. See also slideshowName.</span>
+0037         slideshowColorRelative = true <span class="comment">%as colorRelative above, applied to the slideshow</span>
+0038         slideshowExt = <span class="string">'png'</span> <span class="comment">%the file extension for slideshow pictures. Currently, only “png” “bmp” and “jpg” are supported, and “png” is probably the best.</span>
+0039         slideshowLayer = 0 <span class="comment">%the layer to take a snapshot of for each slideshow step, in order of media from 0 to N-1 (for N media components). If this is set to N, a snapshot of the biomass is taken.</span>
+0040         slideshowName = <span class="string">'./res.png'</span>
+0041         slideshowRate = 1 <span class="comment">%the number of steps between taking a slideshow picture</span>
+0042                 
+0043         <span class="comment">%COMETS FBA package params with defaults:</span>
+0044         biomassMotionStyle = <span class="string">'Diffusion (Crank-Nicolson)'</span> <span class="comment">%Sets the method used for diffusing biomass. Only one of the indicated strings is an allowed value</span>
+0045             <span class="comment">%['Diffusion 2D(Crank-Nicolson)', 'Diffusion 2D(Eight Point)', 'Diffusion 3D']</span>
+0046             <span class="comment">%Not yet implemented: ['Convection 2D', 'Convection 3D']</span>
+0047             <span class="comment">%Comets versions older than v 2.2.2 should use &quot;Diffusion (Cranck-Nicolson)&quot; or &quot;Diffusion (Eight Point)&quot;, ommitting &quot;2D&quot;</span>
+0048         defaultDiffConst = 1e-6 <span class="comment">%Units = cm^2/s. The default diffusion constant for extracellular metabolites</span>
+0049         <span class="comment">%logFormat = 'COMETS' %['COMETS', 'Matlab']</span>
+0050         exchangeStyle = <span class="string">'Monod Style'</span> <span class="comment">%Sets the method used for calculating maximum exchange rates for all extracellular metabolites. Only one of the three strings is an allowed value: ['Standard FBA', 'Monod Style', 'Pseudo-Monod Style']</span>
+0051         flowDiffRate = 0 <span class="comment">%cm^2/s. The default biomass diffusion constant for non-growth diffusion</span>
+0052         growthDiffRate = 0 <span class="comment">%cm^2/s. The default biomass diffusion constant for growth</span>
+0053         numDiffPerStep = 10 <span class="comment">%Number of partial diffusions to do for each time step. Instead of doing one big jump for a time step, this gives the option of breaking the time step into smaller pieces to do a smoother diffusion calculation.</span>
+0054         numRunThreads = 1 <span class="comment">%set &gt;1 to allow multithreaded computation</span>
+0055         
+0056         <span class="comment">%Model kinetics package parameters</span>
+0057         defaultAlpha = 1 <span class="comment">%The default Alpha coefficient (slope) for the Pseudo-Monod style exchange</span>
+0058         defaultHill = 2 <span class="comment">%The default Hill coefficient for Monod-style exchange</span>
+0059         defaultKm = 0.01 <span class="comment">%millimoles/cm^3. The default Km value for Monod-style exchange</span>
+0060         defaultReactionLower = -1000
+0061         defaultReactionUpper = 1000
+0062         defaultVmax = 10 <span class="comment">%moles/g/hr. The default Vmax value for Monod-style exchange</span>
+0063         defaultW = 10 <span class="comment">%The default W coefficient (plateau) for the Pseudo-Monod style exchange</span>
+0064         numExRxnSubsteps = 10
+0065         
+0066         <span class="comment">%Logging package params</span>
+0067         writeFluxLog = false <span class="comment">%If true, writes fluxes out to a log file</span>
+0068         fluxLogName = <span class="string">'./flux.m'</span>
+0069         fluxLogRate = 1 <span class="comment">%How often (number of simulation steps) to write to the flux file. A value of 1 will cause writing after every step.</span>
+0070         writeMediaLog = false
+0071         mediaLogName = <span class="string">'./media.m'</span>
+0072         mediaLogRate = 1
+0073         writeBiomassLog = false <span class="comment">%if true, writes a summation of all biomass on a per-grid cell basis to a log file</span>
+0074         biomassLogName = <span class="string">'./biomass.m'</span>
+0075         biomassLogRate = 1
+0076         writeTotalBiomassLog = false <span class="comment">%if true, writes a summation of all biomass information to a log file</span>
+0077         totalBiomassLogRate = 1
+0078         totalBiomassLogName = <span class="string">'./total_biomass.m'</span>
+0079         useLogNameTimeStamp = false <span class="comment">%If true, appends a time stamp to every log file name</span>
+0080         writeMatFile = false <span class="comment">%If true, writes a .mat files of everything</span>
+0081         MatFileName = <span class="string">'./comets_log.mat'</span>
+0082     <span class="keyword">end</span>
+0083     
+0084     methods
+0085         <span class="comment">%constructor</span>
+0086         <a name="_sub0" href="#_subfunctions" class="code">function self = CometsParams()</a>
+0087         <span class="keyword">end</span>
+0088     <span class="keyword">end</span>
+0089     
+0090 <span class="keyword">end</span>
+0091</pre></div>
+<hr><address>Generated on Mon 27-Jan-2020 12:49:43 by <strong><a href="http://www.artefact.tk/software/matlab/m2html/" target="_parent">m2html</a></strong> &copy; 2005</address>
 </body>
 </html>

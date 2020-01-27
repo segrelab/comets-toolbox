@@ -60,7 +60,7 @@ Example Use:
 <h2><a name="_cross"></a>CROSS-REFERENCE INFORMATION <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
 This function calls:
 <ul style="list-style-image:url(../../../matlabicon.gif)">
-<li><a href="../../../CometsToolbox/core/run/runComets.html" class="code" title="function cometsOutput = runComets( layout, directory )">runComets</a>	RUNCOMETS create the files necessary for a COMETS run, and execute it from</li><li><a href="../../../CometsToolbox/external/m2html/@template/parse.html" class="code" title="function [tpl, str] = parse(tpl,target,handle,append)">parse</a>	TEMPLATE/PARSE Fill in replacement fields with the class properties</li><li><a href="../../../CometsToolbox/io/parseBiomassLog.html" class="code" title="function out = parseBiomassLog(biomassFile)">parseBiomassLog</a>	parseBiomassCometsOutput:</li><li><a href="../../../CometsToolbox/io/parseMediaLog.html" class="code" title="function tab = parseMediaLog(varargin)">parseMediaLog</a>	PARSEMEDIALOG(logFilePath, [metNames]) load the Comets media log at the</li><li><a href="../../../CometsToolbox/test/out/media.html" class="code" title="">media</a>	</li></ul>
+<li><a href="../../../CometsToolbox/core/run/runComets.html" class="code" title="function cometsOutput = runComets( layout, directory )">runComets</a>	RUNCOMETS create the files necessary for a COMETS run, and execute it from</li><li><a href="../../../CometsToolbox/external/m2html/@template/parse.html" class="code" title="function [tpl, str] = parse(tpl,target,handle,append)">parse</a>	TEMPLATE/PARSE Fill in replacement fields with the class properties</li><li><a href="../../../CometsToolbox/io/parseBiomassLog.html" class="code" title="function tab = parseBiomassLog(biomassFile)">parseBiomassLog</a>	parseBiomassCometsOutput:</li><li><a href="../../../CometsToolbox/io/parseMediaLog.html" class="code" title="function tab = parseMediaLog(varargin)">parseMediaLog</a>	PARSEMEDIALOG(logFilePath, [metNames]) load the Comets media log at the</li><li><a href="../../../CometsToolbox/test/out/media.html" class="code" title="">media</a>	</li></ul>
 This function is called by:
 <ul style="list-style-image:url(../../../matlabicon.gif)">
 <li><a href="../../../CometsToolbox/test/testSerialDilution.html" class="code" title="">testSerialDilution</a>	A script to test out the serial dilution functions</li></ul>
@@ -164,7 +164,7 @@ This function is called by:
 0093     <a href="../../../CometsToolbox/core/run/runComets.html" class="code" title="function cometsOutput = runComets( layout, directory )">runComets</a>(layout);
 0094     
 0095     <span class="comment">%get the biomass</span>
-0096     b = <a href="../../../CometsToolbox/io/parseBiomassLog.html" class="code" title="function out = parseBiomassLog(biomassFile)">parseBiomassLog</a>(biolog);
+0096     b = <a href="../../../CometsToolbox/io/parseBiomassLog.html" class="code" title="function tab = parseBiomassLog(biomassFile)">parseBiomassLog</a>(biolog);
 0097     nmodels = max(b.model + 1);
 0098     nrows = length(unique(b.t)); <span class="comment">%number of timesteps</span>
 0099     bt = zeros(nrows,nmodels);
@@ -208,6 +208,6 @@ This function is called by:
 0137 cd(curdir);
 0138 <span class="keyword">end</span>
 0139</pre></div>
-<hr><address>Generated on Thu 14-Jun-2018 15:27:34 by <strong><a href="http://www.artefact.tk/software/matlab/m2html/" target="_parent">m2html</a></strong> &copy; 2005</address>
+<hr><address>Generated on Mon 27-Jan-2020 12:49:43 by <strong><a href="http://www.artefact.tk/software/matlab/m2html/" target="_parent">m2html</a></strong> &copy; 2005</address>
 </body>
 </html>

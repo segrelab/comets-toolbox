@@ -4,7 +4,7 @@
 <head>
   <title>Description of plotMediaTimecourse</title>
   <meta name="keywords" content="plotMediaTimecourse">
-  <meta name="description" content="PLOTMEDIATIMECOURSE(table,{metnames},[logscale]) create a line plot of the total">
+  <meta name="description" content="PLOTMEDIATIMECOURSE(table,{metnames},[scale],lineweight) create a line plot of the total">
   <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
   <meta name="generator" content="m2html &copy; 2005 Guillaume Flandin">
   <meta name="robots" content="index, follow">
@@ -20,21 +20,26 @@
 </h1>
 
 <h2><a name="_name"></a>PURPOSE <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
-<div class="box"><strong>PLOTMEDIATIMECOURSE(table,{metnames},[logscale]) create a line plot of the total</strong></div>
+<div class="box"><strong>PLOTMEDIATIMECOURSE(table,{metnames},[scale],lineweight) create a line plot of the total</strong></div>
 
 <h2><a name="_synopsis"></a>SYNOPSIS <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
-<div class="box"><strong>function p = plotMediaTimecourse(table,metnames,logscale) </strong></div>
+<div class="box"><strong>function p = plotMediaTimecourse(table,metnames,scale,linewidth) </strong></div>
 
 <h2><a name="_description"></a>DESCRIPTION <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
-<div class="fragment"><pre class="comment">PLOTMEDIATIMECOURSE(table,{metnames},[logscale]) create a line plot of the total 
+<div class="fragment"><pre class="comment">PLOTMEDIATIMECOURSE(table,{metnames},[scale],lineweight) create a line plot of the total 
 amount of the specified metabolites. 
-The first argument should be a data table loaded through parseMediaLog.m</pre></div>
+The first argument should be a data table loaded through parseMediaLog.m
+Scale is one of 'normal' (default), 'log', or 'relative'. The first letter
+of each option is also valid.
+   for legacy reasons from when the parameter was &quot;logscale&quot;,
+   false='normal' and true= 'log'
+   'Relative' scales each metabolite to its own max concentration</pre></div>
 
 <!-- crossreference -->
 <h2><a name="_cross"></a>CROSS-REFERENCE INFORMATION <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
 This function calls:
 <ul style="list-style-image:url(../../matlabicon.gif)">
-</ul>
+<li><a href="../../CometsToolbox/external/m2html/@template/set.html" class="code" title="function tpl = set(tpl,action,varargin)">set</a>	TEMPLATE/SET Edit data stored in a Template object</li></ul>
 This function is called by:
 <ul style="list-style-image:url(../../matlabicon.gif)">
 </ul>
@@ -43,42 +48,96 @@ This function is called by:
 
 
 <h2><a name="_source"></a>SOURCE CODE <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
-<div class="fragment"><pre>0001 <a name="_sub0" href="#_subfunctions" class="code">function p = plotMediaTimecourse(table,metnames,logscale)</a>
-0002 <span class="comment">%PLOTMEDIATIMECOURSE(table,{metnames},[logscale]) create a line plot of the total</span>
+<div class="fragment"><pre>0001 <a name="_sub0" href="#_subfunctions" class="code">function p = plotMediaTimecourse(table,metnames,scale,linewidth)</a>
+0002 <span class="comment">%PLOTMEDIATIMECOURSE(table,{metnames},[scale],lineweight) create a line plot of the total</span>
 0003 <span class="comment">%amount of the specified metabolites.</span>
 0004 <span class="comment">%The first argument should be a data table loaded through parseMediaLog.m</span>
-0005 <span class="keyword">if</span> nargin &lt; 3
-0006     logscale = false;
-0007 <span class="keyword">end</span>
-0008 
-0009 <span class="keyword">if</span> ischar(metnames) <span class="comment">%if given one metabolite to plot</span>
-0010     metnames = {metnames};
-0011 <span class="keyword">end</span>
-0012 
-0013 x = unique(table.t);
-0014 y = zeros(length(x),length(metnames));
-0015 
-0016 ncells = max(table.x) * max(table.y);
-0017 <span class="keyword">for</span> i = 1:length(metnames)
-0018     met = metnames{i};
-0019     st = table(strcmp(met,table.metname),:);
-0020     
-0021     <span class="comment">%sum all cells at the same timepoint</span>
-0022     amt = reshape(st.amt,length(x),ncells);
-0023     amt = sum(amt,2);
-0024     
-0025     y(:,i) = amt;
-0026 <span class="keyword">end</span>
-0027 
-0028 <span class="keyword">if</span> logscale
-0029     y = log10(y);
-0030 <span class="keyword">end</span>
-0031 
-0032 p = plot(x,y);
-0033 legend(metnames,<span class="string">'location'</span>,<span class="string">'best'</span>,<span class="string">'Interpreter'</span>, <span class="string">'none'</span>);
-0034 
-0035 <span class="keyword">end</span>
-0036</pre></div>
-<hr><address>Generated on Thu 14-Jun-2018 15:27:34 by <strong><a href="http://www.artefact.tk/software/matlab/m2html/" target="_parent">m2html</a></strong> &copy; 2005</address>
+0005 <span class="comment">%Scale is one of 'normal' (default), 'log', or 'relative'. The first letter</span>
+0006 <span class="comment">%of each option is also valid.</span>
+0007 <span class="comment">%   for legacy reasons from when the parameter was &quot;logscale&quot;,</span>
+0008 <span class="comment">%   false='normal' and true= 'log'</span>
+0009 <span class="comment">%   'Relative' scales each metabolite to its own max concentration</span>
+0010 <span class="keyword">if</span> nargin &lt; 3
+0011     scale = <span class="string">'normal'</span>;
+0012 <span class="keyword">end</span>
+0013 
+0014 <span class="keyword">if</span> nargin &gt;= 3
+0015     <span class="keyword">if</span> islogical(scale)
+0016         <span class="keyword">if</span> scale
+0017             scale = <span class="string">'log'</span>;
+0018         <span class="keyword">else</span>
+0019             scale = <span class="string">'normal'</span>;
+0020         <span class="keyword">end</span>
+0021     <span class="keyword">else</span> <span class="comment">%clean up input</span>
+0022         <span class="keyword">switch</span> upper(scale(1))
+0023             <span class="keyword">case</span> <span class="string">'N'</span>
+0024                 scale = <span class="string">'normal'</span>;
+0025             <span class="keyword">case</span> <span class="string">'L'</span>
+0026                 scale = <span class="string">'log'</span>;
+0027             <span class="keyword">case</span> <span class="string">'R'</span>
+0028                 scale = <span class="string">'relative'</span>;
+0029             <span class="keyword">case</span> <span class="string">'T'</span>
+0030                 scale = <span class="string">'log'</span>;
+0031             <span class="keyword">case</span> <span class="string">'F'</span>
+0032                 scale = <span class="string">'normal'</span>;
+0033             <span class="keyword">otherwise</span>
+0034                 scale = <span class="string">'normal'</span>;
+0035         <span class="keyword">end</span>
+0036     <span class="keyword">end</span>
+0037 <span class="keyword">end</span>
+0038         
+0039 
+0040 <span class="keyword">if</span> nargin &lt; 4
+0041     linewidth = 2;
+0042 <span class="keyword">end</span>
+0043 
+0044 <span class="keyword">if</span> ischar(metnames) <span class="comment">%if given one metabolite to plot</span>
+0045     metnames = {metnames};
+0046 <span class="keyword">end</span>
+0047 
+0048 nummets = length(metnames);
+0049 <span class="comment">%set number of columns in the legend</span>
+0050 ncol = nummets;
+0051 <span class="keyword">if</span> nummets &gt;= 5
+0052     ncol = 3;
+0053 <span class="keyword">end</span>
+0054 <span class="keyword">if</span> nummets &gt;= 7
+0055     ncol = 4;
+0056 <span class="keyword">end</span>
+0057 
+0058 x = unique(table.t);
+0059 y = zeros(length(x),nummets);
+0060 
+0061 ncells = max(table.x) * max(table.y);
+0062 <span class="keyword">for</span> i = 1:length(metnames)
+0063     met = metnames{i};
+0064     st = table(strcmp(met,table.metname),:);
+0065     
+0066     <span class="comment">%sum all cells at the same timepoint</span>
+0067     amt = reshape(st.amt,length(x),ncells);
+0068     amt = sum(amt,2);
+0069     
+0070     <span class="keyword">if</span> strcmpi(scale,<span class="string">'relative'</span>)
+0071         amt = amt/(max(amt));
+0072     <span class="keyword">end</span>
+0073     
+0074     y(:,i) = amt;
+0075 <span class="keyword">end</span>
+0076 
+0077 p = plot(x,y,<span class="string">'LineWidth'</span>,linewidth);
+0078 <span class="keyword">if</span> strcmpi(scale,<span class="string">'log'</span>)
+0079     <a href="../../CometsToolbox/external/m2html/@template/set.html" class="code" title="function tpl = set(tpl,action,varargin)">set</a>(gca,<span class="string">'YScale'</span>,<span class="string">'log'</span>);
+0080 <span class="keyword">end</span>
+0081 leg = legend(metnames,<span class="string">'location'</span>,<span class="string">'southoutside'</span>,<span class="string">'Interpreter'</span>, <span class="string">'none'</span>);
+0082 <a href="../../CometsToolbox/external/m2html/@template/set.html" class="code" title="function tpl = set(tpl,action,varargin)">set</a>(leg,<span class="string">'NumColumns'</span>,ncol);
+0083 xlabel(<span class="string">'Timestep'</span>);
+0084 yl = <span class="string">'Concentration (mmol)'</span>;
+0085 <span class="keyword">if</span> strcmpi(scale,<span class="string">'relative'</span>)
+0086     yl = <span class="string">'Relative Concentraion'</span>;
+0087 <span class="keyword">end</span>
+0088 ylabel(yl);
+0089 <span class="keyword">end</span>
+0090</pre></div>
+<hr><address>Generated on Mon 27-Jan-2020 12:49:43 by <strong><a href="http://www.artefact.tk/software/matlab/m2html/" target="_parent">m2html</a></strong> &copy; 2005</address>
 </body>
 </html>
