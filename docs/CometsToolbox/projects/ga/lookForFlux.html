@@ -1,0 +1,75 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+                "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+<head>
+  <title>Description of lookForFlux</title>
+  <meta name="keywords" content="lookForFlux">
+  <meta name="description" content="Uday Tripathi 7/2016">
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <meta name="generator" content="m2html &copy; 2005 Guillaume Flandin">
+  <meta name="robots" content="index, follow">
+  <link type="text/css" rel="stylesheet" href="../../../m2html.css">
+  <script type="text/javascript">
+    if (top.frames.length == 0) { top.location = "../../../index.html"; };
+  </script>
+</head>
+<body>
+<a name="_top"></a>
+<!-- # CometsToolbox --><!-- # projects --><!-- menu.html ga -->
+<h1>lookForFlux
+</h1>
+
+<h2><a name="_name"></a>PURPOSE <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+<div class="box"><strong>Uday Tripathi 7/2016</strong></div>
+
+<h2><a name="_synopsis"></a>SYNOPSIS <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+<div class="box"><strong>function score=lookForFlux(model,exchangeReaction,mets) </strong></div>
+
+<h2><a name="_description"></a>DESCRIPTION <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+<div class="fragment"><pre class="comment"> Uday Tripathi 7/2016
+ Sample excRxn: 'EX Nitrite e0'
+ Workflow: a=load(model) a=a.model lookForFlux(model,exchangeReaction)</pre></div>
+
+<!-- crossreference -->
+<h2><a name="_cross"></a>CROSS-REFERENCE INFORMATION <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+This function calls:
+<ul style="list-style-image:url(../../../matlabicon.gif)">
+<li><a href="changeMetLevels.html" class="code" title="function modModel=changeMetLevels(model,block,retain,numModels)">changeMetLevels</a>	CHANGEMETLEVELS Set the uptake reaction rate to 0 for all metabolites in</li></ul>
+This function is called by:
+<ul style="list-style-image:url(../../../matlabicon.gif)">
+<li><a href="runTest.html" class="code" title="function tempGenome=runTest(genome, models, mets, excRxn)">runTest</a>	Uday Tripathi 7/2016</li><li><a href="scoreCobra.html" class="code" title="function score=scoreCobra(genome,excRxn)">scoreCobra</a>	Uday Tripathi 7/2016</li></ul>
+<!-- crossreference -->
+
+
+
+<h2><a name="_source"></a>SOURCE CODE <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+<div class="fragment"><pre>0001 <span class="comment">% Uday Tripathi 7/2016</span>
+0002 <span class="comment">% Sample excRxn: 'EX Nitrite e0'</span>
+0003 <span class="comment">% Workflow: a=load(model) a=a.model lookForFlux(model,exchangeReaction)</span>
+0004 
+0005 <span class="comment">% Same as cobraFlux within Main class</span>
+0006 
+0007 <a name="_sub0" href="#_subfunctions" class="code">function score=lookForFlux(model,exchangeReaction,mets)</a>
+0008     model=<a href="changeMetLevels.html" class="code" title="function modModel=changeMetLevels(model,block,retain,numModels)">changeMetLevels</a>(model,mets);
+0009 
+0010     score=0;
+0011     
+0012     indexOfRxn=strmatch(exchangeReaction,model.rxnNames);
+0013     <span class="keyword">if</span> (isempty(indexOfRxn)==0)
+0014         temp=model.S(:,indexOfRxn);
+0015         tempArr=nonzeros(temp);
+0016         opt=optimizeCbModel(model,<span class="string">'max'</span>,0,true);
+0017         flux=opt.x(indexOfRxn);
+0018         
+0019         <span class="keyword">for</span> i=1:length(tempArr)
+0020             score=score+tempArr(i); <span class="comment">% adds up scores from Cobra optimized model</span>
+0021         <span class="keyword">end</span>
+0022         
+0023         score=score*flux;
+0024     <span class="keyword">else</span>
+0025         score=0;
+0026     <span class="keyword">end</span>
+0027 <span class="keyword">end</span></pre></div>
+<hr><address>Generated on Mon 27-Jan-2020 13:43:40 by <strong><a href="http://www.artefact.tk/software/matlab/m2html/" target="_parent">m2html</a></strong> &copy; 2005</address>
+</body>
+</html>

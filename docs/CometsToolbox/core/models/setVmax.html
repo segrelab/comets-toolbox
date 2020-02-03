@@ -1,0 +1,126 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+                "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+<head>
+  <title>Description of setVmax</title>
+  <meta name="keywords" content="setVmax">
+  <meta name="description" content="SETVMAX Set the Vmax of a reaction in a format to be included in a COMETS">
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <meta name="generator" content="m2html &copy; 2005 Guillaume Flandin">
+  <meta name="robots" content="index, follow">
+  <link type="text/css" rel="stylesheet" href="../../../m2html.css">
+  <script type="text/javascript">
+    if (top.frames.length == 0) { top.location = "../../../index.html"; };
+  </script>
+</head>
+<body>
+<a name="_top"></a>
+<!-- # CometsToolbox --><!-- ../menu.html core --><!-- menu.html models -->
+<h1>setVmax
+</h1>
+
+<h2><a name="_name"></a>PURPOSE <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+<div class="box"><strong>SETVMAX Set the Vmax of a reaction in a format to be included in a COMETS</strong></div>
+
+<h2><a name="_synopsis"></a>SYNOPSIS <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+<div class="box"><strong>function [model, status] = setVmax( model, rxnNames, vmax ) </strong></div>
+
+<h2><a name="_description"></a>DESCRIPTION <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+<div class="fragment"><pre class="comment">SETVMAX Set the Vmax of a reaction in a format to be included in a COMETS
+model file.
+Arguments:
+ model: a Cobra model struct
+ rxnName: the String name of a reaction as in model.rxns, or in 
+             model.rxnNames if not found in rxns.
+          Or a cell array of reaction names
+          Alternatively, the index of a reaction or an array of indexes
+ vmax: the Double value to set
+     or 'default', 'd' or NaN to reset the value to the default
+
+Returns a modified model struct, and status = 1 if successful or 0 if the
+reaction could not be found.
+
+ $Author: mquintin $    $Date: 2016/30/12 $    $Revision: 0.1 $
+ Last edit: mquintin 12/30/2016
+ Copyright: Daniel Segrè, Boston University Bioinformatics Program 2016</pre></div>
+
+<!-- crossreference -->
+<h2><a name="_cross"></a>CROSS-REFERENCE INFORMATION <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+This function calls:
+<ul style="list-style-image:url(../../../matlabicon.gif)">
+<li><a href="../../../CometsToolbox/util/stridx.html" class="code" title="function [idx] = stridx(query, list, allowSubstr)">stridx</a>	STRIDX(str, {str}, [true]) Get the indexes of the query string in the given cell array.</li></ul>
+This function is called by:
+<ul style="list-style-image:url(../../../matlabicon.gif)">
+</ul>
+<!-- crossreference -->
+
+
+
+<h2><a name="_source"></a>SOURCE CODE <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+<div class="fragment"><pre>0001 <a name="_sub0" href="#_subfunctions" class="code">function [model, status] = setVmax( model, rxnNames, vmax )</a>
+0002 <span class="comment">%SETVMAX Set the Vmax of a reaction in a format to be included in a COMETS</span>
+0003 <span class="comment">%model file.</span>
+0004 <span class="comment">%Arguments:</span>
+0005 <span class="comment">% model: a Cobra model struct</span>
+0006 <span class="comment">% rxnName: the String name of a reaction as in model.rxns, or in</span>
+0007 <span class="comment">%             model.rxnNames if not found in rxns.</span>
+0008 <span class="comment">%          Or a cell array of reaction names</span>
+0009 <span class="comment">%          Alternatively, the index of a reaction or an array of indexes</span>
+0010 <span class="comment">% vmax: the Double value to set</span>
+0011 <span class="comment">%     or 'default', 'd' or NaN to reset the value to the default</span>
+0012 <span class="comment">%</span>
+0013 <span class="comment">%Returns a modified model struct, and status = 1 if successful or 0 if the</span>
+0014 <span class="comment">%reaction could not be found.</span>
+0015 <span class="comment">%</span>
+0016 <span class="comment">% $Author: mquintin $    $Date: 2016/30/12 $    $Revision: 0.1 $</span>
+0017 <span class="comment">% Last edit: mquintin 12/30/2016</span>
+0018 <span class="comment">% Copyright: Daniel Segrè, Boston University Bioinformatics Program 2016</span>
+0019 <span class="comment">%</span>
+0020 
+0021 status = 0;
+0022 idx = -1;
+0023 
+0024 <span class="comment">%parse the reaction names</span>
+0025 <span class="keyword">if</span> ischar(rxnNames) <span class="comment">%a single reaction name</span>
+0026     rxnNames = {rxnNames};
+0027 <span class="keyword">end</span>
+0028 <span class="keyword">if</span> iscell(rxnNames) <span class="comment">%string names given</span>
+0029     idx = zeros(length(rxnNames));
+0030     <span class="keyword">for</span> i = 1:length(rxnNames)
+0031         j = <a href="../../../CometsToolbox/util/stridx.html" class="code" title="function [idx] = stridx(query, list, allowSubstr)">stridx</a>(rxnNames{i},model.rxns,false);
+0032         <span class="keyword">if</span> isempty(j)
+0033             j = <a href="../../../CometsToolbox/util/stridx.html" class="code" title="function [idx] = stridx(query, list, allowSubstr)">stridx</a>(rxnNames{i},model.rxnNames,false);
+0034         <span class="keyword">end</span>
+0035         <span class="keyword">if</span> ~isempty(j)
+0036             idx(i) = j(1);
+0037             status = 1;
+0038         <span class="keyword">end</span>
+0039     <span class="keyword">end</span>
+0040 <span class="keyword">end</span>
+0041 
+0042 <span class="keyword">if</span> isnumeric(rxnNames) <span class="comment">%works for a single index or an array</span>
+0043     idx = rxnNames;
+0044 <span class="keyword">end</span>
+0045 
+0046 <span class="comment">%handle cases where the value is being reset</span>
+0047 <span class="keyword">if</span> isnan(vmax) || strcmpi(<span class="string">'d'</span>,vmax) || strcmpi(<span class="string">'default'</span>,vmax)
+0048     vmax = NaN;
+0049 <span class="keyword">end</span>
+0050 
+0051 <span class="comment">%initialize or grow the Vmax vector if necessary</span>
+0052 <span class="keyword">if</span> ~isfield(model,<span class="string">'vmax'</span>)
+0053     model.vmax = NaN(length(model.rxns),1);
+0054 <span class="keyword">elseif</span> length(model.vmax) &lt; length(model.rxns)
+0055     model.vmax(length(model.vmax)+1:length(model.rxns)) = NaN;
+0056 <span class="keyword">end</span>
+0057 
+0058 <span class="comment">%set the value</span>
+0059 <span class="keyword">for</span> i=1:length(idx)
+0060     j = idx(i);
+0061     model.vmax(j) = vmax;
+0062 <span class="keyword">end</span>
+0063 
+0064 <span class="keyword">end</span></pre></div>
+<hr><address>Generated on Mon 27-Jan-2020 13:43:40 by <strong><a href="http://www.artefact.tk/software/matlab/m2html/" target="_parent">m2html</a></strong> &copy; 2005</address>
+</body>
+</html>

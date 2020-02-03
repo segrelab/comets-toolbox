@@ -1,0 +1,104 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+                "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+<head>
+  <title>Description of plotBiomassTimecourse</title>
+  <meta name="keywords" content="plotBiomassTimecourse">
+  <meta name="description" content="PLOTBIOMASSTIMECOURSE(table,[logscale]) create a line plot of the total">
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <meta name="generator" content="m2html &copy; 2005 Guillaume Flandin">
+  <meta name="robots" content="index, follow">
+  <link type="text/css" rel="stylesheet" href="../../m2html.css">
+  <script type="text/javascript">
+    if (top.frames.length == 0) { top.location = "../../index.html"; };
+  </script>
+</head>
+<body>
+<a name="_top"></a>
+<!-- # CometsToolbox --><!-- menu.html plotting -->
+<h1>plotBiomassTimecourse
+</h1>
+
+<h2><a name="_name"></a>PURPOSE <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="box"><strong>PLOTBIOMASSTIMECOURSE(table,[logscale]) create a line plot of the total</strong></div>
+
+<h2><a name="_synopsis"></a>SYNOPSIS <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="box"><strong>function f = plotBiomassTimecourse(table,modelNames,logscale) </strong></div>
+
+<h2><a name="_description"></a>DESCRIPTION <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="fragment"><pre class="comment">PLOTBIOMASSTIMECOURSE(table,[logscale]) create a line plot of the total 
+amount of the biomass for each species. 
+The first argument should be a data table loaded through parseBiomassLog.m</pre></div>
+
+<!-- crossreference -->
+<h2><a name="_cross"></a>CROSS-REFERENCE INFORMATION <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+This function calls:
+<ul style="list-style-image:url(../../matlabicon.gif)">
+<li><a href="../../CometsToolbox/external/m2html/@template/set.html" class="code" title="function tpl = set(tpl,action,varargin)">set</a>	TEMPLATE/SET Edit data stored in a Template object</li></ul>
+This function is called by:
+<ul style="list-style-image:url(../../matlabicon.gif)">
+</ul>
+<!-- crossreference -->
+
+
+
+<h2><a name="_source"></a>SOURCE CODE <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="fragment"><pre>0001 <a name="_sub0" href="#_subfunctions" class="code">function f = plotBiomassTimecourse(table,modelNames,logscale)</a>
+0002 <span class="comment">%PLOTBIOMASSTIMECOURSE(table,[logscale]) create a line plot of the total</span>
+0003 <span class="comment">%amount of the biomass for each species.</span>
+0004 <span class="comment">%The first argument should be a data table loaded through parseBiomassLog.m</span>
+0005 
+0006 nmodels = max(table.model) + 1;
+0007 
+0008 <span class="comment">%create model names if not given</span>
+0009 <span class="keyword">if</span> nargin &lt; 2
+0010      modelNames = {};
+0011      <span class="keyword">for</span> i = 1:nmodels
+0012          modelNames = [modelNames {[<span class="string">'Model '</span> num2str(i)]}];
+0013      <span class="keyword">end</span>
+0014 <span class="keyword">end</span>
+0015 
+0016 <span class="keyword">if</span> nargin &lt; 3
+0017     logscale = true;
+0018 <span class="keyword">end</span>
+0019 
+0020 f = figure();
+0021 hold on;
+0022 <span class="keyword">for</span> i = 1:nmodels
+0023     <span class="comment">%sum each timestep</span>
+0024     tab = table(table.model == i-1,:);
+0025     t = unique(tab.t);
+0026     bio = zeros(length(t),1);
+0027     <span class="keyword">for</span> j = 1:length(t)
+0028         steptab = tab(tab.t == t(j),:);
+0029         bio(j) = sum(steptab.biomass);
+0030     <span class="keyword">end</span>
+0031     plot(t,bio,<span class="string">'LineWidth'</span>,2,<span class="string">'DisplayName'</span>,modelNames{i});
+0032 <span class="keyword">end</span>
+0033 
+0034 <span class="keyword">if</span> logscale
+0035     <a href="../../CometsToolbox/external/m2html/@template/set.html" class="code" title="function tpl = set(tpl,action,varargin)">set</a>(gca,<span class="string">'yscale'</span>,<span class="string">'log'</span>);
+0036 <span class="keyword">end</span>
+0037 
+0038 <span class="comment">%set number of columns in the legend</span>
+0039 ncol = nmodels;
+0040 <span class="keyword">if</span> nmodels &gt;= 5
+0041     ncol = 3;
+0042 <span class="keyword">end</span>
+0043 <span class="keyword">if</span> nmodels &gt;= 7
+0044     ncol = 4;
+0045 <span class="keyword">end</span>
+0046 
+0047 <span class="keyword">if</span> nmodels &gt; 1
+0048     leg = legend(<span class="string">'location'</span>,<span class="string">'southoutside'</span>);
+0049     <a href="../../CometsToolbox/external/m2html/@template/set.html" class="code" title="function tpl = set(tpl,action,varargin)">set</a>(leg,<span class="string">'NumColumns'</span>,ncol);
+0050 <span class="keyword">end</span>
+0051 
+0052 xlabel(<span class="string">'Timestep'</span>);
+0053 ylabel(<span class="string">'Biomass (g)'</span>);
+0054 
+0055 <span class="keyword">end</span>
+0056</pre></div>
+<hr><address>Generated on Mon 27-Jan-2020 13:43:40 by <strong><a href="http://www.artefact.tk/software/matlab/m2html/" target="_parent">m2html</a></strong> &copy; 2005</address>
+</body>
+</html>

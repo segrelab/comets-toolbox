@@ -1,0 +1,75 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+                "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+<head>
+  <title>Description of createLayout</title>
+  <meta name="keywords" content="createLayout">
+  <meta name="description" content="CREATELAYOUT intialize a new blank Layout or one using the given models">
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <meta name="generator" content="m2html &copy; 2005 Guillaume Flandin">
+  <meta name="robots" content="index, follow">
+  <link type="text/css" rel="stylesheet" href="../../m2html.css">
+  <script type="text/javascript">
+    if (top.frames.length == 0) { top.location = "../../index.html"; };
+  </script>
+</head>
+<body>
+<a name="_top"></a>
+<!-- # CometsToolbox --><!-- menu.html factory -->
+<h1>createLayout
+</h1>
+
+<h2><a name="_name"></a>PURPOSE <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="box"><strong>CREATELAYOUT intialize a new blank Layout or one using the given models</strong></div>
+
+<h2><a name="_synopsis"></a>SYNOPSIS <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="box"><strong>function layout = createLayout(varargin) </strong></div>
+
+<h2><a name="_description"></a>DESCRIPTION <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="fragment"><pre class="comment">CREATELAYOUT intialize a new blank Layout or one using the given models
+and CometsParams
+   createLayout() createLayout(CometsParams) createLayout([CobraModel])
+   createLayout(CometsParams, [CobraModel])</pre></div>
+
+<!-- crossreference -->
+<h2><a name="_cross"></a>CROSS-REFERENCE INFORMATION <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+This function calls:
+<ul style="list-style-image:url(../../matlabicon.gif)">
+<li><a href="../../CometsToolbox/core/CometsLayout.html" class="code" title="">CometsLayout</a>	</li></ul>
+This function is called by:
+<ul style="list-style-image:url(../../matlabicon.gif)">
+<li><a href="../../CometsToolbox/test/testSerialDilution.html" class="code" title="">testSerialDilution</a>	A script to test out the serial dilution functions</li></ul>
+<!-- crossreference -->
+
+
+
+<h2><a name="_source"></a>SOURCE CODE <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="fragment"><pre>0001 <a name="_sub0" href="#_subfunctions" class="code">function layout = createLayout(varargin)</a>
+0002 <span class="comment">%CREATELAYOUT intialize a new blank Layout or one using the given models</span>
+0003 <span class="comment">%and CometsParams</span>
+0004 <span class="comment">%   createLayout() createLayout(CometsParams) createLayout([CobraModel])</span>
+0005 <span class="comment">%   createLayout(CometsParams, [CobraModel])</span>
+0006 
+0007 <span class="comment">%create a blank layout</span>
+0008 layout = <a href="../../CometsToolbox/core/CometsLayout.html" class="code" title="">CometsLayout</a>();
+0009 
+0010 <span class="comment">%parse args to add models and Params</span>
+0011 <span class="keyword">if</span> nargin == 1
+0012     <span class="keyword">if</span> strcmp(class(varargin{1}),<span class="string">'CometsParams'</span>)
+0013         layout = setCometsParams(layout,varargin{1});
+0014     <span class="keyword">elseif</span> isstruct(varargin{1})
+0015         layout = addModel(layout,varargin{1});
+0016     <span class="keyword">end</span>
+0017 <span class="keyword">elseif</span> nargin &gt; 1
+0018     <span class="keyword">for</span> i = 1:nargin
+0019         m = varargin{i};
+0020         <span class="keyword">if</span> isstruct(m)
+0021             layout = addModel(layout,m);
+0022         <span class="keyword">end</span>
+0023     <span class="keyword">end</span>
+0024 <span class="keyword">end</span>
+0025 <span class="keyword">end</span>
+0026</pre></div>
+<hr><address>Generated on Mon 27-Jan-2020 13:43:40 by <strong><a href="http://www.artefact.tk/software/matlab/m2html/" target="_parent">m2html</a></strong> &copy; 2005</address>
+</body>
+</html>

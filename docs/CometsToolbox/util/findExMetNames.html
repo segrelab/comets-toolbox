@@ -1,0 +1,87 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+                "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+<head>
+  <title>Description of findExMetNames</title>
+  <meta name="keywords" content="findExMetNames">
+  <meta name="description" content="FINDEXMETNAMES Return the metNames of all external metabolites in the given">
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <meta name="generator" content="m2html &copy; 2005 Guillaume Flandin">
+  <meta name="robots" content="index, follow">
+  <link type="text/css" rel="stylesheet" href="../../m2html.css">
+  <script type="text/javascript">
+    if (top.frames.length == 0) { top.location = "../../index.html"; };
+  </script>
+</head>
+<body>
+<a name="_top"></a>
+<!-- # CometsToolbox --><!-- menu.html util -->
+<h1>findExMetNames
+</h1>
+
+<h2><a name="_name"></a>PURPOSE <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="box"><strong>FINDEXMETNAMES Return the metNames of all external metabolites in the given</strong></div>
+
+<h2><a name="_synopsis"></a>SYNOPSIS <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="box"><strong>function found = findExMetNames(varargin) </strong></div>
+
+<h2><a name="_description"></a>DESCRIPTION <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="fragment"><pre class="comment">FINDEXMETNAMES Return the metNames of all external metabolites in the given 
+model which contain any of the (case-insensitive) strings given in {metsToFind}. 
+If no metabolite names are given, simply return all exchange metabolites
+
+ Arguments:
+ model   A Cobra-format model struct
+ [metsToFind]   Single string or Cell array of strings to search for</pre></div>
+
+<!-- crossreference -->
+<h2><a name="_cross"></a>CROSS-REFERENCE INFORMATION <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+This function calls:
+<ul style="list-style-image:url(../../matlabicon.gif)">
+</ul>
+This function is called by:
+<ul style="list-style-image:url(../../matlabicon.gif)">
+</ul>
+<!-- crossreference -->
+
+<h2><a name="_subfunctions"></a>SUBFUNCTIONS <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<ul style="list-style-image:url(../../matlabicon.gif)">
+<li><a href="#_sub1" class="code">function m = findOneMet(model, met)</a></li></ul>
+
+<h2><a name="_source"></a>SOURCE CODE <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="fragment"><pre>0001 <a name="_sub0" href="#_subfunctions" class="code">function found = findExMetNames(varargin)</a>
+0002 <span class="comment">%FINDEXMETNAMES Return the metNames of all external metabolites in the given</span>
+0003 <span class="comment">%model which contain any of the (case-insensitive) strings given in {metsToFind}.</span>
+0004 <span class="comment">%If no metabolite names are given, simply return all exchange metabolites</span>
+0005 <span class="comment">%</span>
+0006 <span class="comment">% Arguments:</span>
+0007 <span class="comment">% model   A Cobra-format model struct</span>
+0008 <span class="comment">% [metsToFind]   Single string or Cell array of strings to search for</span>
+0009 
+0010 model = varargin{1};
+0011 <span class="keyword">if</span> nargin &lt; 2
+0012     metsToFind = <span class="string">''</span>;
+0013 <span class="keyword">elseif</span> nargin == 2
+0014     metsToFind = varargin{2};
+0015 <span class="keyword">else</span>
+0016     metsToFind = {varargin{2:end}};
+0017 <span class="keyword">end</span>
+0018 
+0019 <span class="keyword">if</span> iscell(metsToFind)
+0020     f = cellfun(@(x) <a href="#_sub1" class="code" title="subfunction m = findOneMet(model, met)">findOneMet</a>(model,x), metsToFind, <span class="string">'UniformOutput'</span>, false);
+0021     found = vertcat(f{:});
+0022 <span class="keyword">else</span>
+0023     found = <a href="#_sub1" class="code" title="subfunction m = findOneMet(model, met)">findOneMet</a>(model,metsToFind);
+0024 <span class="keyword">end</span>
+0025     <span class="comment">%return all metNames in the model that match the given one</span>
+0026     <a name="_sub1" href="#_subfunctions" class="code">function m = findOneMet(model, met)</a>
+0027         rstr = [<span class="string">'.*'</span> met <span class="string">'.*e0'</span>]; <span class="comment">%regex wildcards</span>
+0028         matches = cellfun(@(x) regexpi(x,rstr,<span class="string">'match'</span>), model.metNames, <span class="string">'UniformOutput'</span>, false);
+0029         m = vertcat(matches{~cellfun(<span class="string">'isempty'</span>,matches)});
+0030     <span class="keyword">end</span>
+0031 
+0032 <span class="keyword">end</span>
+0033</pre></div>
+<hr><address>Generated on Mon 27-Jan-2020 13:43:40 by <strong><a href="http://www.artefact.tk/software/matlab/m2html/" target="_parent">m2html</a></strong> &copy; 2005</address>
+</body>
+</html>

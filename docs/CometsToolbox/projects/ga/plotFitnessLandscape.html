@@ -1,0 +1,72 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+                "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+<head>
+  <title>Description of plotFitnessLandscape</title>
+  <meta name="keywords" content="plotFitnessLandscape">
+  <meta name="description" content="Uday Tripathi 7/2016">
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <meta name="generator" content="m2html &copy; 2005 Guillaume Flandin">
+  <meta name="robots" content="index, follow">
+  <link type="text/css" rel="stylesheet" href="../../../m2html.css">
+  <script type="text/javascript">
+    if (top.frames.length == 0) { top.location = "../../../index.html"; };
+  </script>
+</head>
+<body>
+<a name="_top"></a>
+<!-- # CometsToolbox --><!-- # projects --><!-- menu.html ga -->
+<h1>plotFitnessLandscape
+</h1>
+
+<h2><a name="_name"></a>PURPOSE <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+<div class="box"><strong>Uday Tripathi 7/2016</strong></div>
+
+<h2><a name="_synopsis"></a>SYNOPSIS <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+<div class="box"><strong>function scores=plotFitnessLandscape(main, color, gens) </strong></div>
+
+<h2><a name="_description"></a>DESCRIPTION <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+<div class="fragment"><pre class="comment"> Uday Tripathi 7/2016</pre></div>
+
+<!-- crossreference -->
+<h2><a name="_cross"></a>CROSS-REFERENCE INFORMATION <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+This function calls:
+<ul style="list-style-image:url(../../../matlabicon.gif)">
+</ul>
+This function is called by:
+<ul style="list-style-image:url(../../../matlabicon.gif)">
+<li><a href="graphMultiple.html" class="code" title="">graphMultiple</a>	Uday Tripathi 7/2016</li></ul>
+<!-- crossreference -->
+
+<h2><a name="_subfunctions"></a>SUBFUNCTIONS <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+<ul style="list-style-image:url(../../../matlabicon.gif)">
+<li><a href="#_sub1" class="code">function score=findMaxScore(genomeGen)</a></li></ul>
+
+<h2><a name="_source"></a>SOURCE CODE <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+<div class="fragment"><pre>0001 <span class="comment">% Uday Tripathi 7/2016</span>
+0002 
+0003 <span class="comment">% Used to generate results, takes highest scorers from each generation and</span>
+0004 <span class="comment">% plots their scores to generate fitness landscapes</span>
+0005 <a name="_sub0" href="#_subfunctions" class="code">function scores=plotFitnessLandscape(main, color, gens)</a>
+0006     <span class="keyword">for</span> i=1:gens;
+0007         genomes=main.generation{i};
+0008         maxScore=<a href="#_sub1" class="code" title="subfunction score=findMaxScore(genomeGen)">findMaxScore</a>(genomes);
+0009         scores(i)=maxScore;
+0010     <span class="keyword">end</span>
+0011     plot(scores,color);
+0012     axis([1,gens,0,1000]);
+0013 <span class="keyword">end</span>
+0014 
+0015 <a name="_sub1" href="#_subfunctions" class="code">function score=findMaxScore(genomeGen)</a>
+0016     maxScore=0;
+0017     <span class="keyword">for</span> j=1:length(genomeGen)
+0018         tempGenome=genomeGen(j);
+0019         <span class="keyword">if</span> tempGenome.score &gt; maxScore
+0020            maxScore=tempGenome.score; 
+0021         <span class="keyword">end</span>
+0022     <span class="keyword">end</span>
+0023     score=maxScore;
+0024 <span class="keyword">end</span></pre></div>
+<hr><address>Generated on Mon 27-Jan-2020 13:43:40 by <strong><a href="http://www.artefact.tk/software/matlab/m2html/" target="_parent">m2html</a></strong> &copy; 2005</address>
+</body>
+</html>

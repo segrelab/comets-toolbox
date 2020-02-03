@@ -1,0 +1,133 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+                "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+<head>
+  <title>Description of addMetabolitesToRxn</title>
+  <meta name="keywords" content="addMetabolitesToRxn">
+  <meta name="description" content="ADDMETABOLITETORXN CobraModel [MetNames] RxnName [Stoich]">
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <meta name="generator" content="m2html &copy; 2005 Guillaume Flandin">
+  <meta name="robots" content="index, follow">
+  <link type="text/css" rel="stylesheet" href="../../m2html.css">
+  <script type="text/javascript">
+    if (top.frames.length == 0) { top.location = "../../index.html"; };
+  </script>
+</head>
+<body>
+<a name="_top"></a>
+<!-- # CometsToolbox --><!-- menu.html util -->
+<h1>addMetabolitesToRxn
+</h1>
+
+<h2><a name="_name"></a>PURPOSE <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="box"><strong>ADDMETABOLITETORXN CobraModel [MetNames] RxnName [Stoich]</strong></div>
+
+<h2><a name="_synopsis"></a>SYNOPSIS <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="box"><strong>function model = addMetabolitesToRxn( model, mets, rxnname, stoich) </strong></div>
+
+<h2><a name="_description"></a>DESCRIPTION <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="fragment"><pre class="comment">ADDMETABOLITETORXN CobraModel [MetNames] RxnName [Stoich]
+   Add the given metabolites to the reaction
+   If any of the listed metabolites are already present, they will not be
+   changed
+ Input args:
+model:  a Cobra-format model struct
+mets: a single metabolite name or a cell array of names
+rxnname: the name of a single reaction in the given model, OR the index of a reaction
+stoich: an array of stoichiometries corresponding 1:1 to the given metabolites, OR a single value that will be applied to all metabolites</pre></div>
+
+<!-- crossreference -->
+<h2><a name="_cross"></a>CROSS-REFERENCE INFORMATION <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+This function calls:
+<ul style="list-style-image:url(../../matlabicon.gif)">
+<li><a href="findMetsFromRxns.html" class="code" title="function [indexList, nameList] = findMetsFromRxns(model, rxnList, varargin)">findMetsFromRxns</a>	FINDMETSFROMRXNS returns a list of metabolites which participate in at</li><li><a href="stridx.html" class="code" title="function [idx] = stridx(query, list, allowSubstr)">stridx</a>	STRIDX(str, {str}, [true]) Get the indexes of the query string in the given cell array.</li></ul>
+This function is called by:
+<ul style="list-style-image:url(../../matlabicon.gif)">
+</ul>
+<!-- crossreference -->
+
+
+
+<h2><a name="_source"></a>SOURCE CODE <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="fragment"><pre>0001 <a name="_sub0" href="#_subfunctions" class="code">function model = addMetabolitesToRxn( model, mets, rxnname, stoich)</a>
+0002 <span class="comment">%ADDMETABOLITETORXN CobraModel [MetNames] RxnName [Stoich]</span>
+0003 <span class="comment">%   Add the given metabolites to the reaction</span>
+0004 <span class="comment">%   If any of the listed metabolites are already present, they will not be</span>
+0005 <span class="comment">%   changed</span>
+0006 <span class="comment">% Input args:</span>
+0007 <span class="comment">%model:  a Cobra-format model struct</span>
+0008 <span class="comment">%mets: a single metabolite name or a cell array of names</span>
+0009 <span class="comment">%rxnname: the name of a single reaction in the given model, OR the index of a reaction</span>
+0010 <span class="comment">%stoich: an array of stoichiometries corresponding 1:1 to the given metabolites, OR a single value that will be applied to all metabolites</span>
+0011 
+0012 
+0013 <span class="comment">%First, check if any mets have to be added to the model</span>
+0014 newmets = {};
+0015 <span class="keyword">if</span> iscell(mets)
+0016     tstoich = stoich;
+0017     <span class="keyword">if</span> length(stoich) == 1
+0018         tstoich(1:length(mets)) = stoich(1); <span class="comment">%extend the stoich if one value is used for many mets</span>
+0019     <span class="keyword">end</span>
+0020     <span class="keyword">for</span> i = 1:length(mets)
+0021         <span class="keyword">if</span> ~any(strcmp(model.mets,mets{i}))
+0022             newmets = [newmets; mets{i}];
+0023         <span class="keyword">end</span>
+0024     <span class="keyword">end</span>
+0025 <span class="keyword">elseif</span> ischar(mets)
+0026     <span class="keyword">if</span> ~any(strcmp(model.mets,mets))
+0027         newmets = {mets};
+0028     <span class="keyword">end</span>
+0029     mets = {mets}; <span class="comment">%gurantee it's a cell for downstream</span>
+0030 <span class="keyword">end</span>
+0031 
+0032 <span class="keyword">if</span> ~isempty(newmets)
+0033     <span class="keyword">for</span> i = 1:length(newmets)
+0034         <span class="comment">%warning(['Adding metabolite ' newmets{i} ' to the model ' getModelName(model)]);</span>
+0035         model = addMetabolite(model,newmets{i});
+0036     <span class="keyword">end</span>
+0037 <span class="keyword">end</span>
+0038 
+0039 <span class="comment">%identifying the reaction</span>
+0040 rxnidx = 0;
+0041 <span class="keyword">if</span> isnumeric(rxnname)
+0042     rxnidx = rxnname;
+0043     rxnname = model.rxns{rxnidx};
+0044 <span class="keyword">elseif</span> ischar(rxnname)
+0045     rxnidx = find(strcmp(rxnname,model.rxns),1);
+0046 <span class="keyword">elseif</span> iscell(rxnname)
+0047     rxnname = rxnname{1};
+0048     rxnidx = find(strcmp(rxnname,model.rxns),1);
+0049 <span class="keyword">end</span>
+0050 
+0051 
+0052 <span class="comment">%Do the work</span>
+0053 
+0054 <span class="comment">% rxnmetidxs = findMetsFromRxns(model,rxnname);</span>
+0055 <span class="comment">% rxnmetnames = model.mets(rxnmetidxs);</span>
+0056 rxnmetnames = <a href="findMetsFromRxns.html" class="code" title="function [indexList, nameList] = findMetsFromRxns(model, rxnList, varargin)">findMetsFromRxns</a>(model,rxnname);
+0057 rxnmetidxs = zeros(1,length(rxnmetnames));
+0058 <span class="keyword">for</span> i = 1:length(rxnmetnames)
+0059     rxnmetidxs(i) = <a href="stridx.html" class="code" title="function [idx] = stridx(query, list, allowSubstr)">stridx</a>(rxnmetnames{i},model.mets,false);
+0060 <span class="keyword">end</span>
+0061 rxnmetstoich = model.S(rxnmetidxs,rxnidx);
+0062 
+0063 newmetnames = [rxnmetnames; mets];
+0064 newrxnstoich = [rxnmetstoich; stoich];
+0065 
+0066 
+0067 <span class="keyword">for</span> i = 1:length(rxnmetnames)
+0068     rxnmetname = rxnmetnames{i};
+0069     <span class="keyword">if</span> any(strcmp(rxnmetname,mets)) <span class="comment">%this met has a new stoich</span>
+0070         newrxnstoich(i) = stoich(strcmp(rxnmetname,mets)); <span class="comment">%possibly redundant, but leave in case an old met is being given a new stoich</span>
+0071     <span class="keyword">end</span>
+0072 <span class="keyword">end</span>
+0073     
+0074 
+0075 
+0076 model = changeRxnMets(model,rxnmetnames, newmetnames, rxnname, newrxnstoich);
+0077 
+0078 <span class="keyword">end</span>
+0079</pre></div>
+<hr><address>Generated on Mon 27-Jan-2020 13:43:40 by <strong><a href="http://www.artefact.tk/software/matlab/m2html/" target="_parent">m2html</a></strong> &copy; 2005</address>
+</body>
+</html>

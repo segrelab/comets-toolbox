@@ -1,0 +1,56 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+                "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+<head>
+  <title>Description of testSerialDilution</title>
+  <meta name="keywords" content="testSerialDilution">
+  <meta name="description" content="A script to test out the serial dilution functions">
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <meta name="generator" content="m2html &copy; 2005 Guillaume Flandin">
+  <meta name="robots" content="index, follow">
+  <link type="text/css" rel="stylesheet" href="../../m2html.css">
+  <script type="text/javascript">
+    if (top.frames.length == 0) { top.location = "../../index.html"; };
+  </script>
+</head>
+<body>
+<a name="_top"></a>
+<!-- # CometsToolbox --><!-- menu.html test -->
+<h1>testSerialDilution
+</h1>
+
+<h2><a name="_name"></a>PURPOSE <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="box"><strong>A script to test out the serial dilution functions</strong></div>
+
+<h2><a name="_synopsis"></a>SYNOPSIS <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="box"><strong>This is a script file. </strong></div>
+
+<h2><a name="_description"></a>DESCRIPTION <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="fragment"><pre class="comment">A script to test out the serial dilution functions</pre></div>
+
+<!-- crossreference -->
+<h2><a name="_cross"></a>CROSS-REFERENCE INFORMATION <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+This function calls:
+<ul style="list-style-image:url(../../matlabicon.gif)">
+<li><a href="../../CometsToolbox/core/setInitialPop.html" class="code" title="function layout = setInitialPop(layout, format, pop, resize)">setInitialPop</a>	SETINITIALPOP Automatically generates initial population placements for</li><li><a href="../../CometsToolbox/factory/createLayout.html" class="code" title="function layout = createLayout(varargin)">createLayout</a>	CREATELAYOUT intialize a new blank Layout or one using the given models</li><li><a href="../../CometsToolbox/projects/serial_dilution/runSerialDilution.html" class="code" title="function [biomass,t,media] = runSerialDilution(layout,varargin)">runSerialDilution</a>	runSerialDilution(layout,nCycles,dilutionFactor,includeSpentMedia,directory)</li><li><a href="../../CometsToolbox/test/out/media.html" class="code" title="">media</a>	</li></ul>
+This function is called by:
+<ul style="list-style-image:url(../../matlabicon.gif)">
+</ul>
+<!-- crossreference -->
+
+
+
+<h2><a name="_source"></a>SOURCE CODE <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="fragment"><pre>0001 <span class="comment">%A script to test out the serial dilution functions</span>
+0002 load(<span class="string">'iJO1366.mat'</span>);
+0003 layout = <a href="../../CometsToolbox/factory/createLayout.html" class="code" title="function layout = createLayout(varargin)">createLayout</a>();
+0004 layout = addModel(layout,iJO1366);
+0005 layout = addModel(layout,iJO1366);
+0006 layout.media_amt(1:length(layout.mets)) = 0.01;
+0007 layout = <a href="../../CometsToolbox/core/setInitialPop.html" class="code" title="function layout = setInitialPop(layout, format, pop, resize)">setInitialPop</a>(layout,<span class="string">'1x1'</span>);
+0008 layout.initial_pop(2) = layout.initial_pop(2)*2;
+0009 
+0010 [biomass,t,<a href="../../CometsToolbox/test/out/media.html" class="code" title="">media</a>] = <a href="../../CometsToolbox/projects/serial_dilution/runSerialDilution.html" class="code" title="function [biomass,t,media] = runSerialDilution(layout,varargin)">runSerialDilution</a>(layout,4,20,true,<span class="string">'C:\sync\biomes\scripts\tmp'</span>);</pre></div>
+<hr><address>Generated on Mon 27-Jan-2020 13:43:40 by <strong><a href="http://www.artefact.tk/software/matlab/m2html/" target="_parent">m2html</a></strong> &copy; 2005</address>
+</body>
+</html>

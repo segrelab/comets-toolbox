@@ -1,0 +1,142 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+                "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+<head>
+  <title>Description of runCometsOnMany</title>
+  <meta name="keywords" content="runCometsOnMany">
+  <meta name="description" content="RUNCOMETSONMANY Iteratively runs Comets on multiple model files">
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <meta name="generator" content="m2html &copy; 2005 Guillaume Flandin">
+  <meta name="robots" content="index, follow">
+  <link type="text/css" rel="stylesheet" href="../../../m2html.css">
+  <script type="text/javascript">
+    if (top.frames.length == 0) { top.location = "../../../index.html"; };
+  </script>
+</head>
+<body>
+<a name="_top"></a>
+<!-- # CometsToolbox --><!-- # projects --><!-- menu.html autoeval -->
+<h1>runCometsOnMany
+</h1>
+
+<h2><a name="_name"></a>PURPOSE <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+<div class="box"><strong>RUNCOMETSONMANY Iteratively runs Comets on multiple model files</strong></div>
+
+<h2><a name="_synopsis"></a>SYNOPSIS <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+<div class="box"><strong>function [outputArgs] = runCometsOnMany(varargin) </strong></div>
+
+<h2><a name="_description"></a>DESCRIPTION <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+<div class="fragment"><pre class="comment">RUNCOMETSONMANY Iteratively runs Comets on multiple model files
+individiually and in combinations up to the specified n. Arugments should
+be given in 'name', value pairs as speficied below.
+ 
+Required arguments:
+   one of ['models' | 'files' | 'dir']
+
+ [OUTPUTARGS] = RUNCOMETSONMANY(INPUTARGS) 
+   'models',{cobraModels} : Specify a cell array of models to use
+   'files',{files} : Specify a cell array of paths corresponding to Cobra
+               models to load
+   'dir',path : Use all model files in the specified directory
+   'n',[int] : specify the number of models that will be included in
+               layouts. Multiple values mean that communities of each size
+               will be evaluated (for example, 1:3 will evaluate every 
+               singleton, pair, and triple set of models. A value of just 
+               '2' will evaluate only each pair). Default [1 2]
+   'include',[cobraModel | file] : Only evaluate layouts that include the
+               specified model (which may or may not have been included 
+               in the models, files, or dir arguments)
+   'layout',CometsLayout : A CometsLayout to be used as a template for all
+               Comets runs
+   'modelnames',{str} : specify a list of names to use for each model when
+               creating output files
+   'outdir',path : Directory into which output files should be placed
+ 
+   TODO: Initial Population</pre></div>
+
+<!-- crossreference -->
+<h2><a name="_cross"></a>CROSS-REFERENCE INFORMATION <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+This function calls:
+<ul style="list-style-image:url(../../../matlabicon.gif)">
+</ul>
+This function is called by:
+<ul style="list-style-image:url(../../../matlabicon.gif)">
+</ul>
+<!-- crossreference -->
+
+
+
+<h2><a name="_source"></a>SOURCE CODE <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+<div class="fragment"><pre>0001 <a name="_sub0" href="#_subfunctions" class="code">function [outputArgs] = runCometsOnMany(varargin)</a>
+0002 <span class="comment">%RUNCOMETSONMANY Iteratively runs Comets on multiple model files</span>
+0003 <span class="comment">%individiually and in combinations up to the specified n. Arugments should</span>
+0004 <span class="comment">%be given in 'name', value pairs as speficied below.</span>
+0005 <span class="comment">%</span>
+0006 <span class="comment">%Required arguments:</span>
+0007 <span class="comment">%   one of ['models' | 'files' | 'dir']</span>
+0008 <span class="comment">%</span>
+0009 <span class="comment">% [OUTPUTARGS] = RUNCOMETSONMANY(INPUTARGS)</span>
+0010 <span class="comment">%   'models',{cobraModels} : Specify a cell array of models to use</span>
+0011 <span class="comment">%   'files',{files} : Specify a cell array of paths corresponding to Cobra</span>
+0012 <span class="comment">%               models to load</span>
+0013 <span class="comment">%   'dir',path : Use all model files in the specified directory</span>
+0014 <span class="comment">%   'n',[int] : specify the number of models that will be included in</span>
+0015 <span class="comment">%               layouts. Multiple values mean that communities of each size</span>
+0016 <span class="comment">%               will be evaluated (for example, 1:3 will evaluate every</span>
+0017 <span class="comment">%               singleton, pair, and triple set of models. A value of just</span>
+0018 <span class="comment">%               '2' will evaluate only each pair). Default [1 2]</span>
+0019 <span class="comment">%   'include',[cobraModel | file] : Only evaluate layouts that include the</span>
+0020 <span class="comment">%               specified model (which may or may not have been included</span>
+0021 <span class="comment">%               in the models, files, or dir arguments)</span>
+0022 <span class="comment">%   'layout',CometsLayout : A CometsLayout to be used as a template for all</span>
+0023 <span class="comment">%               Comets runs</span>
+0024 <span class="comment">%   'modelnames',{str} : specify a list of names to use for each model when</span>
+0025 <span class="comment">%               creating output files</span>
+0026 <span class="comment">%   'outdir',path : Directory into which output files should be placed</span>
+0027 <span class="comment">%</span>
+0028 <span class="comment">%   TODO: Initial Population</span>
+0029 <span class="comment">%</span>
+0030 
+0031 <span class="comment">% Examples:</span>
+0032 <span class="comment">%</span>
+0033 <span class="comment">% Provide sample usage code here</span>
+0034 <span class="comment">%</span>
+0035 <span class="comment">% See also: List related files here</span>
+0036 
+0037 <span class="comment">% $Author: mquintin $    $Date: 2016/08/25 14:57:20 $    $Revision: 0.1 $</span>
+0038 <span class="comment">% Copyright: Daniel Segrè, Boston University Bioinformatics Program 2016</span>
+0039 
+0040 <span class="comment">%TODO: Parallelize the Comets call (use parfor instead of for loops)</span>
+0041 
+0042 models = {};
+0043 nmodels = 1:2;
+0044 
+0045 <span class="keyword">for</span> i=1:2:nargin
+0046     arg = lower(varargin{i});
+0047     val = varargin{i+1};
+0048     <span class="keyword">switch</span> arg
+0049         <span class="keyword">case</span> <span class="string">'models'</span>
+0050             
+0051         <span class="keyword">case</span> <span class="string">'files'</span>
+0052             
+0053         <span class="keyword">case</span> <span class="string">'dir'</span>
+0054             
+0055         <span class="keyword">case</span> <span class="string">'layout'</span>
+0056             
+0057         <span class="keyword">case</span> <span class="string">'n'</span>
+0058             nmodels = val;
+0059         <span class="keyword">case</span> <span class="string">'include'</span>
+0060             
+0061         <span class="keyword">case</span> <span class="string">'modelnames'</span>
+0062             
+0063         <span class="keyword">case</span> <span class="string">'outdir'</span>
+0064             
+0065         <span class="keyword">otherwise</span>
+0066             error([<span class="string">'Unsupported argument '</span> varargin(i)]);
+0067     <span class="keyword">end</span>
+0068 
+0069 
+0070 <span class="keyword">end</span></pre></div>
+<hr><address>Generated on Mon 27-Jan-2020 13:43:40 by <strong><a href="http://www.artefact.tk/software/matlab/m2html/" target="_parent">m2html</a></strong> &copy; 2005</address>
+</body>
+</html>

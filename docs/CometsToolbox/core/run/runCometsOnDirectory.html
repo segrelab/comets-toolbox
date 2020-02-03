@@ -1,0 +1,141 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+                "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+<head>
+  <title>Description of runCometsOnDirectory</title>
+  <meta name="keywords" content="runCometsOnDirectory">
+  <meta name="description" content="run_COMETS Run COMETS without a GUI from MATLAB">
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <meta name="generator" content="m2html &copy; 2005 Guillaume Flandin">
+  <meta name="robots" content="index, follow">
+  <link type="text/css" rel="stylesheet" href="../../../m2html.css">
+  <script type="text/javascript">
+    if (top.frames.length == 0) { top.location = "../../../index.html"; };
+  </script>
+</head>
+<body>
+<a name="_top"></a>
+<!-- # CometsToolbox --><!-- ../menu.html core --><!-- menu.html run -->
+<h1>runCometsOnDirectory
+</h1>
+
+<h2><a name="_name"></a>PURPOSE <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+<div class="box"><strong>run_COMETS Run COMETS without a GUI from MATLAB</strong></div>
+
+<h2><a name="_synopsis"></a>SYNOPSIS <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+<div class="box"><strong>function comets_output = runCometsOnDirectory(run_COMETS_folder) </strong></div>
+
+<h2><a name="_description"></a>DESCRIPTION <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+<div class="fragment"><pre class="comment">run_COMETS Run COMETS without a GUI from MATLAB
+
+comets_output = run_COMETS(run_COMETS_folder)
+
+REQUIRED INPUTS
+ run_COMETS_folder: Path to folder that contains:
+    comets_script.txt
+    COMETS layout (e.g. Ecoli_colony_layout.txt)
+    COMETS models (e.g. EC_ijo1366_model.txt)
+
+OUTPUT
+ comets_output: COMETS output to screen
+
+ Meghan Thommes 02/29/2016
+
+ Update 3 Jan 2017, mquintin:
+   -If a file named comets_w64_scr.bat already exists in the run folder,
+    use it instead of the one in COMETS_HOME
+   -If no copy of comets_w64_scr.bat can be found, create a new one.
+   -If multiple versions of comets*.jar exist, use the most recent one
+
+ TODO: Update this to not rely on .bat files, so it works on Linux</pre></div>
+
+<!-- crossreference -->
+<h2><a name="_cross"></a>CROSS-REFERENCE INFORMATION <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+This function calls:
+<ul style="list-style-image:url(../../../matlabicon.gif)">
+</ul>
+This function is called by:
+<ul style="list-style-image:url(../../../matlabicon.gif)">
+<li><a href="runComets.html" class="code" title="function cometsOutput = runComets( layout, directory )">runComets</a>	RUNCOMETS create the files necessary for a COMETS run, and execute it from</li></ul>
+<!-- crossreference -->
+
+
+
+<h2><a name="_source"></a>SOURCE CODE <a href="#_top"><img alt="^" border="0" src="../../../up.png"></a></h2>
+<div class="fragment"><pre>0001 <a name="_sub0" href="#_subfunctions" class="code">function comets_output = runCometsOnDirectory(run_COMETS_folder)</a>
+0002 <span class="comment">%run_COMETS Run COMETS without a GUI from MATLAB</span>
+0003 <span class="comment">%</span>
+0004 <span class="comment">%comets_output = run_COMETS(run_COMETS_folder)</span>
+0005 <span class="comment">%</span>
+0006 <span class="comment">%REQUIRED INPUTS</span>
+0007 <span class="comment">% run_COMETS_folder: Path to folder that contains:</span>
+0008 <span class="comment">%    comets_script.txt</span>
+0009 <span class="comment">%    COMETS layout (e.g. Ecoli_colony_layout.txt)</span>
+0010 <span class="comment">%    COMETS models (e.g. EC_ijo1366_model.txt)</span>
+0011 <span class="comment">%</span>
+0012 <span class="comment">%OUTPUT</span>
+0013 <span class="comment">% comets_output: COMETS output to screen</span>
+0014 <span class="comment">%</span>
+0015 <span class="comment">% Meghan Thommes 02/29/2016</span>
+0016 <span class="comment">%</span>
+0017 <span class="comment">% Update 3 Jan 2017, mquintin:</span>
+0018 <span class="comment">%   -If a file named comets_w64_scr.bat already exists in the run folder,</span>
+0019 <span class="comment">%    use it instead of the one in COMETS_HOME</span>
+0020 <span class="comment">%   -If no copy of comets_w64_scr.bat can be found, create a new one.</span>
+0021 <span class="comment">%   -If multiple versions of comets*.jar exist, use the most recent one</span>
+0022 <span class="comment">%</span>
+0023 <span class="comment">% TODO: Update this to not rely on .bat files, so it works on Linux</span>
+0024 
+0025 <span class="comment">%% Add COMETS Java Classpath to MATLAB</span>
+0026 cometshome = getenv(<span class="string">'COMETS_HOME'</span>);
+0027 <span class="keyword">if</span> isempty(cometshome)
+0028    error(<span class="string">'COMETS_HOME environmental variable not set'</span>)
+0029 <span class="keyword">end</span>
+0030 javaclasspath(cometshome); <span class="comment">% add COMETS classpath to MATLAB</span>
+0031     
+0032 
+0033 <span class="comment">%% Set up Working Directory with COMETS Files</span>
+0034 tempscript = 0; <span class="comment">%we delete the script after running if it's copied from COMETS_HOME</span>
+0035 
+0036 execfile = <span class="string">'comets_w64_scr.sh'</span>;
+0037 <span class="keyword">if</span> ispc
+0038     execfile = <span class="string">'comets_w64_scr.bat'</span>;
+0039 <span class="keyword">end</span>
+0040 
+0041 <span class="keyword">if</span> exist([run_COMETS_folder filesep execfile],<span class="string">'file'</span>) ~= 2 <span class="comment">% script bat file not in current folder</span>
+0042     <span class="comment">%get it from comets_path</span>
+0043     scr_status = copyfile([cometshome filesep execfile],[run_COMETS_folder filesep execfile]);
+0044     <span class="keyword">if</span> scr_status == 0 <span class="comment">%unable to copy</span>
+0045         <span class="keyword">if</span> ~isdir(run_COMETS_folder) <span class="comment">% working directory does not exist</span>
+0046             error(<span class="string">'working directory does not exist'</span>)
+0047         <span class="keyword">elseif</span> exist([run_COMETS_folder filesep execfile],<span class="string">'file'</span>) ~= 2 <span class="comment">% script bat file not found</span>
+0048             <span class="comment">%error('comets_w64_scr.bat not found in COMETS path')</span>
+0049             warning([execfile <span class="string">' not found in %s or in %s. Creating new file...'</span>],run_COMETS_folder,cometshome)
+0050             
+0051             <span class="comment">%get the name of the most recently created COMETS jar file in COMETS_HOME</span>
+0052             jars = [dir([cometshome filesep <span class="string">'comets*.jar'</span>]); dir([cometshome filesep <span class="string">'bin'</span> filesep <span class="string">'comets*.jar'</span>])];
+0053             [tmp, idx] = sort(datetime({jars.date}));
+0054             jarname = jars(idx(length(idx))).name;
+0055                 
+0056             fileid = fopen([run_COMETS_folder filesep execfile],<span class="string">'w'</span>);
+0057             <span class="comment">%fprintf(fileid,'%s%s%s',['java -Xmx2048m -classpath ' cometshome '//'],jarname,[';C:/Users/mquintin/workspace/lib/jmatio.jar;' cometshome '/lib/jmatio.jar;' cometshome '/lib/x64/glpk-java.jar;' cometshome '/lib/jogamp-all-platforms/jar/jogl-all.jar;' cometshome '/lib/jogamp-all-platforms/jar/gluegen.jar;' cometshome '/lib/jogamp-all-platforms/jar/gluegen-rt.jar;' cometshome '/lib/jogamp-all-platforms/jar/gluegen-rt-natives-windows-amd64.jar;' cometshome '/lib/jogamp-all-platforms/jar/jogl-all-natives-windows-amd64.jar;%GUROBI_HOME%/lib/gurobi.jar -Djava.library.path=' cometshome '/lib;' cometshome '/lib/x64;%GUROBI_HOME%;%GUROBI_HOME%/lib/;%GUROBI_HOME%/bin edu.bu.segrelab.comets.Comets -loader edu.bu.segrelab.comets.fba.FBACometsLoader -script comets_script.txt']);</span>
+0058             execstr = [<span class="string">'java -Xmx2048m -classpath %COMETS_HOME%/'</span> jarname <span class="string">';%COMETS_HOME%/bin/'</span> jarname <span class="string">';%COMETS_HOME%/lib/glpk-java.jar;%COMETS_HOME%/lib/jogamp-all-platforms/jar/jogl-all.jar;%COMETS_HOME%/lib/jogamp-all-platforms/jar/gluegen.jar;%COMETS_HOME%/lib/jogamp-all-platforms/jar/gluegen-rt.jar;%COMETS_HOME%/lib/jogamp-all-platforms/jar/gluegen-rt-natives-windows-amd64.jar;%COMETS_HOME%/lib/jogamp-all-platforms/jar/jogl-all-natives-windows-amd64.jar;%COMETS_HOME%/lib/jmatio.jar;%COMETS_HOME%/lib/jamtio.jar;%GUROBI_HOME%/lib/gurobi.jar -Djava.library.path=%COMETS_HOME%/;%COMETS_HOME%/lib/;%GUROBI_HOME%/lib/;%GUROBI_HOME%/bin edu.bu.segrelab.comets.Comets -loader edu.bu.segrelab.comets.fba.FBACometsLoader -script comets_script.txt'</span>];
+0059             fprintf(fileid,<span class="string">'%s%s%s'</span>,execstr);
+0060             fclose(fileid);
+0061         <span class="keyword">end</span>
+0062     <span class="keyword">else</span>
+0063         tempscript = 1;
+0064     <span class="keyword">end</span>
+0065 <span class="keyword">end</span>
+0066 cd(run_COMETS_folder) <span class="comment">% change to working directory</span>
+0067 
+0068 <span class="comment">%% Run COMETS Script</span>
+0069 [status,comets_output] = system(execfile); <span class="comment">% run COMETS script</span>
+0070 <span class="keyword">if</span> tempscript
+0071     delete([run_COMETS_folder filesep execfile]); <span class="comment">% remove script bat file from folder</span>
+0072 <span class="keyword">end</span>
+0073 
+0074 <span class="keyword">end</span></pre></div>
+<hr><address>Generated on Mon 27-Jan-2020 13:43:40 by <strong><a href="http://www.artefact.tk/software/matlab/m2html/" target="_parent">m2html</a></strong> &copy; 2005</address>
+</body>
+</html>

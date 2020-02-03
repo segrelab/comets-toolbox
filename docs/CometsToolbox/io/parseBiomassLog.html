@@ -1,0 +1,164 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+                "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+<head>
+  <title>Description of parseBiomassLog</title>
+  <meta name="keywords" content="parseBiomassLog">
+  <meta name="description" content="parseBiomassCometsOutput:">
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <meta name="generator" content="m2html &copy; 2005 Guillaume Flandin">
+  <meta name="robots" content="index, follow">
+  <link type="text/css" rel="stylesheet" href="../../m2html.css">
+  <script type="text/javascript">
+    if (top.frames.length == 0) { top.location = "../../index.html"; };
+  </script>
+</head>
+<body>
+<a name="_top"></a>
+<!-- # CometsToolbox --><!-- menu.html io -->
+<h1>parseBiomassLog
+</h1>
+
+<h2><a name="_name"></a>PURPOSE <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="box"><strong>parseBiomassCometsOutput:</strong></div>
+
+<h2><a name="_synopsis"></a>SYNOPSIS <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="box"><strong>function tab = parseBiomassLog(biomassFile) </strong></div>
+
+<h2><a name="_description"></a>DESCRIPTION <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="fragment"><pre class="comment"> parseBiomassCometsOutput:
+ parses biomass file into a table with the following columns:
+ t: cycle/timestep
+ x: x coordinate
+ y: y coordinate
+ z: z coordinate
+ model: ID number of the model (ordered as in the layout)
+ biomass: biomass value</pre></div>
+
+<!-- crossreference -->
+<h2><a name="_cross"></a>CROSS-REFERENCE INFORMATION <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+This function calls:
+<ul style="list-style-image:url(../../matlabicon.gif)">
+<li><a href="../../CometsToolbox/util/countLinesInFile.html" class="code" title="function count = countLinesInFile(fname)">countLinesInFile</a>	credit to Edric Ellis @ https://stackoverflow.com/questions/12176519/is-there-a-way-in-matlab-to-determine-the-number-of-lines-in-a-file-without-loop</li><li><a href="../../CometsToolbox/util/stridx.html" class="code" title="function [idx] = stridx(query, list, allowSubstr)">stridx</a>	STRIDX(str, {str}, [true]) Get the indexes of the query string in the given cell array.</li></ul>
+This function is called by:
+<ul style="list-style-image:url(../../matlabicon.gif)">
+<li><a href="../../CometsToolbox/projects/serial_dilution/runSerialDilution.html" class="code" title="function [biomass,t,media] = runSerialDilution(layout,varargin)">runSerialDilution</a>	runSerialDilution(layout,nCycles,dilutionFactor,includeSpentMedia,directory)</li></ul>
+<!-- crossreference -->
+
+
+
+<h2><a name="_source"></a>SOURCE CODE <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="fragment"><pre>0001 <a name="_sub0" href="#_subfunctions" class="code">function tab = parseBiomassLog(biomassFile)</a>
+0002 <span class="comment">% parseBiomassCometsOutput:</span>
+0003 <span class="comment">% parses biomass file into a table with the following columns:</span>
+0004 <span class="comment">% t: cycle/timestep</span>
+0005 <span class="comment">% x: x coordinate</span>
+0006 <span class="comment">% y: y coordinate</span>
+0007 <span class="comment">% z: z coordinate</span>
+0008 <span class="comment">% model: ID number of the model (ordered as in the layout)</span>
+0009 <span class="comment">% biomass: biomass value</span>
+0010 
+0011 filelength = <a href="../../CometsToolbox/util/countLinesInFile.html" class="code" title="function count = countLinesInFile(fname)">countLinesInFile</a>(biomassFile);
+0012 
+0013 <span class="keyword">if</span> filelength &gt; 1
+0014 f = fopen(biomassFile);
+0015 tline = fgetl(f);
+0016 k = 1; <span class="comment">%counter for iterating lines</span>
+0017 ndims = 2;
+0018 
+0019 <span class="comment">%initialize. These will be too big if you have more than one cell or model,</span>
+0020 <span class="comment">%but we'll trim later</span>
+0021 X = nan(filelength,1);
+0022 Y= nan(filelength,1);
+0023 Z= zeros(filelength,1);
+0024 Biomass= nan(filelength,1);
+0025 T= nan(filelength,1);
+0026 ModelId= nan(filelength,1);
+0027 ModelName = cell(filelength,1);
+0028 
+0029 <span class="comment">%Determine the version/format of the logs based on the first line</span>
+0030 <span class="comment">%Version 1: biomass_0_0 = sparse(1, 1);</span>
+0031 <span class="comment">%Version 2 (ca. Comets v 2.6.3, August 7 2019): T X Y modelName.txt 1E-6</span>
+0032 version = 2;
+0033 <span class="keyword">if</span> strcmpi(<span class="string">'biomass_'</span>,tline(1:8))
+0034     version = 1;
+0035 <span class="keyword">end</span>
+0036 
+0037 <span class="keyword">if</span> version == 1
+0038     <span class="keyword">while</span> ischar(tline)
+0039         timeStep = str2num(regexp(tline,<span class="string">'(?&lt;=biomass\_)\d*'</span>,<span class="string">'match'</span>,<span class="string">'ONCE'</span>));
+0040         modelID = str2num(regexp(tline,<span class="string">'(?&lt;=biomass\_\d*\_)\d*'</span>,<span class="string">'match'</span>,<span class="string">'ONCE'</span>));
+0041 
+0042         <span class="keyword">if</span> timeStep &gt; -1 <span class="comment">%because of a weird bug where 'biomass' is corrupted</span>
+0043             <span class="keyword">if</span> isempty(regexp(tline,<span class="string">'sparse'</span>,<span class="string">'match'</span>,<span class="string">'ONCE'</span>))
+0044                 x = str2num(regexp(tline,<span class="string">'(?&lt;=biomass\_\d*\_\d*\()\d*'</span>,<span class="string">'match'</span>,<span class="string">'ONCE'</span>));
+0045                 y = str2num(regexp(tline,<span class="string">'(?&lt;=biomass\_\d*\_\d*\(\d*, )\d*'</span>,<span class="string">'match'</span>,<span class="string">'ONCE'</span>));
+0046                 z = str2double(tline(regexp(tline,<span class="string">'(?&lt;=\= )\d'</span>):end-1));
+0047 
+0048                 X(k) = x;
+0049                 Y(k) = y;
+0050                 Biomass(k) = z;
+0051                 T(k) = timeStep;
+0052                 ModelId(k) = modelID;
+0053                 k = k+1;
+0054             <span class="keyword">end</span>
+0055         <span class="keyword">end</span>
+0056         tline = fgetl(f);
+0057     <span class="keyword">end</span>
+0058 <span class="keyword">else</span> <span class="comment">%version == 2</span>
+0059     modelNames = {};
+0060     
+0061     <span class="comment">%future-proofing for a version where 3d biomass logs enter with format: T X Y modelName.txt 1E-6</span>
+0062     nameIdx = 4;
+0063     bioIdx = 5;
+0064     parts = strsplit(tline);
+0065     <span class="keyword">if</span> length(parts) &gt; 5
+0066         ndims = 3;
+0067         nameIdx = 5;
+0068         bioIdx = 6;
+0069     <span class="keyword">end</span>
+0070     <span class="keyword">while</span> ischar(tline)
+0071         parts = strsplit(tline);
+0072         <span class="keyword">if</span> str2num(parts{1}) &gt; -1
+0073             T(k) = str2num(parts{1});
+0074             X(k) = str2num(parts{2});
+0075             Y(k) = str2num(parts{3});
+0076             <span class="keyword">if</span> ndims &gt; 2
+0077                 Z(k) = str2num(parts{4});
+0078             <span class="keyword">end</span>
+0079             name = parts{nameIdx};
+0080             mid = <a href="../../CometsToolbox/util/stridx.html" class="code" title="function [idx] = stridx(query, list, allowSubstr)">stridx</a>(name,modelNames,false);
+0081             <span class="keyword">if</span> ~any(mid)
+0082                 modelNames = [modelNames name];
+0083                 mid = <a href="../../CometsToolbox/util/stridx.html" class="code" title="function [idx] = stridx(query, list, allowSubstr)">stridx</a>(name,modelNames,false);
+0084             <span class="keyword">end</span>
+0085             ModelId(k) = mid(1) - 1; <span class="comment">%zero-indexed to keep consistent with Comets's V1 format</span>
+0086             ModelName{k} = name;
+0087             Biomass(k) = str2double(parts{bioIdx});
+0088             k = k+1;
+0089         <span class="keyword">end</span>
+0090         tline = fgetl(f);
+0091     <span class="keyword">end</span>
+0092     
+0093 <span class="keyword">end</span>
+0094 
+0095 fclose(f);
+0096 
+0097 nrows = sum(~isnan(X));
+0098 tab = table();
+0099 tab.t = T(1:nrows);
+0100 tab.x = X(1:nrows);
+0101 tab.y = Y(1:nrows);
+0102 tab.z = Z(1:nrows);
+0103 tab.model = ModelId(1:nrows);
+0104 tab.biomass = Biomass(1:nrows);
+0105 tab.modelName = ModelName(1:nrows);
+0106 
+0107 <span class="keyword">else</span>
+0108     tab = array2table(nan(0,7),<span class="string">'VariableNames'</span>,{<span class="string">'t'</span>,<span class="string">'x'</span>,<span class="string">'y'</span>,<span class="string">'z'</span>,<span class="string">'model'</span>,<span class="string">'biomass'</span>,<span class="string">'modelName'</span>});
+0109 <span class="keyword">end</span>
+0110 <span class="keyword">end</span>
+0111</pre></div>
+<hr><address>Generated on Mon 27-Jan-2020 13:43:40 by <strong><a href="http://www.artefact.tk/software/matlab/m2html/" target="_parent">m2html</a></strong> &copy; 2005</address>
+</body>
+</html>

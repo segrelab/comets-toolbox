@@ -1,8 +1,8 @@
 ------Generating Docs
 Documentation is easily generated using M2HTML (http://www.artefact.tk/software/matlab/m2html/)
 
-To regenerate the documentation, delete the 'doc' folder then run the following MATLAB command in the CometsToolbox folder's parent directory.
-	m2html('mfiles','CometsToolbox', 'htmldir','CometsToolbox/doc', 'recursive','on', 'global','on','template','frame','index','menu')
+To regenerate the documentation, delete the 'docs' folder then run the following MATLAB command in the CometsToolbox folder's parent directory.
+	m2html('mfiles','CometsToolbox', 'htmldir','CometsToolbox/docs', 'recursive','on', 'global','on','template','frame','index','menu')
 
 
 ------LEGAL

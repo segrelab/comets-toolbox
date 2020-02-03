@@ -1,0 +1,96 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+                "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+<head>
+  <title>Description of testStridx</title>
+  <meta name="keywords" content="testStridx">
+  <meta name="description" content="run with: res = runtests('testStridx.m')">
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <meta name="generator" content="m2html &copy; 2005 Guillaume Flandin">
+  <meta name="robots" content="index, follow">
+  <link type="text/css" rel="stylesheet" href="../../m2html.css">
+  <script type="text/javascript">
+    if (top.frames.length == 0) { top.location = "../../index.html"; };
+  </script>
+</head>
+<body>
+<a name="_top"></a>
+<!-- # CometsToolbox --><!-- menu.html test -->
+<h1>testStridx
+</h1>
+
+<h2><a name="_name"></a>PURPOSE <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="box"><strong>run with: res = runtests('testStridx.m')</strong></div>
+
+<h2><a name="_synopsis"></a>SYNOPSIS <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="box"><strong>function tests = testStridx </strong></div>
+
+<h2><a name="_description"></a>DESCRIPTION <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="fragment"><pre class="comment">run with: res = runtests('testStridx.m')
+arr = {'abc' 'ABC' 'cba' 'CBA' 'a.b.c' './\/?*./'};</pre></div>
+
+<!-- crossreference -->
+<h2><a name="_cross"></a>CROSS-REFERENCE INFORMATION <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+This function calls:
+<ul style="list-style-image:url(../../matlabicon.gif)">
+<li><a href="../../CometsToolbox/util/stridx.html" class="code" title="function [idx] = stridx(query, list, allowSubstr)">stridx</a>	STRIDX(str, {str}, [true]) Get the indexes of the query string in the given cell array.</li></ul>
+This function is called by:
+<ul style="list-style-image:url(../../matlabicon.gif)">
+</ul>
+<!-- crossreference -->
+
+<h2><a name="_subfunctions"></a>SUBFUNCTIONS <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<ul style="list-style-image:url(../../matlabicon.gif)">
+<li><a href="#_sub1" class="code">function testSubstrNotGiven(testCase)</a></li><li><a href="#_sub2" class="code">function testSubstrLiteral(testCase)</a></li><li><a href="#_sub3" class="code">function testSubstrTrue(testCase)</a></li><li><a href="#_sub4" class="code">function TestSubstrFalse(testCase)</a></li></ul>
+
+<h2><a name="_source"></a>SOURCE CODE <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="fragment"><pre>0001 <span class="comment">%run with: res = runtests('testStridx.m')</span>
+0002 <a name="_sub0" href="#_subfunctions" class="code">function tests = testStridx</a>
+0003 <span class="comment">%arr = {'abc' 'ABC' 'cba' 'CBA' 'a.b.c' './\/?*./'};</span>
+0004 tests = functiontests(localfunctions);
+0005 <span class="keyword">end</span>
+0006 
+0007 <span class="comment">%if allowSubstr is not given, allow case insensitive matches anywhere</span>
+0008 <a name="_sub1" href="#_subfunctions" class="code">function testSubstrNotGiven(testCase)</a>
+0009 arr = {<span class="string">'abc'</span> <span class="string">'ABC'</span> <span class="string">'cba'</span> <span class="string">'CBA'</span> <span class="string">'a.b.c'</span> <span class="string">'./\/?*./'</span>};
+0010 expect1 = [1 2 3 4 5];
+0011 actual1 = <a href="../../CometsToolbox/util/stridx.html" class="code" title="function [idx] = stridx(query, list, allowSubstr)">stridx</a>(<span class="string">'a'</span>,arr);
+0012 verifyEqual(testCase,expect1,actual1);
+0013 expect2 = [1 2];
+0014 actual2 = <a href="../../CometsToolbox/util/stridx.html" class="code" title="function [idx] = stridx(query, list, allowSubstr)">stridx</a>(<span class="string">'BC'</span>,arr);
+0015 verifyEqual(testCase,expect2,actual2);
+0016 <span class="keyword">end</span>
+0017 
+0018 <span class="comment">%treat the query literally, not as regex</span>
+0019 <a name="_sub2" href="#_subfunctions" class="code">function testSubstrLiteral(testCase)</a>
+0020 arr = {<span class="string">'abc'</span> <span class="string">'ABC'</span> <span class="string">'cba'</span> <span class="string">'CBA'</span> <span class="string">'a.b.c'</span> <span class="string">'./\/?*./'</span>};
+0021 expect1 = [6];
+0022 actual1 = <a href="../../CometsToolbox/util/stridx.html" class="code" title="function [idx] = stridx(query, list, allowSubstr)">stridx</a>(<span class="string">'?*'</span>,arr);
+0023 verifyEqual(testCase,expect1,actual1);
+0024 <span class="keyword">end</span>
+0025 
+0026 <span class="comment">%if allowSubstr = true, expect the same behavior as if it was not given</span>
+0027 <a name="_sub3" href="#_subfunctions" class="code">function testSubstrTrue(testCase)</a>
+0028 arr = {<span class="string">'abc'</span> <span class="string">'ABC'</span> <span class="string">'cba'</span> <span class="string">'CBA'</span> <span class="string">'a.b.c'</span> <span class="string">'./\/?*./'</span>};
+0029 expect1 = [1 2 3 4 5];
+0030 actual1 = <a href="../../CometsToolbox/util/stridx.html" class="code" title="function [idx] = stridx(query, list, allowSubstr)">stridx</a>(<span class="string">'a'</span>,arr,true);
+0031 verifyEqual(testCase,expect1,actual1);
+0032 expect2 = [1 2];
+0033 actual2 = <a href="../../CometsToolbox/util/stridx.html" class="code" title="function [idx] = stridx(query, list, allowSubstr)">stridx</a>(<span class="string">'BC'</span>,arr);
+0034 verifyEqual(testCase,expect2,actual2);
+0035 <span class="keyword">end</span>
+0036 
+0037 <span class="comment">%if allowSubstr = false, only get case sensitive complete matches</span>
+0038 <a name="_sub4" href="#_subfunctions" class="code">function TestSubstrFalse(testCase)</a>
+0039 arr = {<span class="string">'abc'</span> <span class="string">'ABC'</span> <span class="string">'cba'</span> <span class="string">'CBA'</span> <span class="string">'a.b.c'</span> <span class="string">'./\/?*./'</span>};
+0040 expect1 = [1 5];
+0041 actual1 = <a href="../../CometsToolbox/util/stridx.html" class="code" title="function [idx] = stridx(query, list, allowSubstr)">stridx</a>(<span class="string">'a'</span>,arr,false);
+0042 verifyEqual(testCase,expect1,actual1);
+0043 <span class="comment">%expect2 = [];</span>
+0044 actual2 = <a href="../../CometsToolbox/util/stridx.html" class="code" title="function [idx] = stridx(query, list, allowSubstr)">stridx</a>(<span class="string">'BC'</span>,arr,false);
+0045 verifyEmpty(testCase,actual2);
+0046 <span class="keyword">end</span>
+0047</pre></div>
+<hr><address>Generated on Mon 27-Jan-2020 13:43:40 by <strong><a href="http://www.artefact.tk/software/matlab/m2html/" target="_parent">m2html</a></strong> &copy; 2005</address>
+</body>
+</html>
