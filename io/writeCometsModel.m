@@ -201,6 +201,23 @@ if isfield(model,'vmax') && any(model.vmax)
     fprintf(fileID,'//\n');
 end
 
+%Light
+if isfield(model,'absorption') && any(model.absorption)
+    fprintf(fileID,'LIGHT\n');
+    idx = find(~isnan(model.absorption));
+    for i=1:length(idx)
+        rxnidx = idx(i);
+        exchidx = find(exchange_rxnsIndex==rxnidx);
+        if exchidx
+            if model.absorption(rxnidx) > 0
+                fprintf(fileID,'    %d %d\n',exchidx,model.absorption(rxnidx));
+            end
+        end
+    end
+    fprintf(fileID,'//\n');
+end
+    
+
 %Objective Style
 if ~strcmpi(cometsParams.objectiveStyle,'default')
     fprintf(fileID,'OBJECTIVE_STYLE\n');
