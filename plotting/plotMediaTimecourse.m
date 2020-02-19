@@ -7,6 +7,11 @@ function p = plotMediaTimecourse(table,metnames,scale,linewidth)
 %   for legacy reasons from when the parameter was "logscale",
 %   false='normal' and true= 'log'
 %   'Relative' scales each metabolite to its own max concentration
+
+if nargin < 2
+    metnames = unique(table.metname);
+end
+    
 if nargin < 3
     scale = 'normal';
 end
@@ -64,8 +69,10 @@ for i = 1:length(metnames)
     st = table(strcmp(met,table.metname),:);
     
     %sum all cells at the same timepoint
-    amt = reshape(st.amt,length(x),ncells);
-    amt = sum(amt,2);
+    amt = zeros(length(x),1);
+    for j = 1:length(x)
+        amt(j) = sum(st.amt(st.t == x(j)));
+    end
     
     if strcmpi(scale,'relative')
         amt = amt/(max(amt));
@@ -84,6 +91,7 @@ xlabel('Timestep');
 yl = 'Concentration (mmol)';
 if strcmpi(scale,'relative')
     yl = 'Relative Concentraion';
+    ylim([0,1]);
 end
 ylabel(yl);
 end
