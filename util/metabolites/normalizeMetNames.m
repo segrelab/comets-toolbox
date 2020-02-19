@@ -48,7 +48,7 @@ newmetnames = cell(length(basemetnames),1);
 failed = cell(length(basemetnames),1);
 failedflag = zeros(length(basemetnames),1);
 
-dbpath = which('metabolites\metnames.db');
+dbpath = which(['metabolites' filesep 'metnames.db']);
 mksqlite('open',dbpath);
 
 for i = 1:length(basemetnames)
