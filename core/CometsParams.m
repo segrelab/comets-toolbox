@@ -24,6 +24,7 @@ classdef CometsParams
         toroidalWorld = false %If true, edge cells are considered adjacent to the cell on the opposite edge
         objectiveStyle = 'MAX_OBJECTIVE_MIN_TOTAL' %replace with 'default' to use the Comets package default
         randomSeed = 0 %seed for the semirandom number generator
+        allowFluxWithoutGrowth = true; %Sets whether a metabolic model which cannot generate flux through its biomass reaction will still run in order to satisfy any other objective reactions
         
         %Graphical & output global params
         colorRelative = true %if true, colors each space relative to the space with the highest value.
