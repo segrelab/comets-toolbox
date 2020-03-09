@@ -67,12 +67,15 @@ classdef CometsParams
         writeFluxLog = false %If true, writes fluxes out to a log file
         fluxLogName = './flux.m'
         fluxLogRate = 1 %How often (number of simulation steps) to write to the flux file. A value of 1 will cause writing after every step.
+        fluxLogFormat = 'COMETS'
         writeMediaLog = false
         mediaLogName = './media.m'
         mediaLogRate = 1
+        mediaLogFormat = 'Matlab'
         writeBiomassLog = false %if true, writes a summation of all biomass on a per-grid cell basis to a log file
         biomassLogName = './biomass.m'
         biomassLogRate = 1
+        biomassLogFormat = 'Matlab'
         writeTotalBiomassLog = false %if true, writes a summation of all biomass information to a log file
         totalBiomassLogRate = 1
         totalBiomassLogName = './total_biomass.m'
