@@ -202,15 +202,15 @@ if isfield(model,'vmax') && any(model.vmax)
 end
 
 %Light
-if isfield(model,'absorption') && any(model.absorption)
+if isfield(model,'absorption') && any(model.absorption, 'all')
     fprintf(fileID,'LIGHT\n');
     idx = find(~isnan(model.absorption));
     for i=1:length(idx)
         rxnidx = idx(i);
         exchidx = find(exchange_rxnsIndex==rxnidx);
         if exchidx
-            if model.absorption(rxnidx) > 0
-                fprintf(fileID,'    %d %d\n',exchidx,model.absorption(rxnidx));
+            if model.absorption(rxnidx, 2) > 0
+                fprintf(fileID,'    %d %d %d\n',exchidx,model.absorption(rxnidx, 1),model.absorption(rxnidx, 2));
             end
         end
     end
