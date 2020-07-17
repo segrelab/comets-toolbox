@@ -29,7 +29,7 @@ k = layout.params.defaultVmax;
 km = layout.params.defaultKm;
 
 %parse optional arguments
-for i = 1:2:length(varargin)
+for i = 5:2:length(varargin)
     switch upper(varargin{i})
         case 'ENZYME'
             %add an enzyme to the reaction
