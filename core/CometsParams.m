@@ -4,8 +4,8 @@ classdef CometsParams
     
     %Constructor CometsParams()
     %
-    % $Author: mquintin $	$Date: 2016/08/16 17:05:10 $	$Revision: 0.2 $
-    % Last edit: mquintin 12/30/2016
+    % $Author: mquintin $	$Date: 2016/08/16 17:05:10 $	$Revision: 0.3 $
+    % Last edit: mquintin 6/22/2020
     % Copyright: Daniel Segrè, Boston University Bioinformatics Program 2016
     
     properties       
@@ -15,7 +15,7 @@ classdef CometsParams
         deathRate = 0.0 %from 0 to 1. fraction of biomass which dies each HOUR
         maxCycles = 200 %the maximum number of simulation steps to run. If set to -1, this is unlimited.
         maxSpaceBiomass = 2.2E-4 %grams. maximum allowed biomass in a space
-        minSpaceBiomass = 0.25e-10 %grams. minimum allowed biomass in a space (setting to a small value > 0 might avoid some numerical errors)
+        minSpaceBiomass = 1e-13 %grams. minimum allowed biomass in a space (setting to a small value > 0 might avoid some numerical errors)
         pauseOnStep = false %if true, pauses the simulation after completing a step
         randomOrder = true %Should the order that models are processed at each timestep be randomized? If false, they are always run in the order presented in the first line of the layout file.
         spaceWidth = 0.01 %centimeters. COMETS calculates spaceVolume with this ^3
@@ -64,6 +64,20 @@ classdef CometsParams
         defaultW = 10 %The default W coefficient (plateau) for the Pseudo-Monod style exchange
         numExRxnSubsteps = 10
         
+        %Batch Dilution package parameters
+        batchDilution = false
+        dilFactor = 0.01
+        dilTime = 24 %hours
+        cellSize = 1e-9 %grams dry weight of an individual microbial cell. Must be larger than minSpaceBiomass
+        
+        %Evolution package parameters
+        evolution = false
+        mutRate = 1e-9 %rate for deletions
+        addRate = 1e-5 %rate for reaction additions, turning on rxns with UB and LB == 0
+        costlyGenome = false
+        geneFractionalCost = 5e-8
+        
+        
         %Logging package params
         writeFluxLog = false %If true, writes fluxes out to a log file
         fluxLogName = './flux.m'
@@ -80,6 +94,7 @@ classdef CometsParams
         useLogNameTimeStamp = false %If true, appends a time stamp to every log file name
         writeMatFile = false %If true, writes a .mat files of everything
         MatFileName = './comets_log.mat'
+        %genotypeLogName: There is currently no logging parameter set for Genotypes, the name is 'GENOTYPES_' + biomassLogName
     end
     
     methods
