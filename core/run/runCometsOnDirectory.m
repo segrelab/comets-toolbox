@@ -37,9 +37,9 @@ javaclasspath(gurobihome);
 %% Set up Working Directory with COMETS Files
 tempscript = 0; %we delete the script after running if it's copied from COMETS_HOME
 
-execfile = 'comets_w64_scr.sh';
+execfile = 'comets_scr';
 if ispc
-    execfile = 'comets_w64_scr.bat';
+    execfile = 'comets_scr.bat';
 end
 
 if exist([run_COMETS_folder filesep execfile],'file') ~= 2 % script bat file not in current folder
@@ -69,7 +69,7 @@ end
 cd(run_COMETS_folder) % change to working directory
 
 %% Run COMETS Script
-[status,comets_output] = system(execfile); % run COMETS script
+[status,comets_output] = system([execfile ' comets_script.txt']); % run COMETS script
 if tempscript
     delete([run_COMETS_folder filesep execfile]); % remove script bat file from folder
 end
