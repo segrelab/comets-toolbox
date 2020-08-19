@@ -12,7 +12,7 @@ COMETS (Computation Of Microbial Ecosystems in Time and Space) is Copyright (C) 
 
 Comets-toolbox is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
 
-Comets-toolbox is developed with non-commercial use in mind and is presented as-is. To inquire about collaborations or commercial usage and development, please contact us at <comets@bu,edu>.
+Comets-toolbox is developed with non-commercial use in mind and is presented as-is. To inquire about collaborations or commercial usage and development, please contact us at <comets@bu.edu>.
 
  M2HTML - Documentation System for Matlab .m files in HTML Copyright (C) 2003-2005 Guillaume Flandin <Guillaume@artefact.tk> and is included unmodified under the GNU GPL version 2
  
